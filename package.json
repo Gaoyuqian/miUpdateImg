@@ -1,11 +1,19 @@
 {
-  "name": "batchupload",
-  "version": "1.0.0",
+  "name": "miuibatchupload",
+  "version": "1.0.1",
   "description": "batchuploadimage",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "gyq",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gaoyuqian/miUpdateImg.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gaoyuqian/miUpdateImg/issues"
+  },
+  "homepage": "https://github.com/Gaoyuqian/miUpdateImg#readme"
 }
