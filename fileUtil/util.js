@@ -10,7 +10,7 @@ module.exports = {
             
             tip: 被标记为可忽略文件的文件夹下的所有文件均不会被添加依赖
         */
-
+        if(fs.existsSync('./ignored')){return false}
         const reg = /\.\w*[\/]?/
         const ignored = reg.exec(name)
         const resS = fs.readFileSync('./ignored').toString()

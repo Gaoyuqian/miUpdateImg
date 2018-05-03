@@ -1,0 +1,10 @@
+{
+    "filepath":"./static",
+    "output":"uploadPackage.json",
+    "httpsOption":{
+        "hostname":"file.market.miui.srv",
+        "port":8756,
+        "path":"/upload?channel=NccFgber",
+        "method":"POST"
+    }
+}

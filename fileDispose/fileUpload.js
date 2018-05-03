@@ -1,15 +1,15 @@
-const {fs,http} =  require('./../main')
+const {fs,http,conf} =  require('./../main')
 const {getFileMap} = require('./../fileUtil/util')
 let uploadFileObj = {}
 // 写入的时候 先读取配置文件中的对象然后
 // 对不同的地方进行修改 对新的对象进行添加 对旧属性保持不变
 async function uploadFile (filepath){
-        const options = {
-            hostname:'file.market.miui.srv',
-            port:8756,
-            path:'/upload?channel=NccFgber',
-            method:'POST',
-        }
+        const options =conf['httpsOption']
+        //     hostname:'file.market.miui.srv',
+        //     port:8756,
+        //     path:'/upload?channel=NccFgber',
+        //     method:'POST',
+        // }
         let serverAdd = ''
         const temp = filepath.split('/')
         const filename = temp[temp.length-1]
