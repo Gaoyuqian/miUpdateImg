@@ -3,9 +3,9 @@
 ```
 USE
 
+npm install miuibatchupload
 
-
-* 项目根目录下创建uploadPackage.json文件 内容为{} (v1.2.0以下的版本都需要手动创建该文件)
+* 项目根目录下创建uploadPackage.json文件 内容为{} (目前版本由于运行在前端工程中,所有都需要手动创建该文件,若之后需要运行于node环境下 则需要更改配置文件中output的路径信息，并同步到index.js文件中,改写getImgAdd文件中的方法使其路径一致)
 * 在dev-server下 引入此包  const miui = require('miuibatchupload')  并调用start方法
 * npm run dev （v1.2.0以下的版本每次dev均会执行批量脚本,但会根据该文件是否已上传来区别上传文件）
 * 如果想覆盖原有文件重新上传 请使用deep模式重新上传所有待上传文件
@@ -19,7 +19,7 @@ v1.2.0
 
 
 1.支持批量上传小图片（大图片未测试）
-2.获取文件路径 return String
+2.获取文件路径 支持裁切和缩略图模式
 ```
 ```
 v1.3.0（预期）
