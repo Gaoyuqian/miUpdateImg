@@ -1,4 +1,4 @@
-const {fs} = require('./../main')
+const {fs,chalk} = require('./../main')
 
 class myFile {
     constructor(path){
@@ -21,7 +21,7 @@ class myFile {
             }
         }
         fs.writeFileSync(this.file,JSON.stringify(this.content))
-        console.log(sourceName,'--------上传成功')
+        console.log(chalk.green(sourceName,'--------上传成功'))
     }
 }
 module.exports = {

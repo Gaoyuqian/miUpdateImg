@@ -5,11 +5,6 @@ let uploadFileObj = {}
 // 对不同的地方进行修改 对新的对象进行添加 对旧属性保持不变
 async function uploadFile (filepath){
         const options =conf['httpsOption']
-        //     hostname:'file.market.miui.srv',
-        //     port:8756,
-        //     path:'/upload?channel=NccFgber',
-        //     method:'POST',
-        // }
         let serverAdd = ''
         const temp = filepath.split('/')
         const filename = temp[temp.length-1]

@@ -6,6 +6,7 @@ module.exports = {
             param:{
                 name //文件路径
             }
+            
             return: 返回Boolean 表示该文件路径是否在配置文件中被标记为可忽略文件
             
             tip: 被标记为可忽略文件的文件夹下的所有文件均不会被添加依赖

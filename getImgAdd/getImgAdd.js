@@ -1,4 +1,5 @@
-const conf = require('../../../uploadPackage.json')
+const {path} = require('./../main')
+const conf = path.resolve('../../../uploadPackage.json')
 const addrArrayDownload  = [
     "http://t1.market.mi-img.com/download/",
     "http://t2.market.mi-img.com/download/",
