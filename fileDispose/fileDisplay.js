@@ -18,7 +18,7 @@ function fileDisplay(filepath,deep=false){
  function addDep(fileArray,filepath,deep){
     fileArray.forEach(filename =>{
         if(fileResult[filename]&&!deep){
-            console.log(chalk.gray('该文件已在过去上传成功，如需覆盖原文件，请使用deep模式-------')+filename)            
+            console.log(chalk.yellow('该文件已在过去上传成功，如需覆盖原文件，请使用deep模式-------')+filename)            
         }else{
             const filedir = path.join(filepath,filename)
             const stats = fs.statSync(filedir)
@@ -28,11 +28,11 @@ function fileDisplay(filepath,deep=false){
                 if(getFileMap(filename)){
                     Dep.push(filedir)                            
                 }else{
-                 console.log(chalk.gray('不支持该文件格式,如需支持,请在映射中添加该文件对应的参数值-------')+filedir)   
+                 console.log(chalk.yellow('不支持该文件格式,如需支持,请在映射中添加该文件对应的参数值-------')+filedir)   
                 }
             }else if(isDir){
                 if(isIgnoredFile(filedir)){
-                    console.log(chalk.gray('该路径已被忽略-------')+filedir)                    
+                    console.log(chalk.yellow('该路径已被忽略-------')+filedir)                    
                 }else{
                     fileDisplay(filedir,deep)                    
                 }
