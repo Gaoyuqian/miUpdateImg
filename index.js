@@ -1,23 +1,17 @@
-const {uploadFile} = require('./fileDispose/fileUpload')
-const {myFile} = require('./fileSystem/outputFile')
-const {fileDisplay,getDep,getFileNameArray} = require('./fileDispose/fileDisplay')
-const {path,fs,conf,chalk}=require('./main')
-const miuiFile = require('./miuiFile.json')
-const {getAddress,getNativeImgAddr} = require('./getImgAdd/getImgAdd')
-
+const {uploadFile} = require('./util/fileDispose/fileUpload')
+const {myFile} = require('./util/fileSystem/outputFile')
+const {fileDisplay,getDep,getFileNameArray} = require('./util/fileDispose/fileDisplay')
+const {path,fs,conf,chalk}=require('./util/main')
+const {getNativeAddr,getThumbnailAddr} = require('./getImgAddr/getImgAddr')
 
 // 准备  读取配置文件
-function start(){
-    global.__file = new myFile(conf['output'])  
-    fileDisplay(conf['filepath'])
+function start(deep=false){
+    global.__file = new myFile(conf['output']) 
+    fileDisplay(conf['filepath'],deep)
     getDep().forEach(element => {
         uploadFile(element)     
     }); 
 }
-
 module.exports = {
-    getAddress,getNativeImgAddr,start
+    getNativeAddr,getThumbnailAddr,start
 }
-/*
-    待开发List
-*/

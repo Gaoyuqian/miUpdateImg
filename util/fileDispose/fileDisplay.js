@@ -5,14 +5,14 @@ const {myFile} = require('./../fileSystem/outputFile')
 
 
 let fileResult
-var Dep = []
+let Dep = []
 
 function fileDisplay(filepath,deep=false){
     // deep 模式 会覆盖之前上传的所有同名文件
     if(!fileResult){
         fileResult = __file.content
     }
-    var files = fs.readdirSync(filepath)
+    const files = fs.readdirSync(filepath)
     addDep(files,filepath,deep)  
  }
  function addDep(fileArray,filepath,deep){
@@ -31,8 +31,11 @@ function fileDisplay(filepath,deep=false){
                  console.log(chalk.yellow('不支持该文件格式,如需支持,请在映射中添加该文件对应的参数值-------')+filedir)   
                 }
             }else if(isDir){
-                if(isIgnoredFile(filedir)){
+                if(isIgnoredFile(filedir)==='all'){
                     console.log(chalk.yellow('该路径已被忽略-------')+filedir)                    
+                    return
+                }else if(isIgnoredFile(filedir)==='single'){
+                    console.log(chalk.yellow('该文件已被忽略-------')+filedir)                    
                 }else{
                     fileDisplay(filedir,deep)                    
                 }

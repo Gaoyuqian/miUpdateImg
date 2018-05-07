@@ -1,5 +1,5 @@
-const {fs,http,conf} =  require('./../main')
-const {getFileMap} = require('./../fileUtil/util')
+const {fs,http,conf} =  require('../main')
+const {getFileMap} = require('../fileUtil/util')
 let uploadFileObj = {}
 // 写入的时候 先读取配置文件中的对象然后
 // 对不同的地方进行修改 对新的对象进行添加 对旧属性保持不变

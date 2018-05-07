@@ -1,6 +1,7 @@
 {
     "filepath":"./static",
     "output":"uploadPackage.json",
+    "ignored":"./ignored",
     "httpsOption":{
         "hostname":"file.market.miui.srv",
         "port":8756,

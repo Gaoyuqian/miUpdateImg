@@ -1,4 +1,4 @@
-#Install
+# Install
 ```
 npm install miuibatchupload
 ```
@@ -48,16 +48,16 @@ Vue.prototype.$getNativeAddr = getNativeAddr
 
 ```
 
-裁剪功能具体参数请参照MIUI文件服务使用指南
-addr : {wiki}/pages/viewpage.action?pageId=5833076
+#### 裁剪功能具体参数请参照MIUI文件服务使用指南
+#### addr : {wiki}/pages/viewpage.action?pageId=5833076
 
 # Log
 
 
 ### v1.2.0
 
-1.支持批量上传小图片
-2.获取文件路径,同时支持裁切和缩略图模式
+### 支持批量上传小图片
+### 获取文件路径,同时支持裁切和缩略图模式
 
 ### v1.3.0
 #### 优化文件忽略逻辑，重写正则表达式
@@ -65,9 +65,9 @@ addr : {wiki}/pages/viewpage.action?pageId=5833076
 #### 更好的支持裁切系统，降低裁切参数的复杂度
 现在有更多的默认裁剪系数被提供,并且支持了更好的错误反馈机制
 #### 更改暴露出的方法名，使语义更明显
-#### 增加删除文件功能(delay)
+#### 增加删除文件功能(only Node)
 
 ## v1.4.0(预期)
-1.支持视频流文件上传
-2.支持图片和文字结合，并获取合成后的图片
-3.支持自定义文件名上传
+### 支持视频流文件上传(only Node)
+### 支持图片和文字结合，并获取合成后的图片(only Node)
+### 支持自定义文件名上传 (only Node)

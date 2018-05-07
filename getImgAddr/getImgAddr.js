@@ -27,25 +27,35 @@ const addrArrayThumbnail = [
 function getRamdomNumber(min,max){
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
-function getAddress(filename,/*l,s,w,h,q*/option,https=false){
+function getImgType(filename){
+    return filename.split('.')[1]
+}
+function getImgWithText(option){
+
+}
+
+function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
     const index = getRamdomNumber(0,addrArrayThumbnail.length-1)
-    var addrPre 
+    let addrPre 
     if(!conf[filename]){
         console.warn('该文件未上传----',filename)
+        return 
     }
     if(https){
         addrPre = 'https://ts.market.mi-img.com/thumbnail/'
     }else{
         addrPre = `${addrArrayThumbnail[index]}`
     }
-    if(!option){
-        console.warn('必须设置裁剪参数，否则报错')
+    try{
+        const fileParam = typeof option === 'string'?option:option.param
+        const sub = option.type?option.type:getImgType(filename)?getImgType(filename):'jpeg'
+        return `${addrPre}${sub}/${fileParam}/${conf[filename]}`
+    }catch(e){
+        console.warn('必须设置裁剪参数,或使用getNativeAddr获取地址')
         return 
-    }else{
-        return `${addrPre}${option.type?option.type:'jpeg'}/${option.param?option.param:''}/${conf['output'][filename]}`
     }
 }
-function getNativeImgAddr(filename){
+function getNativeAddr(filename){
     const index = getRamdomNumber(0,addrArrayDownload.length-1)
     if(!conf[filename]){
         console.warn('该文件未上传----',filename)
@@ -53,5 +63,5 @@ function getNativeImgAddr(filename){
     return `${addrArrayDownload[index]}${conf[filename]}/a.jpg`
 }
 module.exports = {
-    getAddress,getNativeImgAddr
+    getNativeAddr,getThumbnailAddr
 }

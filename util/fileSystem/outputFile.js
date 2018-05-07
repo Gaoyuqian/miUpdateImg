@@ -1,4 +1,4 @@
-const {fs,chalk} = require('./../main')
+const {fs,chalk,path} = require('../main')
 
 class myFile {
     constructor(path){
