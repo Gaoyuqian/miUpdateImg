@@ -23,7 +23,7 @@ getNativeAddr(filename) //获取原图
 #Use
 
     项目根目录下创建uploadPackage.json文件 内容为{}
-    (目前版本由于运行在前端工程中,所有都需要手动创建该文件,若之后需要运行于node环境下 则需要更改配置文件中output的路径信息，并同步到index.js文件中,改写getImgAdd文件中的方法使其路径一致)
+    tips:目前版本由于运行在前端工程中,所有都需要手动创建该文件,若之后需要运行于node环境下 则需要更改配置文件中output的路径信息，并同步到index.js文件中,改写getImgAdd文件中的方法使其路径一致
 
     在dev-server下 引入此包
 ```
