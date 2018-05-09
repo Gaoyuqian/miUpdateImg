@@ -8,7 +8,20 @@ class myFile {
     readMyFile(){
         let fileName = fs.existsSync(this.file)
         if(!fileName){
-            fs.writeFileSync(this.file,'{}')
+            console.log(chalk.red('未创建配置文件，正在创建默认的配置文件'))
+            const __default = {
+                    "filepath":"./static",
+                    "output":"uploadPackage.json",
+                    "ignored":"./ignored",
+                    "httpsOption":{
+                        "hostname":"file.market.miui.srv",
+                        "port":8756,
+                        "path":"/upload?channel=NccFgber",
+                        "method":"POST"
+                    }
+            }
+            fs.writeFileSync(this.file,JSON.stringify(__default));
+            console.log(chalk.red('配置文件创建完毕'))  
         }
         let result = JSON.parse(fs.readFileSync(this.file,'utf-8'))   
             return result

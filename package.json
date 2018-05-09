@@ -1,6 +1,6 @@
 {
   "name": "miuibatchupload",
-  "version": "1.3.0",
+  "version": "1.3.5",
   "description": "batchuploadimage",
   "main": "index.js",
   "scripts": {

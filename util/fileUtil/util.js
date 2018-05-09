@@ -1,7 +1,7 @@
-const {fs,conf} = require('../main.js')
+const {fs} = require('../main.js')
 
 module.exports = {
-    isIgnoredFile: (name)=>{  //判断文件是否在ignored中被忽略
+    isIgnoredFile: (name,isDir)=>{  //判断文件是否在ignored中被忽略
         /*
             param:{
                 name //文件路径
@@ -12,15 +12,18 @@ module.exports = {
             tip: 被标记为可忽略文件的文件夹下的所有文件均不会被添加依赖
         */
         try{
-            const res = fs.readFileSync(conf['ignored'],'utf-8')
+            const res = fs.readFileSync(__conf['ignored'],'utf-8')
             if(res!=='undefined'){
                 const resource =res.split('\n')
                 const willIgnoreArray = resource.map(el=>{
                     return el.replace(/\*/,'')
                 })
                 for(let item of willIgnoreArray){
+                    if(isDir){
+                        name+='/'
+                    }
                     if(name.indexOf(item)!='-1'){
-                        if(/\/$/.test(item)){
+                        if(/\/$/.test(name)){
                             return 'all'
                         }
                         return 'single'
@@ -29,7 +32,7 @@ module.exports = {
             }
             return 'none'            
         }catch(e){
-            fs.writeFileSync(conf['ignored'])
+            fs.writeFileSync(__conf['ignored'])
         }
     },
     getFileMap:(fileName)=>{ // 选择请求体中的type字段 

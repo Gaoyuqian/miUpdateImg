@@ -1,13 +1,13 @@
-const {fs,http,conf} =  require('../main')
+const {fs,http} =  require('../main')
 const {getFileMap} = require('../fileUtil/util')
 let uploadFileObj = {}
 // 写入的时候 先读取配置文件中的对象然后
 // 对不同的地方进行修改 对新的对象进行添加 对旧属性保持不变
 async function uploadFile (filepath){
-        const options =conf['httpsOption']
+        const options =__conf['httpsOption']
         let serverAdd = ''
         const temp = filepath.split('/')
-        const filename = temp[temp.length-1]
+        const filename = temp[temp.length-1].split('.')[0]
         const boundaryKey = '----' + new Date().getTime();  
         let data = fs.readFileSync(filepath);
             const req = http.request(options,(res)=>{
