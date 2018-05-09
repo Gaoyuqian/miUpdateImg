@@ -32,7 +32,7 @@ module.exports = {
             }
             return 'none'            
         }catch(e){
-            fs.writeFileSync(__conf['ignored'])
+            fs.writeFileSync(__conf['ignored'],'')
         }
     },
     getFileMap:(fileName)=>{ // 选择请求体中的type字段 
