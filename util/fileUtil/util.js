@@ -13,7 +13,7 @@ module.exports = {
         */
         try{
             const res = fs.readFileSync(__conf['ignored'],'utf-8')
-            if(res!=='undefined'){
+            if(res!=='undefined'&&res!==''){
                 const resource =res.split('\n')
                 const willIgnoreArray = resource.map(el=>{
                     return el.replace(/\*/,'')

@@ -1,4 +1,4 @@
-const __conf = require('../../../uploadPackage.json')
+const __conf = require('./../uploadPackage.json')
 
 const addrArrayDownload  = [
     "http://t1.market.mi-img.com/download/",
@@ -54,6 +54,7 @@ function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
 function getNativeAddr(filename){
     const preName = filename.split('.')[0]    
     const index = getRamdomNumber(0,addrArrayDownload.length-1)
+    
     if(!__conf[preName]){
         console.warn('该文件未上传----',filename)
         return
