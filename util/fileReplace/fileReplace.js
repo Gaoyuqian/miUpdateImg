@@ -4,7 +4,24 @@ const {getNativeAddr,getThumbnailAddr} = require('./../../getImgAddr/getImgAddr'
 const {Files} = require('./../../util/fileSystem/Files')
 
 
+function searchFile1(){
+    const replaceREG = /src=(['|"](.*)['|"])\s/g    
+    const http = /http|https/    
+    fileDisplay(__conf['fileFindPath'],'find')
+    getDep().forEach(el=>{
+        // 对于每一个匹配到的文件进行处理
+        const file = new Files(el)
+        const fileContent = file.content        
+        const matchArr = fileContent.match(replaceREG)
+        console.log(matchArr)
+        matchArr&&matchArr.reverse().forEach((el)=>{
+            if(!http.test(el)){
 
+            }
+        })
+    })
+    // 再获取地址的时候只去拿最后的文件名和格式  不考虑路径问题
+}
 function searchFile(){
 
     /*
@@ -16,20 +33,23 @@ function searchFile(){
         不支持同一页面多个相同文件的替换(后续支持)
         第二次替换时 要根据temp来替换  因为替换后的位置会发生变化
     */
-    let replaceREG = /src=(['|"](.*)['|"])\s/g    
+    const replaceREG = /src=(['|"](.*)['|"])\s/g    
+    const http = /http|https/
+
     fileDisplay(__conf['fileFindPath'],'find')    
     getDep().forEach(element => {
         let file = new Files(element) 
         let fileContent = file.content
         let temp = fileContent.split('')
-        fileContent.match(replaceREG).reverse().forEach(el=>{
+        let matchArray = fileContent.match(replaceREG)
+        matchArray&&matchArray.reverse().forEach(el=>{
             const startTem = temp.join('').indexOf(el)
             const startFile = fileContent.indexOf(el)
             const endTem = el.length
             const endFile =startFile+ el.length
-            
-            if(!isComments(fileContent,startFile,endFile)){
-                var addr = getNativeAddr(el.substring(5))
+            if(!http.test(el)&&!isComments(fileContent,startFile,endFile)){
+                console.log(el,11222)
+                var addr = getNativeAddr(el)
                 temp.splice(startTem,endTem,addr?'src="'+addr+'" ':el)   
             }
         })
@@ -37,6 +57,7 @@ function searchFile(){
     });
     
 }
+
 function isComments(str,start,end){
     /*
 
@@ -73,5 +94,5 @@ function isComments(str,start,end){
     return false
 }
 module.exports = {
-    searchFile,isComments
+    searchFile1,isComments,searchFile
 }

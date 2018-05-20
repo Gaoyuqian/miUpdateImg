@@ -51,15 +51,34 @@ function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
         return 
     }
 }
+
+
 function getNativeAddr(filename){
-    const preName = filename.split('.')[0]    
     const index = getRamdomNumber(0,addrArrayDownload.length-1)
-    
-    if(!__conf[preName]){
+    filename = detailSrc(filename)
+    if(!__conf[filename]){
         console.warn('该文件未上传----',filename)
         return
     }
-    return `${addrArrayDownload[index]}${__conf[preName]}/a.jpg`
+    return `${addrArrayDownload[index]}${__conf[filename]}/a.jpg`
+}
+
+
+function detailSrc(srcArr){
+    /*
+    
+        将匹配到的所有路径处理成只有文件名+后缀的形式
+    
+    */
+   const Reg1 = /[a-zA-Z0-9]+(?=[\.]{1}[a-zA-Z]+)/g
+   
+   if(Array.isArray(srcArr)){
+    srcArr = srcArr.map((el)=>{
+        return srcArr.match(Reg1)[0]
+    })
+   }else{
+        return srcArr.match(Reg1)[0]
+   }
 }
 module.exports = {
     getNativeAddr,getThumbnailAddr

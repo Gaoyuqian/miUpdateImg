@@ -3,7 +3,7 @@ const {Files} = require('./util/fileSystem/Files')
 const {fileDisplay,getDep,getFileNameArray} = require('./util/fileDispose/fileDisplay')
 const {path,fs,chalk} = require('./util/main')
 const {getNativeAddr,getThumbnailAddr} = require('./getImgAddr/getImgAddr')
-const {searchFile} = require('./util/fileReplace/fileReplace')
+const {searchFile1,searchFile} = require('./util/fileReplace/fileReplace')
 
 // 准备  读取配置文件
 
