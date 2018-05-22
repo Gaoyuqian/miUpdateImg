@@ -48,12 +48,13 @@ function searchFile(){
             const endTem = el.length
             const endFile =startFile+ el.length
             if(!http.test(el)&&!isComments(fileContent,startFile,endFile)){
-                console.log(el,11222)
                 var addr = getNativeAddr(el)
                 temp.splice(startTem,endTem,addr?'src="'+addr+'" ':el)   
+                // 由于splice所填充进数组的值 只在数组中占一个地址 所以需要重新转化
+                temp = temp.join('').split('') 
             }
         })
-            file.writeMyFileAll(temp.join(''))
+        file.writeMyFileAll(temp.join(''))                    
     });
     
 }
@@ -78,12 +79,15 @@ function isComments(str,start,end){
     // let end = /-->/mg
     let strStart = 0,strEnd = 0,i=0;
     let endLen = 3,startLen = 4,arr = str.match(/<!--/mg);
-    for(let item of arr){
-        let startIndex = str.substring(strEnd).indexOf('<!--')
-        let endIndex = str.substring(strEnd).indexOf('-->');
-        strStart = startIndex+strEnd
-        strEnd += endIndex+endLen
-        pointDep.push({'start':strStart,'end':strEnd})
+    console.log(arr)
+    if(arr){
+        for(let item of arr){
+            let startIndex = str.substring(strEnd).indexOf('<!--')
+            let endIndex = str.substring(strEnd).indexOf('-->');
+            strStart = startIndex+strEnd
+            strEnd += endIndex+endLen
+            pointDep.push({'start':strStart,'end':strEnd})
+        }
     }
     for(let item of pointDep){
         if(start>item.start&&end<item.end){
