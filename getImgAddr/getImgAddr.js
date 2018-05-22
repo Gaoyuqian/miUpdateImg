@@ -1,4 +1,3 @@
-const __conf = require('./../uploadPackage.json')
 
 const addrArrayDownload  = [
     "http://t1.market.mi-img.com/download/",
@@ -56,7 +55,8 @@ function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
 function getNativeAddr(filename){
     const index = getRamdomNumber(0,addrArrayDownload.length-1)
     filename = detailSrc(filename)
-    if(!__conf[filename]){
+    
+    if(!__file.content[filename]){
         console.warn('该文件未上传----',filename)
         return
     }
@@ -70,8 +70,9 @@ function detailSrc(srcArr){
         将匹配到的所有路径处理成只有文件名+后缀的形式
     
     */
-   const Reg1 = /[a-zA-Z0-9]+(?=[\.]{1}[a-zA-Z]+)/g
-   
+   const Reg1 = /[a-zA-Z0-9\u4e00-\u9fa5]+(?=[\.]{1}[a-zA-Z]+)/g
+   console.log(srcArr,srcArr.match(Reg1))
+    
    if(Array.isArray(srcArr)){
     srcArr = srcArr.map((el)=>{
         return srcArr.match(Reg1)[0]

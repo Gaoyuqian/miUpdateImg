@@ -7,6 +7,9 @@ Dep.prototype.get = function(){
 Dep.prototype.set = function(item){
     this.Dep.push(item)
 }
+Dep.prototype.equals = function(item){
+    this.Dep = item
+}
 module.exports = {
     Dep
 }

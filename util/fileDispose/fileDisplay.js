@@ -2,13 +2,21 @@ const {fs,path,chalk} = require('./../main')
 const {isIgnoredFile,getFileMap} = require('./../fileUtil/util')
 const {myFile} = require('./../fileSystem/Files')
 const {Dep} = require('./../fileSystem/depend')
+const {uploadFile} = require('./fileUpload')
+
 
 let fileResult
 
-function beginDisplay(filepath,deep=false,model){
+async function beginDisplay(filepath,deep=false,model){
     const uploadDep = new Dep();
-    fileDisplay(filepath,deep,model,uploadDep)
-    console.log(uploadDep.get())
+    fileDisplay(filepath,uploadDep,deep,model)
+    new Promise((res,rej)=>{
+        uploadDep.get().forEach(el=>{
+            uploadFile(el)
+        })
+    }).then(()=>{
+        console.log('ok')
+    })
     return uploadDep.get()
 }
 
@@ -54,10 +62,6 @@ function fileDisplay(filepath,dep,deep,model){
         }
     })
 }
-
-function getDep(){
-    return Dep
-}
 module.exports ={
-    fileDisplay,addDep,getDep,beginDisplay
+    beginDisplay,fileDisplay
 }

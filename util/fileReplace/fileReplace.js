@@ -3,26 +3,7 @@ const {fileDisplay,getDep} =require('./../fileDispose/fileDisplay.js')
 const {getNativeAddr,getThumbnailAddr} = require('./../../getImgAddr/getImgAddr')
 const {Files} = require('./../../util/fileSystem/Files')
 const {Dep} = require('./../fileSystem/depend')
-
-
-function searchFile1(){
-    const replaceREG = /src=(['|"](.*)['|"])\s/g    
-    const http = /http|https/    
-    fileDisplay(__conf['fileFindPath'],'find')
-    getDep().forEach(el=>{
-        // 对于每一个匹配到的文件进行处理
-        const file = new Files(el)
-        const fileContent = file.content        
-        const matchArr = fileContent.match(replaceREG)
-        console.log(matchArr)
-        matchArr&&matchArr.reverse().forEach((el)=>{
-            if(!http.test(el)){
-
-            }
-        })
-    })
-    // 再获取地址的时候只去拿最后的文件名和格式  不考虑路径问题
-}
+var arr = []
 function searchFile(addr,model='find'){
     const replaceDep = new Dep();
     /*
@@ -30,9 +11,6 @@ function searchFile(addr,model='find'){
         fn:读取将被替换的文件文件 获取src的位置 进行替换
 
         return undef
-        TODO:优化正则 将不会替换http或http开头的文件
-        不支持同一页面多个相同文件的替换(后续支持)
-        第二次替换时 要根据temp来替换  因为替换后的位置会发生变化
     */
     const replaceREG = /src=(['|"](.*)['|"])\s/g    
     const http = /http|https/
@@ -43,25 +21,25 @@ function searchFile(addr,model='find'){
         let fileContent = file.content
         let temp = fileContent.split('')
         let matchArray = fileContent.match(replaceREG)
-        
+        const commentsDep = new Dep();
         matchArray&&matchArray.reverse().forEach(el=>{
-            const startTem = temp.join('').indexOf(el)
-            const startFile = fileContent.indexOf(el)
-            const endTem = el.length
-            const endFile =startFile+ el.length
-            if(!http.test(el)&&!isComments(fileContent,startFile,endFile)){
-                var addr = getNativeAddr(el)
-                temp.splice(startTem,endTem,addr?'src="'+addr+'" ':el)   
-                // 由于splice所填充进数组的值 只在数组中占一个地址 所以需要重新转化
-                temp = temp.join('').split('') 
+            let startTem = temp.join('').indexOf(el)
+            let endTem = el.length
+            if(!http.test(el)){
+                if(!isComments(temp.join(''),startTem,startTem+endTem,commentsDep)){
+                    var addr = getNativeAddr(el)
+                    temp.splice(startTem,endTem,addr?'src="'+addr+'" ':el)   
+                    // 由于splice所填充进数组的值 只在数组中占一个地址 所以需要重新转化
+                    temp = temp.join('').split('') 
+                }
             }
         })
-        file.writeMyFileAll(temp.join(''))                    
+        file.writeMyFileAll(temp.join(''))         
     });
     
 }
 
-function isComments(str,start,end){
+function isComments(str,start,end,dep){
     /*
 
         str:文件内容
@@ -77,28 +55,30 @@ function isComments(str,start,end){
 
     // 目前只支持 <!-- * -->格式 后续会支持//*格式
     let pointDep = [];
-    // let start = /<!--/mg
-    // let end = /-->/mg
     let strStart = 0,strEnd = 0,i=0;
-    let endLen = 3,startLen = 4,arr = str.match(/<!--/mg);
-    console.log(arr)
-    if(arr){
-        for(let item of arr){
+    let endLen = 3,startLen = 4;
+    
+    if(dep.get()&&dep.get().length===0){
+        dep.equals(str.match(/<!--/mg))
+    }
+    if(dep.get()){
+        for(let item of dep.get()){
             let startIndex = str.substring(strEnd).indexOf('<!--')
             let endIndex = str.substring(strEnd).indexOf('-->');
             strStart = startIndex+strEnd
             strEnd += endIndex+endLen
             pointDep.push({'start':strStart,'end':strEnd})
         }
-    }
-    for(let item of pointDep){
-        if(start>item.start&&end<item.end){
-            // console.log(str.substring(start,end),'被忽略')
-            return true
+        for(let item of pointDep){
+            if(start>item.start&&end<item.end){
+                // console.log(str.substring(start,end),'被忽略')
+                arr.push(str.substring(start,end))
+                return true
+            }
         }
     }
     return false
 }
 module.exports = {
-    searchFile1,isComments,searchFile
+    isComments,searchFile
 }
