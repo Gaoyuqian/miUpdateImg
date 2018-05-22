@@ -10,7 +10,8 @@ const {searchFile1,searchFile} = require('./util/fileReplace/fileReplace')
 function start(deep=false){
     global.__conf = new Files('./miuiFile.json').content;    
     global.__file = new Files(__conf['output'])
-    searchFile()
+    searchFile(__conf['fileFindPath'])
+
 
     // fileDisplay(__conf['filepath'],deep)
     // getDep().forEach(element => {

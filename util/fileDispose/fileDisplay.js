@@ -1,21 +1,26 @@
 const {fs,path,chalk} = require('./../main')
 const {isIgnoredFile,getFileMap} = require('./../fileUtil/util')
 const {myFile} = require('./../fileSystem/Files')
-
-
+const {Dep} = require('./../fileSystem/depend')
 
 let fileResult
-let Dep = []
 
-function fileDisplay(filepath,model,deep=false){
+function beginDisplay(filepath,deep=false,model){
+    const uploadDep = new Dep();
+    fileDisplay(filepath,deep,model,uploadDep)
+    console.log(uploadDep.get())
+    return uploadDep.get()
+}
+
+function fileDisplay(filepath,dep,deep,model){
     // deep 模式 会覆盖之前上传的所有同名文件
     if(!fileResult){
         fileResult = __file.content
     }
     const files = fs.readdirSync(filepath)
-    addDep(files,filepath,model,deep)  
+    addDep(files,filepath,dep,deep,model)  
  }
- function addDep(fileArray,filepath,model,deep){
+ function addDep(fileArray,filepath,Dep,deep,model){
     fileArray.forEach(filename =>{
         if(fileResult[filename.split('.')[0]]&&!deep){
             // console.log(chalk.yellow('该文件已在过去上传成功，如需覆盖原文件，请使用deep模式-------')+filename)            
@@ -30,20 +35,20 @@ function fileDisplay(filepath,model,deep=false){
                     return              
                 }
                 if(model === 'find'){
-                    Dep.push(filedir)
+                    Dep.set(filedir)
                 }else{
                     if(getFileMap(filename)){
-                        Dep.push(filedir)                            
+                        Dep.set(filedir)   
                     }else{
                     //  console.log(chalk.yellow('不支持该文件格式,如需支持,请在映射中添加该文件对应的参数值-------')+filedir)   
                     }
                 }
-            }else if(isDir){
+            }else if(isDir){                
                 if(isIgnoredFile(filedir,true)==='all'){
                     // console.log(chalk.yellow('该路径已被忽略-------')+filedir)                    
                     return
                 }else{
-                    fileDisplay(filedir,model,deep)                    
+                    fileDisplay(filedir,Dep,deep,model)                    
                 }
             }
         }
@@ -51,9 +56,8 @@ function fileDisplay(filepath,model,deep=false){
 }
 
 function getDep(){
-    console.log(Dep)
     return Dep
 }
 module.exports ={
-    fileDisplay,addDep,getDep
+    fileDisplay,addDep,getDep,beginDisplay
 }

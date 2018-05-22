@@ -2,6 +2,7 @@ const {fs,path} =require('./../main.js')
 const {fileDisplay,getDep} =require('./../fileDispose/fileDisplay.js')
 const {getNativeAddr,getThumbnailAddr} = require('./../../getImgAddr/getImgAddr')
 const {Files} = require('./../../util/fileSystem/Files')
+const {Dep} = require('./../fileSystem/depend')
 
 
 function searchFile1(){
@@ -22,8 +23,8 @@ function searchFile1(){
     })
     // 再获取地址的时候只去拿最后的文件名和格式  不考虑路径问题
 }
-function searchFile(){
-
+function searchFile(addr,model='find'){
+    const replaceDep = new Dep();
     /*
     
         fn:读取将被替换的文件文件 获取src的位置 进行替换
@@ -35,13 +36,14 @@ function searchFile(){
     */
     const replaceREG = /src=(['|"](.*)['|"])\s/g    
     const http = /http|https/
-
-    fileDisplay(__conf['fileFindPath'],'find')    
-    getDep().forEach(element => {
+    fileDisplay(addr,replaceDep,false,model)
+    const dep = replaceDep.get();
+    dep.forEach(element => {
         let file = new Files(element) 
         let fileContent = file.content
         let temp = fileContent.split('')
         let matchArray = fileContent.match(replaceREG)
+        
         matchArray&&matchArray.reverse().forEach(el=>{
             const startTem = temp.join('').indexOf(el)
             const startFile = fileContent.indexOf(el)
