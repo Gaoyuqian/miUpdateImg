@@ -12,7 +12,9 @@ function searchFile(addr,model='find'){
 
         return undef
     */   
-    const replaceREG = /src=(['|"](.*)['|"])\s/g    
+    // const replaceREG = /src=(['|"](.*)['|"])\s/g    
+    const replaceREG = /[^\:]src=(['|"](.*)['|"])\s/g    
+
     const http = /http|https/
     fileDisplay(addr,replaceDep,false,model)
     const dep = replaceDep.get();
@@ -22,13 +24,14 @@ function searchFile(addr,model='find'){
         let temp = fileContent.split('')
         let matchArray = fileContent.match(replaceREG)
         const commentsDep = new Dep();
+        console.log(matchArray)
         matchArray&&matchArray.reverse().forEach(el=>{
             let startTem = temp.join('').indexOf(el)
             let endTem = el.length
             if(!http.test(el)){
                 if(!isComments(temp.join(''),startTem,startTem+endTem,commentsDep)){
                     var addr = getNativeAddr(el)
-                    temp.splice(startTem,endTem,addr?'src="'+addr+'" ':el)   
+                    temp.splice(startTem,endTem,addr?' src="'+addr+'" ':el)   
                     // 由于splice所填充进数组的值 只在数组中占一个地址 所以需要重新转化
                     temp = temp.join('').split('') 
                 }
@@ -71,7 +74,7 @@ function isComments(str,start,end,dep){
         }
         for(let item of pointDep){
             if(start>item.start&&end<item.end){
-                // console.log(str.substring(start,end),'被忽略')
+                console.log(start,end,str.substring(start,end),'被忽略')
                 arr.push(str.substring(start,end))
                 return true
             }

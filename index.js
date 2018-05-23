@@ -28,6 +28,8 @@ function start(deep=false){
             __file.writeMyFile(JSON.stringify(uploadFileObj),__file.file)                    
         }
         searchFile(__conf['fileFindPath'])        
+    }).catch((e)=>{
+        console.log(e)
     })
 }
 
