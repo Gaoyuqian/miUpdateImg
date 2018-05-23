@@ -2,7 +2,7 @@ const {fs,chalk,path} = require('../main')
 
 const __default = {
         'miuiFile.json':{
-            "fileUpdatePath": "./test/static",
+            "fileUpdatePath": "./static",
             "output": "uploadPackage.json",
             "ignored": "./ignored",
             "httpsOption": {
@@ -11,7 +11,7 @@ const __default = {
                 "path": "/upload?channel=NccFgber",
                 "method": "POST"
             },
-            "fileFindPath": "./test/page"
+            "fileFindPath": "./src"
         },
         'uploadPackage.json':{}
     }
@@ -27,28 +27,12 @@ class Files {
         if(this.file){
             const temp = this.file.split('/')
             const name = temp[temp.length-1]
-            console.log(__default[name])
             fs.writeFileSync(this.file,JSON.stringify(__default[name]));            
         }
     }
     readMyFile(){
         if(!this.isExists()){
-            // console.log(chalk.red('未创建配置文件，正在创建默认的配置文件'))
-            // const __default = {
-            //     "fileUpdatePath": "./test/static",
-            //     "output": "uploadPackage.json",
-            //     "ignored": "./ignored",
-            //     "httpsOption": {
-            //         "hostname": "file.market.miui.srv",
-            //         "port": 8756,
-            //         "path": "/upload?channel=NccFgber",
-            //         "method": "POST"
-            //     },
-            //     "fileFindPath": "./test/page"
-            // }
-            // fs.writeFileSync(this.file,JSON.stringify(__default));
             this.createFile()
-            // console.log(chalk.red('配置文件创建完毕'))
         }
         try{
             return JSON.parse(fs.readFileSync(this.file,'utf-8'))            
@@ -65,10 +49,11 @@ class Files {
 
         */
         if(typeof content === 'object'){
-            fs.writeFileSync(this.file,JSON.stringify(content))            
+            fs.writeFileSync(this.file,JSON.stringify(content))   
         }else{
-            fs.writeFileSync(this.file,content)                        
+            fs.writeFileSync(this.file,content)  
         }
+        this.content = this.readMyFile()
     }
 
     writeMyFile(obj,sourceName){
@@ -90,6 +75,7 @@ class Files {
         }
         fs.writeFileSync(this.file,JSON.stringify(this.content))
         console.log(sourceName,'--------上传成功')
+        this.content = this.readMyFile()        
     }
 }
 module.exports = {

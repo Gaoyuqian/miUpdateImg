@@ -1,5 +1,5 @@
 const {fs,path} =require('./../main.js')
-const {fileDisplay,getDep} =require('./../fileDispose/fileDisplay.js')
+const {fileDisplay} =require('./../fileDispose/fileDisplay.js')
 const {getNativeAddr,getThumbnailAddr} = require('./../../getImgAddr/getImgAddr')
 const {Files} = require('./../../util/fileSystem/Files')
 const {Dep} = require('./../fileSystem/depend')
@@ -11,7 +11,7 @@ function searchFile(addr,model='find'){
         fn:读取将被替换的文件文件 获取src的位置 进行替换
 
         return undef
-    */
+    */   
     const replaceREG = /src=(['|"](.*)['|"])\s/g    
     const http = /http|https/
     fileDisplay(addr,replaceDep,false,model)

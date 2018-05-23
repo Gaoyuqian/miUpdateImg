@@ -32,7 +32,8 @@ function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
     let addrPre 
     const preName = filename.split('.')[0]
     const lastName = filename.split('.')[1]
-    if(!__conf[preName]){
+    const content = __file.content    
+    if(!content[preName]){
         console.warn('该文件未上传----',filename)
         return 
     }
@@ -44,7 +45,7 @@ function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
     try{
         const fileParam = typeof option === 'string'?option:option.param
         const sub = option.type?option.type:lastName?lastName:'jpeg'
-        return `${addrPre}${sub}/${fileParam}/${__conf[preName]}`
+        return `${addrPre}${sub}/${fileParam}/${content[preName]}`
     }catch(e){
         console.warn('必须设置裁剪参数,或使用getNativeAddr获取地址')
         return 
@@ -55,12 +56,14 @@ function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
 function getNativeAddr(filename){
     const index = getRamdomNumber(0,addrArrayDownload.length-1)
     filename = detailSrc(filename)
+    const content = __file.content
     
-    if(!__file.content[filename]){
+
+    if(!content[filename]){
         console.warn('该文件未上传----',filename)
         return
     }
-    return `${addrArrayDownload[index]}${__conf[filename]}/a.jpg`
+    return `${addrArrayDownload[index]}${content[filename]}/a.jpg`
 }
 
 
@@ -71,14 +74,12 @@ function detailSrc(srcArr){
     
     */
    const Reg1 = /[a-zA-Z0-9\u4e00-\u9fa5]+(?=[\.]{1}[a-zA-Z]+)/g
-   console.log(srcArr,srcArr.match(Reg1))
-    
    if(Array.isArray(srcArr)){
     srcArr = srcArr.map((el)=>{
-        return srcArr.match(Reg1)[0]
+        return srcArr.match(Reg1)[0]?srcArr.match(Reg1)[0]:srcArr
     })
    }else{
-        return srcArr.match(Reg1)[0]
+        return srcArr.match(Reg1)[0]?srcArr.match(Reg1)[0]:srcArr
    }
 }
 module.exports = {

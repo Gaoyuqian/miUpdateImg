@@ -1,25 +1,8 @@
 const {fs,path,chalk} = require('./../main')
 const {isIgnoredFile,getFileMap} = require('./../fileUtil/util')
-const {myFile} = require('./../fileSystem/Files')
-const {Dep} = require('./../fileSystem/depend')
-const {uploadFile} = require('./fileUpload')
 
 
 let fileResult
-
-async function beginDisplay(filepath,deep=false,model){
-    const uploadDep = new Dep();
-    fileDisplay(filepath,uploadDep,deep,model)
-    new Promise((res,rej)=>{
-        uploadDep.get().forEach(el=>{
-            uploadFile(el)
-        })
-    }).then(()=>{
-        console.log('ok')
-    })
-    return uploadDep.get()
-}
-
 function fileDisplay(filepath,dep,deep,model){
     // deep 模式 会覆盖之前上传的所有同名文件
     if(!fileResult){
@@ -63,5 +46,5 @@ function fileDisplay(filepath,dep,deep,model){
     })
 }
 module.exports ={
-    beginDisplay,fileDisplay
+    fileDisplay
 }

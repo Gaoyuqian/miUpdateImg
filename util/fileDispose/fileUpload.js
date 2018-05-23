@@ -3,21 +3,26 @@ const {getFileMap} = require('../fileUtil/util')
 let uploadFileObj = {}
 // 写入的时候 先读取配置文件中的对象然后
 // 对不同的地方进行修改 对新的对象进行添加 对旧属性保持不变
-async function uploadFile (filepath){
+async function uploadFile (filepath,deep){
+    return new Promise((resolve,rej)=>{
         const options =__conf['httpsOption']
-        let serverAdd = ''
         const temp = filepath.split('/')
         const filename = temp[temp.length-1].split('.')[0]
         const boundaryKey = '----' + new Date().getTime();  
-        let data = fs.readFileSync(filepath);
         const req = http.request(options,(res)=>{
             res.setEncoding('utf8');
             res.on('data',(chunk)=>{
                 const  writeContext = JSON.parse(chunk)[0].exloc
                 uploadFileObj[filename] = writeContext;
-                __file.writeMyFile(JSON.stringify(uploadFileObj),filename)
+                resolve()
             })
         })
+        /*
+        
+            方案1  监听请求数是否与dep中的相同
+            订阅者模式
+        
+        */
 
         let payload = '\r\n------' + boundaryKey + '\r\n' +
         'Content-Disposition: form-data; name="file"; filename="'+filename+'"\r\n' +
@@ -29,7 +34,8 @@ async function uploadFile (filepath){
         req.write(payload);
         req.write(fileSt);
         req.end(enddata)
-    }
+    })
+}
 module.exports = {
-    uploadFile
+    uploadFile,uploadFileObj
 }
