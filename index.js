@@ -20,7 +20,7 @@ function start(deep=false){
     uploadDep.get().forEach(el=>{
         PromiseArr.set(uploadFile(el,deep))
     })
-    Promise.all(PromiseArr.get()).then((obj)=>{
+    Promise.all(PromiseArr.get()).then(()=>{
         // console.log(uploadDep)
         if(deep){
             __file.writeMyFileAll(JSON.stringify(uploadFileObj),__file.file)                    

@@ -1,6 +1,6 @@
 {
-  "name": "miuibatchupload",
-  "version": "1.5.0",
+  "name": "@mipay/batch",
+  "version": "1.5.1",
   "description": "batchuploadimage",
   "main": "index.js",
   "scripts": {

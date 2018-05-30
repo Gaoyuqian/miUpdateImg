@@ -3,8 +3,22 @@
 npm install miuibatchupload
 ```
 
+# AddDependencies 
+
+```
+...
+},
+  "dependencies": {
+    "@mipay/batch": "^1.5.1"
+  }
+...
+
+npm install
+```
+
 # APi
 ```
+
 getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false) //获取按尺寸裁切图片
 
 option={
@@ -39,7 +53,7 @@ tips:目前版本由于运行在前端工程中,所有都需要手动创建该�
 在dev-server下 引入此包
 ```
 
-const miui = require('miuibatchupload')  
+const miui = require('PACKNAME')  
 miui.start()
 npm run dev
 
@@ -98,5 +112,5 @@ Vue.prototype.$getNativeAddr = getNativeAddr
 
 ### v1.5.0
 #### 改写http请求为同步请求 所有资源上传结束之后才开始替换
-#### 目前支持两种替换方式分别为自动和手动。
+#### 目前支持自动和手动两种替换方式
 #### 注释问题需要解决（将每个匹配到的字符块均需要一个自己在文档中的位置）

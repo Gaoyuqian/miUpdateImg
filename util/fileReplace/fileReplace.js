@@ -1,4 +1,3 @@
-const {fs,path} =require('./../main.js')
 const {fileDisplay} =require('./../fileDispose/fileDisplay.js')
 const {getNativeAddr,getThumbnailAddr} = require('./../../getImgAddr/getImgAddr')
 const {Files} = require('./../../util/fileSystem/Files')
