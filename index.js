@@ -34,7 +34,7 @@ function start(deep=false){
 }
 
 
-start(true)
+start()
 module.exports = {
     getNativeAddr,getThumbnailAddr,start
 }

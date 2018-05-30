@@ -74,7 +74,6 @@ class Files {
             }
         }
         fs.writeFileSync(this.file,JSON.stringify(this.content))
-        console.log(sourceName,'--------上传成功')
         this.content = this.readMyFile()        
     }
 }

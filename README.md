@@ -1,6 +1,8 @@
 # Install
 ```
-npm install miuibatchupload
+npm install miuibatchupload // 1.5.0
+OR
+cnpm install @mipay/batch 
 ```
 
 # AddDependencies 
@@ -9,7 +11,7 @@ npm install miuibatchupload
 ...
 },
   "dependencies": {
-    "@mipay/batch": "^1.5.1"
+    "@mipay/batch": "^1.5.3"
   }
 ...
 
@@ -108,9 +110,13 @@ Vue.prototype.$getNativeAddr = getNativeAddr
 
 #### 优化忽略逻辑 将不会替换http或https开头的路径
 #### 支持同一页面下多个相同的路径替换
-#### 不会替换任何位于注释中的图片资源（目前仅支持<!-- * -->格式的注释）
+#### 不会替换任何位于注释中的图片资源（目前仅支持template中的注释）
 
 ### v1.5.0
 #### 改写http请求为同步请求 所有资源上传结束之后才开始替换
 #### 目前支持自动和手动两种替换方式
+
+### TODO
+#### 将配置检测和start方法分开，方便修改配置文件
 #### 注释问题需要解决（将每个匹配到的字符块均需要一个自己在文档中的位置）
+#### 完善非deep模式的功能
