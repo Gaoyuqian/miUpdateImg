@@ -12,28 +12,27 @@ const {Dep} = require('./util/fileSystem/depend')
 const uploadDep = new Dep();    
 const PromiseArr = new Dep();    
 
-
-function start(deep=false){
-    global.__conf = new Files('./miuiFile.json').content;    
-    global.__file = new Files(__conf['output'])
-    fileDisplay(__conf['fileUpdatePath'],uploadDep,deep)
+function start(param={}){
+    const config = param.config||{}
+    const deep = param.deep||false  
+    global.__config = config
+    global.__conf = new Files('./miuiFile.json') 
+    global.__file = new Files(__conf.content['output'])
+    fileDisplay(__conf.content['fileUpdatePath'],uploadDep,deep)
     uploadDep.get().forEach(el=>{
         PromiseArr.set(uploadFile(el,deep))
     })
     Promise.all(PromiseArr.get()).then(()=>{
-        // console.log(uploadDep)
         if(deep){
             __file.writeMyFileAll(JSON.stringify(uploadFileObj),__file.file)                    
         }else{
             __file.writeMyFile(JSON.stringify(uploadFileObj),__file.file)                    
         }
-        searchFile(__conf['fileFindPath'])        
+        searchFile(__conf.content['fileFindPath'])        
     }).catch((e)=>{
         console.log(e)
-    })
+    }) 
 }
-
-
 start()
 module.exports = {
     getNativeAddr,getThumbnailAddr,start

@@ -6,7 +6,7 @@ let fileResult
 function fileDisplay(filepath,dep,deep,model){
     // deep 模式 会覆盖之前上传的所有同名文件
     if(!fileResult){
-        fileResult = __file.content
+        fileResult = __file.readMyFile()
     }
     const files = fs.readdirSync(filepath)
     addDep(files,filepath,dep,deep,model)  

@@ -32,7 +32,7 @@ function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
     let addrPre 
     const preName = filename.split('.')[0]
     const lastName = filename.split('.')[1]
-    const content = __file.content    
+    const content = __file.readMyFile()    
     if(!content[preName]){
         console.warn('该文件未上传----',filename)
         return 
@@ -56,7 +56,7 @@ function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
 function getNativeAddr(filename){
     const index = getRamdomNumber(0,addrArrayDownload.length-1)
     filename = detailSrc(filename)
-    const content = __file.content
+    const content = __file.readMyFile()
     
 
     if(!content[filename]){

@@ -12,7 +12,7 @@ module.exports = {
             tip: 被标记为可忽略文件的文件夹下的所有文件均不会被添加依赖
         */
         try{
-            const res = fs.readFileSync(__conf['ignored'],'utf-8')
+            const res = fs.readFileSync(__conf.content['ignored'],'utf-8')
             if(res!=='undefined'&&res!==''){
                 const resource =res.split('\n')
                 const willIgnoreArray = resource.map(el=>{
@@ -32,7 +32,7 @@ module.exports = {
             }
             return 'none'            
         }catch(e){
-            fs.writeFileSync(__conf['ignored'],'')
+            fs.writeFileSync(__conf.content['ignored'],'')
         }
     },
     getFileMap:(fileName)=>{ // 选择请求体中的type字段 

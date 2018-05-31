@@ -1,5 +1,5 @@
 const {fs,chalk,path} = require('../main')
-
+const config  = require('../global/global')
 const __default = {
         'miuiFile.json':{
             "fileUpdatePath": "./static",
@@ -16,24 +16,30 @@ const __default = {
         'uploadPackage.json':{}
     }
 class Files {
-    constructor(path){
+    constructor(path,content){
         this.file = path
-        this.content = this.readMyFile(path)                
+        this.isExists = this.isExists()
+        if (!this.isExists) {
+          this.createFile()
+        }
+        this.content = this.readMyFile()        
     };
+    
     isExists(){
         return fs.existsSync(this.file)
     }
     createFile(content){
         if(this.file){
-            const temp = this.file.split('/')
-            const name = temp[temp.length-1]
-            fs.writeFileSync(this.file,JSON.stringify(__default[name]));            
-        }
+          const temp = this.file.split('/')
+          const name = temp[temp.length-1]
+          // console.log(global.__config)
+          fs.writeFileSync(this.file,JSON.stringify(global.__config[name]||config.__config[name]));
+      }
     }
     readMyFile(){
-        if(!this.isExists()){
-            this.createFile()
-        }
+        // if(!this.isExists()){
+        //     this.createFile()
+        // }
         try{
             return JSON.parse(fs.readFileSync(this.file,'utf-8'))            
         }catch(e){
@@ -53,10 +59,10 @@ class Files {
         }else{
             fs.writeFileSync(this.file,content)  
         }
-        this.content = this.readMyFile()
     }
 
     writeMyFile(obj,sourceName){
+      this.content = this.readMyFile()
         /*
 
             替换写入
@@ -74,7 +80,6 @@ class Files {
             }
         }
         fs.writeFileSync(this.file,JSON.stringify(this.content))
-        this.content = this.readMyFile()        
     }
 }
 module.exports = {
