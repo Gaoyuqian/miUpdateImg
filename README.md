@@ -47,23 +47,47 @@ getNativeAddr(filename) //获取原图
 
 ## web
 
--------当前版本暂不支持web端获取图片地址-------
-
 项目根目录下创建uploadPackage.json文件 内容为{}
 tips:目前版本由于运行在前端工程中,所有都需要手动创建该文件,若之后需要运行于node环境下 则需要更改配置文件中output的路径信息，并同步到index.js文件中,改写getImgAdd文件中的方法使其路径一致
 
 在dev-server下 引入此包
 ```
 
-const miui = require('PACKNAME')  
+const miui = require('PACKAGENAME')  
 miui.start()
 npm run dev
 
 ```
 如果想覆盖原有文件重新上传 请使用deep模式重新上传所有待上传文件(推荐始终使用deep模式)
+
+
+## config
+
 ```
 
-miui.start(deep)
+// start接受一个Object类型的参数，其可选的key包含
+// deep: 开启deep模式 全量上传而非增量上传，如同名文件变更文件内容则必须使用deep模式上传
+// config : 修改默认的配置参数 默认的配置参数如下
+
+/*
+
+'miuiFile.json':{
+        "fileUpdatePath": "./static", // 待上传文件目录
+        "output": "uploadPackage.json", // 待上传文件地址输出路径
+        "ignored": "./ignored", //可选的忽略文件
+        "httpsOption": {
+            "hostname": "",// 域名
+            "port": , // 端口
+            "path": "", //路径
+            "method":'POST'
+        },
+        "fileFindPath": "./src"  // 待替换文件的路径
+    },
+    'uploadPackage.json':{}
+
+*/
+
+// 禁止修改key的值以避免不必要的错误，config的值将全部覆盖该配置文件
 
 ```
 注册全局方法
@@ -116,7 +140,13 @@ Vue.prototype.$getNativeAddr = getNativeAddr
 #### 改写http请求为同步请求 所有资源上传结束之后才开始替换
 #### 目前支持自动和手动两种替换方式
 
+
+### v1.5.4
+#### 现在可以修改默认的配置文件了
+#### deep模式也可以像期望那样被使用
+#### 如果不需要注释文件中的某个路径，现在可以在该路径前 添加注释内容为该路径
+#### 重新支持web环境下手动获取文件路径
+
 ### TODO
-#### 将配置检测和start方法分开，方便修改配置文件
-#### 注释问题需要解决（将每个匹配到的字符块均需要一个自己在文档中的位置）
-#### 完善非deep模式的功能
+#### 注释问题需要解决（将每个匹配到的字符块均需要一个自己在文档中的位置）（使用正反多维查找）
+#### 支持多个待上传文件路径（多入口关系）
