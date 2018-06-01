@@ -1,86 +1,105 @@
-const {fileDisplay} =require('./../fileDispose/fileDisplay.js')
-const {getNativeAddr,getThumbnailAddr} = require('./../../getImgAddr/getImgAddr')
-const {Files} = require('./../../util/fileSystem/Files')
-const {Dep} = require('./../fileSystem/depend')
-var arr = []
-function searchFile(addr,model='find'){
-    const replaceDep = new Dep();
-    /*
-    
-        fn:读取将被替换的文件文件 获取src的位置 进行替换
+const { fileDisplay } = require('./../fileDispose/fileDisplay.js')
+const {
+  getNativeAddr,
+  getThumbnailAddr
+} = require('./../../getImgAddr/getImgAddr')
+const { Files } = require('./../../util/fileSystem/Files')
+const { Dep } = require('./../fileSystem/depend')
 
-        return undef
-    */   
-    // const replaceREG = /src=(['|"](.*)['|"])\s/g    
-    const replaceREG = /[^\:]src=(['|"](.*)['|"])\s/g    
-
-    const http = /http|https/
-    fileDisplay(addr,replaceDep,false,model)
-    const dep = replaceDep.get();
-    dep.forEach(element => {
-        let file = new Files(element) 
-        let fileContent = file.readMyFile()
-        let temp = fileContent.split('')
-        let matchArray = fileContent.match(replaceREG)
-        const commentsDep = new Dep();
-        console.log(matchArray)
-        matchArray&&matchArray.reverse().forEach(el=>{
-            let startTem = temp.join('').indexOf(el)
-            let endTem = el.length
-            if(!http.test(el)){
-                if(!isComments(temp.join(''),startTem,startTem+endTem,commentsDep)){
-                    var addr = getNativeAddr(el)
-                    temp.splice(startTem,endTem,addr?' src="'+addr+'" ':el)   
-                    // 由于splice所填充进数组的值 只在数组中占一个地址 所以需要重新转化
-                    temp = temp.join('').split('') 
-                }
-            }
-        })
-        file.writeMyFileAll(temp.join(''))         
-    });
-    
+//  需要先分块获取 然后判断位置是在某个模块里
+function searchFile(addr, model = 'find') {
+  const replaceDep = new Dep()
+  const replaceREG = /[^\:]src=(['|"](.*)['|"])\s/g
+  fileDisplay(addr, replaceDep, false, model)
+  const dep = replaceDep.get()
+  dep.forEach(element => {
+    const file = new Files(element)
+    const fileContent = file.readMyFile()
+    const temp = fileContent.split('')
+    const matchArray = fileContent.match(replaceREG)
+    const commentsDep = new Dep()
+    const pointDep = getCommentsDep(fileContent, commentsDep)
+    file.writeMyFileAll(
+      findMatch(temp.join(''), commentsDep, temp, matchArray, pointDep)
+    )
+  })
 }
 
-function isComments(str,start,end,dep){
-    /*
-
-        str:文件内容
-        以文件为基准
-        start:截取起始点
-        end:截取结束点
-        
-        fn:判断所截取的长度是否为注释内容
-
-        return true OR false
-
-    */
-
-    // 目前只支持 <!-- * -->格式 后续会支持//*格式
-    let pointDep = [];
-    let strStart = 0,strEnd = 0,i=0;
-    let endLen = 3,startLen = 4;
-    
-    if(dep.get()&&dep.get().length===0){
-        dep.equals(str.match(/<!--/mg))
-    }
-    if(dep.get()){
-        for(let item of dep.get()){
-            let startIndex = str.substring(strEnd).indexOf('<!--')
-            let endIndex = str.substring(strEnd).indexOf('-->');
-            strStart = startIndex+strEnd
-            strEnd += endIndex+endLen
-            pointDep.push({'start':strStart,'end':strEnd})
+function findMatch(str, commentsDep, strArr, matchArray, pointDep) {
+  const http = /http\:|https\:/
+  const matchDep = []
+  let start = 0,
+    end = 0
+  matchArray &&
+    matchArray.forEach(el => {
+      const elLength = el.length
+      start = str.indexOf(el)
+      for (let point of matchDep) {
+        if (point.name == el) {
+          start = str.indexOf(el, point.end)
         }
-        for(let item of pointDep){
-            if(start>item.start&&end<item.end){
-                console.log(start,end,str.substring(start,end),'被忽略')
-                arr.push(str.substring(start,end))
-                return true
-            }
-        }
+      }
+      if (matchDep.length == 0) {
+        start = str.indexOf(el)
+      }
+      end = start + elLength
+      const isCom = isComments(start, end, commentsDep, pointDep)
+      matchDep.push({
+        name: el,
+        start: start,
+        end: end,
+        isCom: isCom,
+        elLength: elLength
+      })
+    })
+  for (let item of matchDep.reverse()) {
+    if (!http.test(item.name) && !item.isCom) {
+      const addr = getNativeAddr(item.name)
+      strArr.splice(
+        item.start,
+        item.elLength,
+        addr ? ' src="' + addr + '" ' : item.name
+      )
     }
-    return false
+  }
+  return strArr.join('')
 }
+
+function getCommentsDep(str, dep) {
+  const pointDep = []
+  let strStart = 0,
+    strEnd = 0
+  const endLen = 3,
+    startLen = 4
+  if (dep.get() && dep.get().length === 0) {
+    dep.equals(str.match(/<!--/gm))
+  }
+  if (dep.get()) {
+    for (let item of dep.get()) {
+      const startIndex = str.substring(strEnd).indexOf('<!--')
+      const endIndex = str.substring(strEnd).indexOf('-->')
+      strStart = startIndex + strEnd
+      strEnd += endIndex + endLen
+      pointDep.push({
+        start: strStart,
+        end: strEnd
+      })
+    }
+  }
+  return pointDep
+}
+
+function isComments(start, end, dep, pointDep) {
+  if (dep.get()) {
+    for (let item of pointDep) {
+      if (start > item.start && end < item.end) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 module.exports = {
-    isComments,searchFile
+  searchFile
 }
