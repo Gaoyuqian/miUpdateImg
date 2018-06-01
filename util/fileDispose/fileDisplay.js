@@ -8,6 +8,13 @@ function fileDisplay(filepath,dep,deep,model){
     if(!fileResult){
         fileResult = __file.readMyFile()
     }
+    if(typeof filepath === 'object'){
+      filepath.forEach(el=>{
+        const files = fs.readdirSync(el)
+        addDep(files,el,dep,deep,model)  
+      })
+      return 
+    }
     const files = fs.readdirSync(filepath)
     addDep(files,filepath,dep,deep,model)  
  }

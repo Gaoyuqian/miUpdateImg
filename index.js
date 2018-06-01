@@ -20,6 +20,7 @@ function start(param={}){
     global.__file = new Files(__conf.content['output'])
     fileDisplay(__conf.content['fileUpdatePath'],uploadDep,deep)
     uploadDep.get().forEach(el=>{
+      console.log(el)
         PromiseArr.set(uploadFile(el,deep))
     })
     Promise.all(PromiseArr.get()).then(()=>{
