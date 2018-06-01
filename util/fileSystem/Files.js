@@ -32,14 +32,10 @@ class Files {
         if(this.file){
           const temp = this.file.split('/')
           const name = temp[temp.length-1]
-          // console.log(global.__config)
           fs.writeFileSync(this.file,JSON.stringify(global.__config[name]||config.__config[name]));
       }
     }
     readMyFile(){
-        // if(!this.isExists()){
-        //     this.createFile()
-        // }
         try{
             return JSON.parse(fs.readFileSync(this.file,'utf-8'))            
         }catch(e){
