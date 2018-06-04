@@ -33,7 +33,7 @@ function start(param={}){
         console.log(e)
     }) 
 }
-// start({deep:true})
+start({deep:true})
 module.exports = {
     getNativeAddr,getThumbnailAddr,start
 }

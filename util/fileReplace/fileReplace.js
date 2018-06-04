@@ -20,7 +20,7 @@ function searchFile(addr, model = 'find') {
     const commentsDep = new Dep()
     const pointDep = getCommentsDep(fileContent, commentsDep)
     file.writeMyFileAll(
-      findMatch(temp.join(''), commentsDep, temp, matchArray, pointDep)
+      findMatch(fileContent, commentsDep, temp, matchArray, pointDep)
     )
   })
 }
@@ -67,10 +67,8 @@ function findMatch(str, commentsDep, strArr, matchArray, pointDep) {
 
 function getCommentsDep(str, dep) {
   const pointDep = []
-  let strStart = 0,
-    strEnd = 0
-  const endLen = 3,
-    startLen = 4
+  let strStart = 0,strEnd = 0
+  const endLen = 3,startLen = 4
   if (dep.get() && dep.get().length === 0) {
     dep.equals(str.match(/<!--/gm))
   }
