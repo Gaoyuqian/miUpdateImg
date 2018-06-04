@@ -33,7 +33,10 @@ function fileDisplay(filepath,dep,deep,model){
                     return              
                 }
                 if(model === 'find'){
-                    Dep.set(filedir)
+                  // find模式下支持文件后缀检测 支持.vue文件和.html文件格式 使用正则匹配
+                  if(isVueOrHtml(filedir)){
+                    Dep.set(filedir) 
+                  }
                 }else{
                     if(getFileMap(filename)){
                         Dep.set(filedir)   
@@ -52,6 +55,10 @@ function fileDisplay(filepath,dep,deep,model){
         }
     })
 }
+    function isVueOrHtml(name){
+        const reg = /(\.vue$)|(\.html$)/
+        return reg.test(name)
+    }
 module.exports ={
     fileDisplay
 }
