@@ -1,3 +1,9 @@
+/*
+
+  所有文件的父类 包含读写等功能
+
+*/
+
 const {fs,chalk,path} = require('../main')
 const config  = require('../global/global')
 const __default = {

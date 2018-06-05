@@ -17,13 +17,6 @@ async function uploadFile (filepath,deep){
                 resolve()
             })
         })
-        /*
-        
-            方案1  监听请求数是否与dep中的相同
-            订阅者模式
-        
-        */
-
         let payload = '\r\n------' + boundaryKey + '\r\n' +
         'Content-Disposition: form-data; name="file"; filename="'+filename+'"\r\n' +
         'Content-Type: '+getFileMap(filename)+'\r\n\r\n';

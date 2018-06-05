@@ -1,22 +1,31 @@
 const {fs,path,chalk} = require('./../main')
 const {isIgnoredFile,getFileMap} = require('./../fileUtil/util')
+const { Dep } = require('./../fileSystem/depend')
 
 
 let fileResult
-function fileDisplay(filepath,dep,deep,model){
+
+//  期望是收集和添加依赖解耦
+//  理想状态是 我经过一系列操作 获取了我需要的dep 然后执行处理文件函数即可
+//  need:  filePath model 
+//  尽量不使用递归
+//  return : dep 
+function fileDisplay(filepath,deep,model,dep){
     // deep 模式 会覆盖之前上传的所有同名文件
+    let _dep = dep ? dep : new Dep()    
     if(!fileResult){
         fileResult = __file.readMyFile()
     }
-    if(typeof filepath === 'object'){
+    if(Array.isArray(filepath)){
       filepath.forEach(el=>{
         const files = fs.readdirSync(el)
-        addDep(files,el,dep,deep,model)  
+        addDep(files,el,_dep,deep,model)  
       })
       return 
     }
     const files = fs.readdirSync(filepath)
-    addDep(files,filepath,dep,deep,model)  
+    addDep(files,filepath,_dep,deep,model)  
+    return _dep
  }
  function addDep(fileArray,filepath,Dep,deep,model){
     fileArray.forEach(filename =>{
@@ -34,7 +43,8 @@ function fileDisplay(filepath,dep,deep,model){
                 }
                 if(model === 'find'){
                   // find模式下支持文件后缀检测 支持.vue文件和.html文件格式 使用正则匹配
-                  if(isVueOrHtml(filedir)){
+                  if(isReplaceableFile(filedir)){
+                    console.log(filedir)
                     Dep.set(filedir) 
                   }
                 }else{
@@ -49,14 +59,15 @@ function fileDisplay(filepath,dep,deep,model){
                     // console.log(chalk.yellow('该路径已被忽略-------')+filedir)                    
                     return
                 }else{
-                    fileDisplay(filedir,Dep,deep,model)                    
+                    fileDisplay(filedir,deep,model,Dep)
                 }
             }
         }
     })
 }
-    function isVueOrHtml(name){
-        const reg = /(\.vue$)|(\.html$)|(\.css$)/
+
+    function isReplaceableFile(name){
+        const reg = /(\.vue$)|(\.html$)|(\.css$)|(\.scss$)|(\.less$)/
         return reg.test(name)
     }
 module.exports ={

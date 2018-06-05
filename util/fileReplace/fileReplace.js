@@ -4,28 +4,34 @@ const {
   getThumbnailAddr
 } = require('./../../getImgAddr/getImgAddr')
 const { Files } = require('./../../util/fileSystem/Files')
-const { Dep } = require('./../fileSystem/depend')
+// const { Dep } = require('./../fileSystem/depend')
 
 //  需要先分块获取 然后判断位置是在某个模块里
+  /* background:url('logo1.png') */
+
+  // 匹配不以：开头后面是src='*' 后面不带空格和字母
 function searchFile(addr, model = 'find') {
-  const replaceDep = new Dep()
-  const replaceREG = /[^\:]src=(['|"](.*)['|"])\s/g
-  fileDisplay(addr, replaceDep, false, model)
+  // const replaceRegHtml = /[^\:]src=(['|"](.*)['|"]){1}(?!\s)/g
+  const replaceRegHtml = /[^\:]src=['|"](\S*)['|"]/g
+  const replaceRegCss = /['|"](.*)['|"]/g
+  const replaceDep = fileDisplay(addr, false, model)  
+  const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
   const dep = replaceDep.get()
   dep.forEach(element => {
     const file = new Files(element)
     const fileContent = file.readMyFile()
     const temp = fileContent.split('')
-    const matchArray = fileContent.match(replaceREG)
-    const commentsDep = new Dep()
-    const pointDep = getCommentsDep(fileContent, commentsDep)
+    const isCss = cssReg.test(element)    
+    const matchArray =!isCss? fileContent.match(replaceRegHtml):fileContent.match(replaceRegCss)
+    console.log(matchArray)
+    const pointDep = getCommentsDepHtml(fileContent,isCss)
     file.writeMyFileAll(
-      findMatch(fileContent, commentsDep, temp, matchArray, pointDep)
+      findMatch(fileContent, temp, matchArray, pointDep,isCss)
     )
   })
 }
 
-function findMatch(str, commentsDep, strArr, matchArray, pointDep) {
+function findMatch(str, strArr, matchArray, pointDep,isCss) {
   const http = /http\:|https\:/
   const matchDep = []
   let start = 0,
@@ -43,7 +49,7 @@ function findMatch(str, commentsDep, strArr, matchArray, pointDep) {
         start = str.indexOf(el)
       }
       end = start + elLength
-      const isCom = isComments(start, end, commentsDep, pointDep)
+      const isCom = isComments(start, end, pointDep)
       matchDep.push({
         name: el,
         start: start,
@@ -58,37 +64,52 @@ function findMatch(str, commentsDep, strArr, matchArray, pointDep) {
       strArr.splice(
         item.start,
         item.elLength,
-        addr ? ' src="' + addr + '" ' : item.name
+        addr ? !isCss?' src="' + addr + '" ' : `'${addr}'` : item.name
       )
     }
   }
   return strArr.join('')
 }
 
-function getCommentsDep(str, dep) {
+function getCommentsDepHtml(str,isCss) {
+  // 返回注释的点阵区间
   const pointDep = []
-  let strStart = 0,strEnd = 0
-  const endLen = 3,startLen = 4
-  if (dep.get() && dep.get().length === 0) {
-    dep.equals(str.match(/<!--/gm))
-  }
-  if (dep.get()) {
-    for (let item of dep.get()) {
-      const startIndex = str.substring(strEnd).indexOf('<!--')
-      const endIndex = str.substring(strEnd).indexOf('-->')
-      strStart = startIndex + strEnd
-      strEnd += endIndex + endLen
+  const matchHtml = str.match(/<!--/gm)
+  let strStartHtml = 0,strEndHtml = 0
+  const endLenHtml = 3,startLenHtml = 4
+  const matchCss = str.match(/\/\*/gm)
+  let strStartCss = 0,strEndCss = 0
+  const endLenCss = 2,startLenCss = 2
+  if (matchHtml) {
+    for (let item of matchHtml) {
+      const startIndex = str.substring(strEndHtml).indexOf('<!--')
+      const endIndex = str.substring(strEndHtml).indexOf('-->')
+      strStartHtml = startIndex + strEndHtml
+      strEndHtml += endIndex + endLenHtml
       pointDep.push({
-        start: strStart,
-        end: strEnd
+        start: strStartHtml,
+        end: strEndHtml
       })
     }
   }
+  if(matchCss){
+    for (let item of matchCss) {
+      const startIndex = str.substring(strEndCss).indexOf('/*')
+      const endIndex = str.substring(strEndCss).indexOf('*/')
+      strStartCss = startIndex + strEndCss
+      strEndCss += endIndex + endLenCss
+      pointDep.push({
+        start: strStartCss,
+        end: strEndCss
+      })
+    }
+  }
+  console.log(pointDep)
   return pointDep
 }
 
-function isComments(start, end, dep, pointDep) {
-  if (dep.get()) {
+function isComments(start, end, pointDep) {
+  if (pointDep.length!==0) {
     for (let item of pointDep) {
       if (start > item.start && end < item.end) {
         return true
