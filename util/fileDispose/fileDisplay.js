@@ -56,7 +56,7 @@ function fileDisplay(filepath,dep,deep,model){
     })
 }
     function isVueOrHtml(name){
-        const reg = /(\.vue$)|(\.html$)/
+        const reg = /(\.vue$)|(\.html$)|(\.css$)/
         return reg.test(name)
     }
 module.exports ={

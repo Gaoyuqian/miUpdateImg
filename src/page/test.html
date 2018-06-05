@@ -1,23 +1,63 @@
-<!--button components-->
-
-<template>
-  <button :disabled='disabled' :class="[cls]" @click='clickHandle'><span class='v-btn-span'><slot>
-      <!-- <img src="logo.png" alt=""> -->
-      <img src="close.png" alt="">
-      <img src="close.png" alt="">
-      <img src="close.png" alt="">
-      <!-- <img src="close.png" alt=""> -->
-      <img src="logo.png" alt="">      
-      <img src="logo.png" alt="">      
-      <img src="@/static/logo1.png" alt="">      
-      <img src="成长值-icon.png" alt="">      
-      
-      
-      <!-- <img src="logo.png" alt="">       -->
-      <logo></logo>
-    </slot></span></button>
+<!-- 积分夺宝参与成功页面 -->
+<template lang="html">
+  <div class="main">
+    <section class="succ-content">
+      <div class="succ-icon">
+        <img src="http://t5.market.mi-img.com/download/AppStore/0df67b4f7fd694b981a8ffb4a5a087e931762ab18/a.jpg" alt="">
+      </div>
+      <div class="succ-title">
+        <div class="title">
+          您已成功参与夺宝!
+        </div>
+        <div class="sub-title" v-if="rewardInfo.itemName">
+          {{ rewardInfo.itemName }} | {{ rewardInfo.awardTime | formatDate }}开奖
+        </div>
+        <div class="sub-title">
+          请等待系统为您揭晓抽奖结果
+        </div>
+      </div>
+    </section>
+    <section class="banner" @click="goHome">
+      <img src="./images/succ_banner.png" alt="" />
+    </section>
+    <section class="footer-btn">
+      <div class="btn" @click="$router.push('/reward')">
+        好的
+      </div>
+    </section>
+  </div>
 </template>
+
 <script>
-  // var a = 'logo.png'
-  // 先过滤掉非可替换文件！ 比如图片文件
+import { mapActions, mapGetters } from 'vuex'
+import { tracker } from '@/utils/tracker'
+export default {
+  computed: {
+    ...mapGetters(['rewardInfo'])
+  },
+  methods: {
+    ...mapActions(['CHANGE_INFO']),
+    goHome () {
+      tracker('夺宝成功页banner')
+      if ($AppMethods.getEnv() === 'APP') {
+        $AppMethods.startActivity('mifi://credit')
+      } else {
+        const homeHref = location.href.indexOf('://m.jr.mi.com') > -1
+          ? 'https://m.jr.mi.com/app/helpCenter/vip/api/store/ssologin?from=vip_task'
+          : 'http://staging.m.jr.mi.com/app/helpCenter/vip/api/store/ssologin?from=vip_task'
+        window.location.href = homeHref
+      }
+    }
+  },
+  created () {
+    $AppMethods.setTitle('夺宝成功')
+  },
+  destroyed () {
+    this.CHANGE_INFO({})
+  }
+}
 </script>
+
+<style lang="css" scoped>
+  @import "./index.css";
+</style>

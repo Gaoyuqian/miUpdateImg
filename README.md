@@ -1,9 +1,22 @@
 # Install
 ```
 npm install miuibatchupload // 1.5.0
-OR
-cnpm install @mipay/batch  //1.6.0
 ```
+
+#Import
+
+```
+...
+},
+  "dependencies": {
+    "@mipay/mipay-ui": "^2.0.2"
+  }
+...
+
+npm install
+```
+参考
+{wiki}/pages/viewpage.action?pageId=66660757
 
 # APi
 ```
@@ -102,3 +115,9 @@ Vue.prototype.$getNativeAddr = getNativeAddr
 * 请规范图片文件的命名格式,禁止重复命名
 * 目前支持手动和自动两种模式,不推荐在script标签下放置图片的相对路径,将有可能不会被脚本识别和替换
 * 如必须在script标签下放置图片的相对路径,请使用手动替换功能
+
+
+
+### v1.7.0 ToDo
+* 改写getImg方法的正则 使其可以匹配更多的非预期文件
+* 支持匹配css文件内的路径

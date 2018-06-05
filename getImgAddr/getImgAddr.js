@@ -73,7 +73,9 @@ function detailSrc(srcArr){
         将匹配到的所有路径处理成只有文件名+后缀的形式
     
     */
-   const Reg1 = /[a-zA-Z0-9\u4e00-\u9fa5\-]+(?=[\.]{1}[a-zA-Z]+)/g
+   const Reg1 = /[a-zA-Z0-9\u4e00-\u9fa5\-_@!#$%1^&()]+(?=[\.]{1}[a-zA-Z]+)/g
+  //  const Reg1 = /(^[\/][\S])+(?=[\.]{1}[a-zA-Z]+)/g
+  
    if(Array.isArray(srcArr)){
     srcArr = srcArr.map((el)=>{
         return srcArr.match(Reg1)[0]?srcArr.match(Reg1)[0]:srcArr
