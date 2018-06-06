@@ -67,39 +67,63 @@ function findMatch(str, strArr, matchArray, pointDep,isCss) {
   return strArr.join('')
 }
 
-function getCommentsDepHtml(str,isCss) {
+function getCommentsDepHtml(str) {
   // 返回注释的点阵区间
   const pointDep = []
-  const matchHtml = str.match(/<!--/gm)
-  let strStartHtml = 0,strEndHtml = 0
-  const endLenHtml = 3,startLenHtml = 4
+  let strStart = 0,strEnd = 0
+  const matchHtml = str.match(/<!--/gm)  
   const matchCss = str.match(/\/\*/gm)
-  let strStartCss = 0,strEndCss = 0
+  const matchJs = str.match(/\/\/\s{1}/gm)  
+  const endLenHtml = 3,startLenHtml = 4  
   const endLenCss = 2,startLenCss = 2
+  const endLenJs = 1,startLenJs = 3  
   if (matchHtml) {
     for (let item of matchHtml) {
-      const startIndex = str.substring(strEndHtml).indexOf('<!--')
-      const endIndex = str.substring(strEndHtml).indexOf('-->')
-      strStartHtml = startIndex + strEndHtml
-      strEndHtml += endIndex + endLenHtml
+      const startIndex = str.substring(strEnd).indexOf('<!--')
+      const endIndex = str.substring(strEnd).indexOf('-->')
+      strStart = startIndex + strEnd
+      strEnd += endIndex + endLenHtml
       pointDep.push({
-        start: strStartHtml,
-        end: strEndHtml
+        start: strStart,
+        end: strEnd
       })
     }
   }
   if(matchCss){
+    strStart = 0,strEnd = 0
     for (let item of matchCss) {
-      const startIndex = str.substring(strEndCss).indexOf('/*')
-      const endIndex = str.substring(strEndCss).indexOf('*/')
-      strStartCss = startIndex + strEndCss
-      strEndCss += endIndex + endLenCss
+      const startIndex = str.substring(strEnd).indexOf('/*')
+      const endIndex = str.substring(strEnd).indexOf('*/')
+      strStart = startIndex + strEnd
+      strEnd += endIndex + endLenCss
       pointDep.push({
-        start: strStartCss,
-        end: strEndCss
+        start: strStart,
+        end: strEnd
       })
     }
   }
+  //  由于/n 并不是紧跟着 // 一起出现 所以造成差异
+  if(matchJs){
+    strStart = 0,strEnd = 0
+    for (let item of matchJs) {
+      const startIndex = str.substring(strEnd).indexOf('// ')
+      // startIndex 是注释的开头坐标 基于上一个注释的结尾坐标获取的
+      // endIndex 是从注释开头的坐标到该注释结尾的坐标 基于注释开头坐标获取的 
+      // 注释结尾是相对于注释开头坐标计算长度
+      const endIndex = str.substring(startIndex+strEnd).indexOf('\n')
+
+      strStart = startIndex + strEnd
+      strEnd = endIndex + startIndex + strEnd
+      // console.log(strStart,strEnd,startIndex,endIndex)
+      pointDep.push({
+        start: strStart,
+        end: strEnd
+      })
+    }
+  }
+  pointDep.forEach( el => {
+      console.log(str.substring(el.start,el.end))
+  })
   return pointDep
 }
 
