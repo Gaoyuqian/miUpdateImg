@@ -21,7 +21,7 @@ function fileDisplay(filepath,deep,model,dep){
         const files = fs.readdirSync(el)
         addDep(files,el,_dep,deep,model)  
       })
-      return 
+      return _dep
     }
     const files = fs.readdirSync(filepath)
     addDep(files,filepath,_dep,deep,model)  

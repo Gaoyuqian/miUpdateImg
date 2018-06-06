@@ -57,8 +57,9 @@ function getNativeAddr(filename){
     const index = getRamdomNumber(0,addrArrayDownload.length-1)
     filename = detailSrc(filename)
     const content = __file.readMyFile()
-    
-
+    if(!filename){
+      return 
+    }
     if(!content[filename]){
         console.warn('该文件未上传----',filename)
         return
@@ -74,15 +75,16 @@ function detailSrc(srcArr){
     
     */
    const Reg1 = /[a-zA-Z0-9\u4e00-\u9fa5\-_@!#$%1^&()]+(?=[\.]{1}[a-zA-Z]+)/g
-  //  const Reg1 = /(^[\/][\S])+(?=[\.]{1}[a-zA-Z]+)/g
-  
-   if(Array.isArray(srcArr)){
-    srcArr = srcArr.map((el)=>{
-        return srcArr.match(Reg1)[0]?srcArr.match(Reg1)[0]:srcArr
-    })
-   }else{
-        return srcArr.match(Reg1)[0]?srcArr.match(Reg1)[0]:srcArr
-   }
+   const matchResult = srcArr.match(Reg1)
+  if(matchResult){
+    if(Array.isArray(srcArr)){
+      srcArr = srcArr.map((el)=>{
+          return srcArr.match(Reg1)[0]?srcArr.match(Reg1)[0]:srcArr
+      })
+     }else{
+          return srcArr.match(Reg1)[0]?srcArr.match(Reg1)[0]:srcArr
+     }
+  }
 }
 module.exports = {
     getNativeAddr,getThumbnailAddr

@@ -1,4 +1,111 @@
 .main{
-  /* background:url('./images/succ_banner.png') */
-  background:url('http://t4.market.xiaomi.com/download/AppStore/070054257638a8bd9fdafc98047d9060d6e40b17d/a.jpg')  no-repeat
+  background:url('http://t5.market.mi-img.com/download/AppStore/070054257638a8bd9fdafc98047d9060d6e40b17d/a.jpg')  no-repeat
+}
+@import "../../styles/varibles/varibles.css";
+@import "../../styles/mixins/border.css";
+.detail-list {
+  background: url("#{$iconImgUrl}#{$img}") no-repeat;
+
+  @mixin border-top;
+  background-color: #fff;
+  /*margin-top: -40px;*/
+  /*padding-top: 80px;*/
+  padding-left: 80px;
+}
+
+.point-item {
+  [data-dpr="2"] & {
+    font-size: $font-size * 2;/*no*/
+  }
+  display: flex;
+  height: 180px;
+  align-items: center;
+  @mixin border-bottom;
+}
+
+.left {
+  display: flex;
+  margin-right: 20px;
+  flex: 1;
+  height: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  /*text-overflow: ellipsis;*/
+  flex-direction: column;
+  justify-content: center;
+  .title {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .date {
+    margin-top: 20px;
+    font-size: 36px;
+    color: var(--text-default-color);
+  }
+}
+
+
+.right {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-right: 80px;
+}
+
+.number {
+  font-size: 48px;
+
+  &.up {
+    color: var(--point-up-color);
+  }
+}
+
+.no-data {
+  position: absolute !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  top: 320px;
+  background-color: #fff;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @mixin border-top;
+  .icon {
+    width: 336px;
+    height: 336px;
+    margin-top: -80px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url('./images/no_data.png');
+  }
+
+  .info {
+    font-family: 'MI-LANTING_GB-OUTSIDE-YS', 'MI LANTING','miui','PingFang SC', 'Helvetica Neue','Helvetica','arial','microsoft yahei', 'sans-serif';
+    font-size: 36px;
+    color: var(--text-default-color);
+    margin-top: 60px;
+  }
+
+  .empty-btn {
+    position: fixed !important;
+    bottom: 60px;
+    left: 60px;
+    right: 60px;
+    @mixin border #ccc, solid, 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+    transition: all .2s;
+
+    &:hover,
+    &:focus {
+      opacity: .7;
+    }
+  }
 }

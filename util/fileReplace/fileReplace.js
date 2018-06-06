@@ -7,13 +7,9 @@ const { Files } = require('./../../util/fileSystem/Files')
 // const { Dep } = require('./../fileSystem/depend')
 
 //  需要先分块获取 然后判断位置是在某个模块里
-  /* background:url('logo1.png') */
-
-  // 匹配不以：开头后面是src='*' 后面不带空格和字母
 function searchFile(addr, model = 'find') {
-  // const replaceRegHtml = /[^\:]src=(['|"](.*)['|"]){1}(?!\s)/g
   const replaceRegHtml = /[^\:]src=['|"](\S*)['|"]/g
-  const replaceRegCss = /['|"](.*)['|"]/g
+  const replaceRegCss = /['|"](.*[^\.css|\.scss|\.less|\{\}\$])['|"]/g
   const replaceDep = fileDisplay(addr, false, model)  
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
   const dep = replaceDep.get()
@@ -23,7 +19,6 @@ function searchFile(addr, model = 'find') {
     const temp = fileContent.split('')
     const isCss = cssReg.test(element)    
     const matchArray =!isCss? fileContent.match(replaceRegHtml):fileContent.match(replaceRegCss)
-    console.log(matchArray)
     const pointDep = getCommentsDepHtml(fileContent,isCss)
     file.writeMyFileAll(
       findMatch(fileContent, temp, matchArray, pointDep,isCss)
@@ -61,6 +56,7 @@ function findMatch(str, strArr, matchArray, pointDep,isCss) {
   for (let item of matchDep.reverse()) {
     if (!http.test(item.name) && !item.isCom) {
       const addr = getNativeAddr(item.name)
+      
       strArr.splice(
         item.start,
         item.elLength,
@@ -104,7 +100,6 @@ function getCommentsDepHtml(str,isCss) {
       })
     }
   }
-  console.log(pointDep)
   return pointDep
 }
 
