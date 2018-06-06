@@ -44,7 +44,6 @@ function fileDisplay(filepath,deep,model,dep){
                 if(model === 'find'){
                   // find模式下支持文件后缀检测 支持.vue文件和.html文件格式 使用正则匹配
                   if(isReplaceableFile(filedir)){
-                    console.log(filedir)
                     Dep.set(filedir) 
                   }
                 }else{

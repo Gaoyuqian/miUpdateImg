@@ -1,5 +1,5 @@
 .main{
-  background:url('http://t5.market.mi-img.com/download/AppStore/070054257638a8bd9fdafc98047d9060d6e40b17d/a.jpg')  no-repeat
+  background:url('./images/succ_banner.png')  no-repeat
 }
 @import "../../styles/varibles/varibles.css";
 @import "../../styles/mixins/border.css";
