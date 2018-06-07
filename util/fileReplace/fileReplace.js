@@ -18,20 +18,22 @@ function searchFile(addr, model = 'find') {
     const fileContent = file.readMyFile()
     const temp = fileContent.split('')
     const isCss = cssReg.test(element) 
-    let matchHtml = []
-    if(fileContent.match(replaceRegHtml)){
-      if(fileContent.match(replaceRegCss)){
-        matchHtml = fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss))
-      }else{
-        matchHtml = fileContent.match(replaceRegHtml)
-      }
-    }else{
-      matchHtml = fileContent.match(replaceRegCss)
-    }
+    const matchHtml = fileContent.match(replaceRegHtml)
+    const matchCss = fileContent.match(replaceRegCss)
+    const matchJs = fileContent.match(replaceRegJs)
+    // if(fileContent.match(replaceRegHtml)){
+    //   if(fileContent.match(replaceRegCss)){
+    //     matchHtml = fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss))
+    //   }else{
+    //     matchHtml = fileContent.match(replaceRegHtml)
+    //   }
+    // }else{
+    //   matchHtml = fileContent.match(replaceRegCss)
+    // }
     // const temp1 = fileContent.match(replaceRegHtml)?fileContent.match(replaceRegCss)?:fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss)):fileContent.match(replaceRegCss)
     // const temp1 = fileContent.match(replaceRegHtml)?fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss)):fileContent.match(replaceRegCss)
-    const matchArray =!isCss? matchHtml : fileContent.match(replaceRegCss)
-    console.log(matchArray,element)
+    // const matchArray =!isCss? matchHtml : fileContent.match(replaceRegCss)
+    // console.log(matchArray,element)
     const pointDep = getCommentsDepHtml(fileContent,isCss)
     file.writeMyFileAll(
       findMatch(fileContent, temp, matchArray, pointDep,isCss)
@@ -45,7 +47,7 @@ function searchFile(addr, model = 'find') {
  * 期望vue文件也可以替换写在style标签内和script标签内的指定格式的图片文件 
  * 
  * 得把css样式替换的内容和html替换的内容分开替换！！！！
- * 
+ * 则不应该使用一个matchArray
  * 
  */
 
@@ -74,10 +76,11 @@ function findMatch(str, strArr, matchArray, pointDep,isCss) {
     end = 0
   matchArray &&
     matchArray.forEach(el => {
-      const elLength = el&&el.length
+      const elLength = el.length
       start = str.indexOf(el)
       for (let point of matchDep) {
         if (point.name == el) {
+          // 如果重复 则从下一个开始找
           start = str.indexOf(el, point.end)
         }
       }
@@ -97,7 +100,7 @@ function findMatch(str, strArr, matchArray, pointDep,isCss) {
   for (let item of matchDep.reverse()) {
     if (!http.test(item.name) && !item.isCom) {
       const addr = getNativeAddr(item.name)
-      
+      //或者不判断iscss 而判断匹配出来的是否是css格式的
       strArr.splice(
         item.start,
         item.elLength,
