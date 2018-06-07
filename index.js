@@ -1,7 +1,6 @@
 const {uploadFile,uploadFileObj} = require('./util/fileDispose/fileUpload')
 const {Files} = require('./util/fileSystem/Files')
 const {fileDisplay} = require('./util/fileDispose/fileDisplay')
-const {path,fs,chalk} = require('./util/main')
 const {getNativeAddr,getThumbnailAddr} = require('./getImgAddr/getImgAddr')
 const {searchFile} = require('./util/fileReplace/fileReplace')
 const {Dep} = require('./util/fileSystem/depend')

@@ -4,25 +4,11 @@
 
 */
 
-const {fs,chalk,path} = require('../main')
+const {fs} = require('../main')
 const config  = require('../global/global')
-const __default = {
-        'miuiFile.json':{
-            "fileUpdatePath": "./static",
-            "output": "uploadPackage.json",
-            "ignored": "./ignored",
-            "httpsOption": {
-                "hostname": "file.market.miui.srv",
-                "port": 8756,
-                "path": "/upload?channel=NccFgber",
-                "method": "POST"
-            },
-            "fileFindPath": "./src"
-        },
-        'uploadPackage.json':{}
-    }
+
 class Files {
-    constructor(path,content){
+    constructor(path){
         this.file = path
         this.isExists = this.isExists()
         if (!this.isExists) {
@@ -56,11 +42,7 @@ class Files {
             适合读取文件之后再写入
 
         */
-        if(typeof content === 'object'){
-            fs.writeFileSync(this.file,JSON.stringify(content))   
-        }else{
-            fs.writeFileSync(this.file,content)  
-        }
+       fs.writeFileSync(this.file,typeof content === 'object'?JSON.stringify(content):content)
     }
 
     writeMyFile(obj,sourceName){

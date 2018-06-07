@@ -4,27 +4,68 @@ const {
   getThumbnailAddr
 } = require('./../../getImgAddr/getImgAddr')
 const { Files } = require('./../../util/fileSystem/Files')
-// const { Dep } = require('./../fileSystem/depend')
 
 //  需要先分块获取 然后判断位置是在某个模块里
 function searchFile(addr, model = 'find') {
   const replaceRegHtml = /[^\:]src=['|"](\S*)['|"]/g
-  const replaceRegCss = /['|"](.*[^\.css|\.scss|\.less|\{\}\$])['|"]/g
+  const replaceRegCss = /url\(['|"](.*[^\.css|\.scss|\.less|\{\}\$])['|"]\)/g
   const replaceDep = fileDisplay(addr, false, model)  
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
   const dep = replaceDep.get()
   dep.forEach(element => {
     const file = new Files(element)
+    // const pointDep = new dep()
     const fileContent = file.readMyFile()
     const temp = fileContent.split('')
-    const isCss = cssReg.test(element)    
-    const matchArray =!isCss? fileContent.match(replaceRegHtml):fileContent.match(replaceRegCss)
+    const isCss = cssReg.test(element) 
+    let matchHtml = []
+    if(fileContent.match(replaceRegHtml)){
+      if(fileContent.match(replaceRegCss)){
+        matchHtml = fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss))
+      }else{
+        matchHtml = fileContent.match(replaceRegHtml)
+      }
+    }else{
+      matchHtml = fileContent.match(replaceRegCss)
+    }
+    // const temp1 = fileContent.match(replaceRegHtml)?fileContent.match(replaceRegCss)?:fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss)):fileContent.match(replaceRegCss)
+    // const temp1 = fileContent.match(replaceRegHtml)?fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss)):fileContent.match(replaceRegCss)
+    const matchArray =!isCss? matchHtml : fileContent.match(replaceRegCss)
+    console.log(matchArray,element)
     const pointDep = getCommentsDepHtml(fileContent,isCss)
     file.writeMyFileAll(
       findMatch(fileContent, temp, matchArray, pointDep,isCss)
     )
   })
 }
+/*
+ *
+ * 
+ * vue css文件可以同时获取所有的注释点阵
+ * 期望vue文件也可以替换写在style标签内和script标签内的指定格式的图片文件 
+ * 
+ * 得把css样式替换的内容和html替换的内容分开替换！！！！
+ * 
+ * 
+ */
+
+function getCommentsHtml(){
+  const matchHtml = str.match(/<!--/gm)  
+  if (matchHtml) {
+    for (let item of matchHtml) {
+      const startIndex = str.substring(strEnd).indexOf('<!--')
+      const endIndex = str.substring(strEnd).indexOf('-->')
+      strStart = startIndex + strEnd
+      strEnd += endIndex + endLenHtml
+      pointDep.push({
+        start: strStart,
+        end: strEnd
+      })
+    }
+  }
+  return pointDep  
+}
+
 
 function findMatch(str, strArr, matchArray, pointDep,isCss) {
   const http = /http\:|https\:/
@@ -33,7 +74,7 @@ function findMatch(str, strArr, matchArray, pointDep,isCss) {
     end = 0
   matchArray &&
     matchArray.forEach(el => {
-      const elLength = el.length
+      const elLength = el&&el.length
       start = str.indexOf(el)
       for (let point of matchDep) {
         if (point.name == el) {
@@ -74,9 +115,7 @@ function getCommentsDepHtml(str) {
   const matchHtml = str.match(/<!--/gm)  
   const matchCss = str.match(/\/\*/gm)
   const matchJs = str.match(/\/\/\s{1}/gm)  
-  const endLenHtml = 3,startLenHtml = 4  
-  const endLenCss = 2,startLenCss = 2
-  const endLenJs = 1,startLenJs = 3  
+  const endLenHtml = 3,endLenCss = 2
   if (matchHtml) {
     for (let item of matchHtml) {
       const startIndex = str.substring(strEnd).indexOf('<!--')
@@ -121,9 +160,9 @@ function getCommentsDepHtml(str) {
       })
     }
   }
-  pointDep.forEach( el => {
-      console.log(str.substring(el.start,el.end))
-  })
+  // pointDep.forEach( el => {
+  //     console.log(str.substring(el.start,el.end))
+  // })
   return pointDep
 }
 
