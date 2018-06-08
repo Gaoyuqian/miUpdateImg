@@ -1,68 +1,38 @@
 # Install
 ```
-npm install miuibatchupload // 1.5.0
+cnpm install @mipay/batch // v1.7.1
 ```
 
 #Import
-
 ```
 ...
 },
   "dependencies": {
-    "@mipay/mipay-ui": "^2.0.2"
+    " @mipay/batch": "^1.7.1"
   }
 ...
 
 npm install
 ```
-参考
-{wiki}/pages/viewpage.action?pageId=66660757
+* 参考 {wiki}/pages/viewpage.action?pageId=66660757
 
-# APi
+# Usage
 ```
-start({deep:true:config:{}})
-
-getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false) //获取按尺寸裁切图片
-
-option={
-    type:{type:String,default:'jpeg'}
-    param:{type:String,default:'null'}
-}
-//el
-getThumbnailAddr('logo.png',{type:'png',param:'h120'}
-
-------------------------------------
-
-getNativeAddr(filename) //获取原图
-
+npm run replace
 ```
+如果你正在使用vue-cli 可以在build脚本中添加相应命令执行batch包
 
-# Use
+# Config
 
-## node
-
-在需要时调用start方法即可执行批量上传和指定文件的替换功能
-
-所有配置文件会自动创建为默认配置，可自行修改。
-
-
-## web
-### 不建议使用
-项目根目录下创建uploadPackage.json文件 内容为{}
-tips:目前版本由于运行在前端工程中,所有都需要手动创建该文件,若之后需要运行于node环境下 则需要更改配置文件中output的路径信息，并同步到index.js文件中,改写getImgAdd文件中的方法使其路径一致
-
-手动引入此包
+* 你需要预先配置被依赖的配置文件来告诉脚本你需要做哪些工作或需要改变哪些目录用于针对目录不相同的前端工程
+* 所以我始终推荐方法调用的形式来执行batch包
 ```
 
 const miui = require('PACKAGENAME')  
 miui.start()
-npm run dev
 
+// 推荐使用deep模式重新上传所有待上传文件
 ```
-如果想覆盖原有文件重新上传 请使用deep模式重新上传所有待上传文件(推荐始终使用deep模式)
-
-
-## config
 
 ```
 
@@ -91,24 +61,34 @@ npm run dev
 // 禁止修改配置文件的key值以避免不必要的错误，config的值将全部覆盖该配置文件
 
 ```
-手动注册全局方法
-```
 
-import { getThumbnailAddr,getNativeAddr } from 'miuibatchupload'
-Vue.prototype.$getThumbnailAddr = getThumbnailAddr;
-Vue.prototype.$getNativeAddr = getNativeAddr
+### Tips 
+* 如果你了解batch包的默认配置且符合你的基本需求 可以使用npm script的形式调用此包
 
 ```
+npm run replace
 
-#### 裁剪功能具体参数请参照MIUI文件服务使用指南
-#### addr : {wiki}/pages/viewpage.action?pageId=5833076
+```
+* 就像使用webpack一样
+
+# function 
+
+* 可替换 img标签中 src所指向的相对撸几个
+* 若期望js字符串图片被替换，请使用$mi_${imgname}命名静态资源图片
+* 可替换 css文件中 所有url()包裹的相对路径
+* 由于miui文件系统对于相同名字的文件采取覆盖上传模式，所以所有替换格式和路径长度无关 只和文件名有关
+* 自动生成ignored文件 可以像使用gitignored一样忽略你不想遍历的文件夹或忽略某个特定文件来降低遍历深度提高性能
+
+
 
 # Log
 
-### v1.7.0 
+### >=v1.7.0 
 * 改写getImg方法的正则 使其可以匹配更多的非预期文件
 * 支持匹配css文件内的路径
 * 多个同名文件的地址会被覆盖(如有需求可酌情修复)
+* 可替换.vue文件中的css样式图片和js字符串图片
+* 若期望js字符串图片被替换，请使用$mi_${imgname}命名静态资源图片
 
 ### v1.6.0
 
@@ -120,3 +100,7 @@ Vue.prototype.$getNativeAddr = getNativeAddr
 * 请规范图片文件的命名格式,禁止重复命名
 * 目前支持手动和自动两种模式,不推荐在script标签下放置图片的相对路径,将有可能不会被脚本识别和替换
 * 如必须在script标签下放置图片的相对路径,请使用手动替换功能
+
+
+### future
+* 更精准的替换! 使用文件名与hash命名上传文件，使不同路径的同名文件可以更好的匹配替换
