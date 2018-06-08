@@ -9,34 +9,28 @@ const { Files } = require('./../../util/fileSystem/Files')
 function searchFile(addr, model = 'find') {
   const replaceRegHtml = /[^\:]src=['|"](\S*)['|"]/g
   const replaceRegCss = /url\(['|"](.*[^\.css|\.scss|\.less|\{\}\$])['|"]\)/g
+  const replaceRegJs = /\$mi_[a-zA-Z0-9]*\:[\s]?['|"](\S*)['|"]/g
   const replaceDep = fileDisplay(addr, false, model)  
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
   const dep = replaceDep.get()
   dep.forEach(element => {
     const file = new Files(element)
-    // const pointDep = new dep()
     const fileContent = file.readMyFile()
     const temp = fileContent.split('')
     const isCss = cssReg.test(element) 
-    const matchHtml = fileContent.match(replaceRegHtml)
-    const matchCss = fileContent.match(replaceRegCss)
-    const matchJs = fileContent.match(replaceRegJs)
-    // if(fileContent.match(replaceRegHtml)){
-    //   if(fileContent.match(replaceRegCss)){
-    //     matchHtml = fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss))
-    //   }else{
-    //     matchHtml = fileContent.match(replaceRegHtml)
-    //   }
-    // }else{
-    //   matchHtml = fileContent.match(replaceRegCss)
-    // }
-    // const temp1 = fileContent.match(replaceRegHtml)?fileContent.match(replaceRegCss)?:fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss)):fileContent.match(replaceRegCss)
-    // const temp1 = fileContent.match(replaceRegHtml)?fileContent.match(replaceRegHtml).concat(fileContent.match(replaceRegCss)):fileContent.match(replaceRegCss)
-    // const matchArray =!isCss? matchHtml : fileContent.match(replaceRegCss)
-    // console.log(matchArray,element)
+    let matchArray = []
+    const matchHtml = fileContent.match(replaceRegHtml)||[]
+    matchHtml.name = 'html'
+    const matchCss = fileContent.match(replaceRegCss)||[]
+    matchCss.name ='css'
+    const matchJs = fileContent.match(replaceRegJs)||[]
+    matchJs.name = 'js'
+    matchArray.push(matchHtml)
+    matchArray.push(matchJs)
+    matchArray.push(matchCss)
     const pointDep = getCommentsDepHtml(fileContent,isCss)
     file.writeMyFileAll(
-      findMatch(fileContent, temp, matchArray, pointDep,isCss)
+      findMatch(fileContent, temp, matchArray, pointDep)
     )
   })
 }
@@ -44,67 +38,68 @@ function searchFile(addr, model = 'find') {
  *
  * 
  * vue css文件可以同时获取所有的注释点阵
- * 期望vue文件也可以替换写在style标签内和script标签内的指定格式的图片文件 
  * 
  * 得把css样式替换的内容和html替换的内容分开替换！！！！
  * 则不应该使用一个matchArray
  * 
  */
 
-function getCommentsHtml(){
-  const matchHtml = str.match(/<!--/gm)  
-  if (matchHtml) {
-    for (let item of matchHtml) {
-      const startIndex = str.substring(strEnd).indexOf('<!--')
-      const endIndex = str.substring(strEnd).indexOf('-->')
-      strStart = startIndex + strEnd
-      strEnd += endIndex + endLenHtml
-      pointDep.push({
-        start: strStart,
-        end: strEnd
-      })
-    }
-  }
-  return pointDep  
-}
-
-
-function findMatch(str, strArr, matchArray, pointDep,isCss) {
+function findMatch(str, strArr, matchArray, pointDep) {
   const http = /http\:|https\:/
   const matchDep = []
   let start = 0,
     end = 0
   matchArray &&
-    matchArray.forEach(el => {
-      const elLength = el.length
-      start = str.indexOf(el)
-      for (let point of matchDep) {
-        if (point.name == el) {
-          // 如果重复 则从下一个开始找
-          start = str.indexOf(el, point.end)
-        }
-      }
-      if (matchDep.length == 0) {
+    matchArray.forEach(els => {
+      els.length!==0&&els.forEach( el =>{
+        const elLength = el.length
         start = str.indexOf(el)
-      }
-      end = start + elLength
-      const isCom = isComments(start, end, pointDep)
-      matchDep.push({
-        name: el,
-        start: start,
-        end: end,
-        isCom: isCom,
-        elLength: elLength
+        for (let point of matchDep) {
+          if (point.name == el) {
+            // 如果重复 则从下一个开始找
+            start = str.indexOf(el, point.end)
+          }
+        }
+        if (matchDep.length == 0) {
+          start = str.indexOf(el)
+        }
+        end = start + elLength
+        const isCom = isComments(start, end, pointDep)
+        matchDep.push({
+          name: el,
+          start: start,
+          end: end,
+          isCom: isCom,
+          elLength: elLength,
+          type:els.name
+        })
       })
     })
   for (let item of matchDep.reverse()) {
+    let prename = ''
+    let subname = ''
+    let result = ''
     if (!http.test(item.name) && !item.isCom) {
       const addr = getNativeAddr(item.name)
       //或者不判断iscss 而判断匹配出来的是否是css格式的
+      switch(item.type){
+        case 'html': 
+        prename = ` src="`
+        subname = `" `
+        break
+        case 'css' : 
+        prename = `url('`
+        subname = `')`
+        break
+        case 'js' : 
+        prename = `${item.name.split(':')[0]}: '`
+        subname = `'`
+      }
+      result = `${prename}${addr}${subname}`
       strArr.splice(
         item.start,
         item.elLength,
-        addr ? !isCss?' src="' + addr + '" ' : `'${addr}'` : item.name
+        addr ? result : item.name
       )
     }
   }

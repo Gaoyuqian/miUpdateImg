@@ -67,7 +67,6 @@ miui.start()
 
 ```
 npm run replace
-
 ```
 * 就像使用webpack一样
 
@@ -102,5 +101,5 @@ npm run replace
 * 如必须在script标签下放置图片的相对路径,请使用手动替换功能
 
 
-### future
+# future
 * 更精准的替换! 使用文件名与hash命名上传文件，使不同路径的同名文件可以更好的匹配替换
