@@ -29,7 +29,7 @@ npm run replace
 ```
 
 const miui = require('PACKAGENAME')  
-miui.start()
+miui.start({deep:true})
 
 // 推荐使用deep模式重新上传所有待上传文件
 ```

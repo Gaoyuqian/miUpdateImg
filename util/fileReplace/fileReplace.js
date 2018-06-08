@@ -8,7 +8,7 @@ const { Files } = require('./../../util/fileSystem/Files')
 //  需要先分块获取 然后判断位置是在某个模块里
 function searchFile(addr, model = 'find') {
   const replaceRegHtml = /[^\:]src=['|"](\S*)['|"]/g
-  const replaceRegCss = /url\(['|"](.*[^\.css|\.scss|\.less|\{\}\$])['|"]\)/g
+  const replaceRegCss = /url\(['|"]?(.*[^\.css|\.scss|\.less|\{\}\$])['|"]?\)/g
   const replaceRegJs = /\$mi_[a-zA-Z0-9]*\:[\s]?['|"](\S*)['|"]/g
   const replaceDep = fileDisplay(addr, false, model)  
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
