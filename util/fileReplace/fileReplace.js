@@ -60,9 +60,9 @@ function findMatch(str, strArr, matchArray, pointDep) {
             start = str.indexOf(el, point.end)
           }
         }
-        if (matchDep.length == 0) {
-          start = str.indexOf(el)
-        }
+        // if (matchDep.length == 0) {
+        //   start = str.indexOf(el)
+        // }
         end = start + elLength
         const isCom = isComments(start, end, pointDep)
         matchDep.push({

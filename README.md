@@ -19,8 +19,13 @@ npm install
 # Usage
 ```
 npm run replace
+
 ```
-如果你正在使用vue-cli 可以在build脚本中添加相应命令执行batch包
+如果你正在使用vue-cli 可以在package.json中添加命令
+```
+  "re":"node node_modules/@mipay/batch/index.js"
+  //然后使用npm run re 启动
+```
 
 # Config
 
