@@ -27,7 +27,6 @@ function searchFile(addr, model = 'find') {
     const fileContent = file.readMyFile()
     const temp = fileContent.split('')
     const isCss = cssReg.test(element)
-    console.log(fileContent.match(replaceRegPng))
     const pointDep = getCommentsDepHtml(fileContent, isCss)
     file.writeMyFileAll(
       findMatch(fileContent, temp, fileContent.match(replaceRegPng), pointDep, path.parse(element).dir)
@@ -43,7 +42,6 @@ function searchFile(addr, model = 'find') {
  */
 
 function findMatch(str, strArr, matchArray, pointDep, dir) {
-  const http = /http\:|https\:/
   const matchDep = []
   let start = 0,
     end = 0
@@ -53,7 +51,6 @@ function findMatch(str, strArr, matchArray, pointDep, dir) {
       const elLength = el.length
       start = str.indexOf(el)
       for (let point of matchDep) {
-        console.log(point.name,el,1231231313)
         if (point.name === matchAddr) {
           // 如果重复 则从下一个开始找
           start = str.indexOf(el, point.end)
@@ -67,16 +64,16 @@ function findMatch(str, strArr, matchArray, pointDep, dir) {
         end: end,
         isCom: isCom,
         elLength: elLength,
+        el:el
       })
     })
-    console.log(matchDep)
   for (let item of matchDep.reverse()) {
-    if (!http.test(item.name) && !item.isCom) {
+    if (!item.isCom) {
       const addr = getNativeAddr(item.name)
       strArr.splice(
         item.start,
         item.elLength,
-        addr ? `'${addr}'` : item.name
+        addr ? `'${addr}'` : item.el
       )
     }
   }
@@ -130,16 +127,12 @@ function getCommentsDepHtml(str) {
 
       strStart = startIndex + strEnd
       strEnd = endIndex + startIndex + strEnd
-      // console.log(strStart,strEnd,startIndex,endIndex)
       pointDep.push({
         start: strStart,
         end: strEnd
       })
     }
   }
-  // pointDep.forEach( el => {
-  //     console.log(str.substring(el.start,el.end))
-  // })
   return pointDep
 }
 

@@ -58,11 +58,11 @@ function getNativeAddr(filename){
     // filename = detailSrc(filename)
     const content = __file.readMyFile()
     if(!filename){
-      return 
+      return false
     }
     if(!content[filename]){
-        console.warn('该文件未上传----',filename)
-        return
+        console.warn('该文件未找到----',filename)
+        return false
     }
     return `${addrArrayDownload[index]}${content[filename]}/a.jpg`
 }
