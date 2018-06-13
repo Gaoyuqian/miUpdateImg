@@ -13,7 +13,7 @@ async function uploadFile (filepath,deep){
             res.setEncoding('utf8');
             res.on('data',(chunk)=>{
                 const  writeContext = JSON.parse(chunk)[0].exloc
-                uploadFileObj[filename] = writeContext;
+                uploadFileObj[filepath] = writeContext;
                 resolve()
             })
         })

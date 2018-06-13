@@ -55,7 +55,7 @@ function getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false){
 
 function getNativeAddr(filename){
     const index = getRamdomNumber(0,addrArrayDownload.length-1)
-    filename = detailSrc(filename)
+    // filename = detailSrc(filename)
     const content = __file.readMyFile()
     if(!filename){
       return 
