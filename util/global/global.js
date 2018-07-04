@@ -1,7 +1,7 @@
 // 定义一些伪全局变量 防止循环引用
 const __config = {
     'miuiFile.json':{
-        "fileUpdatePath": ["./static","./src"],
+        "fileUpdatePath": ["./publish","./src"],
         "output": "uploadPackage.json",
         "ignored": "./ignored",
         "httpsOption": {
@@ -13,7 +13,6 @@ const __config = {
         "fileFindPath": "./src"
     },
     'uploadPackage.json':{}
-  
 }
 module.exports = {
   __config

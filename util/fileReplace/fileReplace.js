@@ -14,11 +14,12 @@ const {
 
 
 //  需要先分块获取 然后判断位置是在某个模块里
-function searchFile(addr, model = 'find') {
+function searchFile(addr, alias, context, model = 'find') {
+
   // const replaceRegHtml = /[^\:]src=['|"](\S*)['|"]/g
   // const replaceRegCss = /url\(['|"]?(.*[^\.css|\.scss|\.less|\{\}\$])['|"]?\)/g
   // const replaceRegJs = /\$mi_[a-zA-Z0-9]*\:[\s]?['|"](\S*)['|"]/g
-  const replaceRegPng = /(\')[a-zA-Z0-9_*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}\'/g
+  const replaceRegPng = /(\"|\')[a-zA-Z0-9_*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}(\"|\')/g
   const replaceDep = fileDisplay(addr, false, model)
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
   const dep = replaceDep.get()
@@ -29,7 +30,7 @@ function searchFile(addr, model = 'find') {
     const isCss = cssReg.test(element)
     const pointDep = getCommentsDepHtml(fileContent, isCss)
     file.writeMyFileAll(
-      findMatch(fileContent, temp, fileContent.match(replaceRegPng), pointDep, path.parse(element).dir)
+      findMatch(fileContent, temp, fileContent.match(replaceRegPng), pointDep, path.parse(element).dir, alias, context)
     )
   })
 }
@@ -40,14 +41,29 @@ function searchFile(addr, model = 'find') {
  * 则不应该使用一个matchArray
  * 
  */
+function aliasReplace(el, alias = {}, context) {
+  let _$ = false
+  if (Object.keys(alias).length == '0') {
+    return false
+  } else {
+    for (let i in alias) {
+      const reg = new RegExp('(\"|\')' + i + '(?=\/)')
+      const _el = el.replace(reg, alias[i])
+      if (_el !== el) {
+        _$ = _el.replace(context + '/', '').replace(/(\"|\')/, '')
+      }
+    }
+    return _$ || false
+  }
+}
 
-function findMatch(str, strArr, matchArray, pointDep, dir) {
+function findMatch(str, strArr, matchArray, pointDep, dir, alias, context) {
   const matchDep = []
   let start = 0,
     end = 0
   matchArray &&
     matchArray.forEach(el => {
-      const matchAddr = path.join(dir, path.normalize(el.replace(/['|"]/g, '')))
+      const matchAddr = aliasReplace(el, alias, context) || path.join(dir, path.normalize(el.replace(/['|"]/g, '')))
       const elLength = el.length
       start = str.indexOf(el)
       for (let point of matchDep) {
@@ -64,7 +80,7 @@ function findMatch(str, strArr, matchArray, pointDep, dir) {
         end: end,
         isCom: isCom,
         elLength: elLength,
-        el:el
+        el: el
       })
     })
   for (let item of matchDep.reverse()) {

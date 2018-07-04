@@ -1,6 +1,6 @@
 # Install
 ```
-cnpm install @mipay/batch // v1.7.1
+cnpm install @mipay/batch // v1.8.1
 ```
 
 #Import
@@ -8,7 +8,7 @@ cnpm install @mipay/batch // v1.7.1
 ...
 },
   "dependencies": {
-    " @mipay/batch": "^1.7.1"
+    " @mipay/batch": "^1.8.1"
   }
 ...
 
@@ -17,26 +17,25 @@ npm install
 * 参考 {wiki}/pages/viewpage.action?pageId=66660757
 
 # Usage
-```
-npm run replace
+如果你正在使用vue-cli  在vue.config.js中
 
 ```
-如果你正在使用vue-cli 可以在package.json中添加命令
-```
-  "re":"node node_modules/@mipay/batch/index.js"
-  //然后使用npm run re 启动
+const {Batch} = require('@mipay/batch')
+
+configureWebpack:config=>{
+  return  plugins: [new Batch()]
+}
 ```
 
 # Config
 
-* 你需要预先配置被依赖的配置文件来告诉脚本你需要做哪些工作或需要改变哪些目录用于针对目录不相同的前端工程
-* 所以我始终推荐方法调用的形式来执行batch包
+* 推荐预先设置参数来告诉脚本你需要做哪些工作或需要改变哪些目录用于针对目录不相同的前端工程
+
 ```
 
-const miui = require('PACKAGENAME')  
-miui.start({deep:true})
-
-// 推荐使用deep模式重新上传所有待上传文件
+new Batch(['./public','./src']) //cli3.0
+new Batch(['./static','./src']) //cli2.0
+// 插件将默认使用deep模式进行覆盖上传
 ```
 
 ```
@@ -63,22 +62,14 @@ miui.start({deep:true})
 }
 */
 
-// 禁止修改配置文件的key值以避免不必要的错误，config的值将全部覆盖该配置文件
+// 禁止修改配置文件的key值以避免不必要的错误，目前只推荐修改fileUpdatePath路径
 
 ```
-
-### Tips 
-* 如果你了解batch包的默认配置且符合你的基本需求 可以使用npm script的形式调用此包
-
-```
-npm run replace
-```
-* 就像使用webpack一样
 
 # function 
 * 自动替换html,js,css文件中，可识别的图片资源文件路径，目前支持(png,jpg,jpeg)三种格式
 * 自动生成ignored文件 可以像使用gitignored一样忽略你不想遍历的文件夹或忽略某个特定文件来降低遍历深度提高性能
-* 使用完整路径代表一个图片，避免出现路径确实导致的无法替换现象
+* 使用完整路径代表一个图片，避免出现路径缺失导致的无法替换现象
 * 支持不同目录下的同名文件替换
 
 
@@ -88,6 +79,7 @@ npm run replace
 ### >=v1.8.0
 * 支持替换不同路径下的同名文件
 * 改写替换方式，支持js文件替换
+* 全文件https替换
 
 ### >=v1.7.0 
 * 改写getImg方法的正则 使其可以匹配更多的非预期文件
@@ -106,8 +98,3 @@ npm run replace
 * 请规范图片文件的命名格式,禁止重复命名
 * 目前支持手动和自动两种模式,不推荐在script标签下放置图片的相对路径,将有可能不会被脚本识别和替换
 * 如必须在script标签下放置图片的相对路径,请使用手动替换功能
-
-
-### future
-
-* 增加可拓展性和可配置性 自动生成一个文件放置可配置项 用户可以通过该配置文件与此包进行交互

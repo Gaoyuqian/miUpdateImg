@@ -1,33 +1,19 @@
-const {uploadFile,uploadFileObj} = require('./util/fileDispose/fileUpload')
-const {Files} = require('./util/fileSystem/Files')
-const {fileDisplay} = require('./util/fileDispose/fileDisplay')
-const {getNativeAddr,getThumbnailAddr} = require('./getImgAddr/getImgAddr')
-const {searchFile} = require('./util/fileReplace/fileReplace')
-const {Dep} = require('./util/fileSystem/depend')
-const PromiseArr = new Dep();    
+const { start } = require('./util/start')
 
-function start(param={}){
-    const config = param.config||{}
-    const deep = param.deep||false  
-    global.__config = config
-    global.__conf = new Files('./miuiFile.json') 
-    global.__file = new Files(__conf.content['output'])
-    const display = fileDisplay(__conf.content['fileUpdatePath'],deep)
-    display.get().forEach( el =>{
-      PromiseArr.set(uploadFile(el,deep))        
-    })
-    Promise.all(PromiseArr.get()).then(()=>{
-        if(deep){
-            __file.writeMyFileAll(JSON.stringify(uploadFileObj),__file.file)                    
-        }else{
-            __file.writeMyFile(JSON.stringify(uploadFileObj),__file.file)                    
-        }
-        searchFile(__conf.content['fileFindPath'])
-    }).catch((e)=>{
-        console.log(e)
-    }) 
+function Batch(option) {
+  this.option = option || false
 }
-start({deep:true})
+Batch.prototype.apply = function (compiler) {
+  compiler.plugin('run', (compilation, callback) =>{
+    start({
+      fileUpdatePath:this.option,
+      deep: true,
+      context: compilation.options.context,
+      alias: compilation.options.resolve.alias
+    })
+    callback()
+  })
+}
 module.exports = {
-    getNativeAddr,getThumbnailAddr,start
+  Batch
 }
