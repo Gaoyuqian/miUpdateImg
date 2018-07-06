@@ -1,25 +1,12 @@
-const {
-  fileDisplay
-} = require('./../fileDispose/fileDisplay.js')
-const {
-  getNativeAddr,
-  getThumbnailAddr
-} = require('./../../getImgAddr/getImgAddr')
-const {
-  Files
-} = require('./../../util/fileSystem/Files')
-const {
-  path
-} = require('./../../util/main')
+const {fileDisplay} = require('./../fileDispose/fileDisplay.js')
+const {getNativeAddr} = require('./../../getImgAddr/getImgAddr')
+const {Files} = require('./../../util/fileSystem/Files')
+const {path} = require('./../../util/main')
 
 
 //  需要先分块获取 然后判断位置是在某个模块里
 function searchFile(addr, alias, context, model = 'find') {
-
-  // const replaceRegHtml = /[^\:]src=['|"](\S*)['|"]/g
-  // const replaceRegCss = /url\(['|"]?(.*[^\.css|\.scss|\.less|\{\}\$])['|"]?\)/g
-  // const replaceRegJs = /\$mi_[a-zA-Z0-9]*\:[\s]?['|"](\S*)['|"]/g
-  const replaceRegPng = /(\"|\')[a-zA-Z0-9_*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}(\"|\')/g
+  const replaceRegPng = /[a-zA-Z0-9_*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}/g
   const replaceDep = fileDisplay(addr, false, model)
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
   const dep = replaceDep.get()
@@ -34,20 +21,15 @@ function searchFile(addr, alias, context, model = 'find') {
     )
   })
 }
-/*
- * vue css文件可以同时获取所有的注释点阵
- * 
- * 得把css样式替换的内容和html替换的内容分开替换！！！！
- * 则不应该使用一个matchArray
- * 
- */
+
 function aliasReplace(el, alias = {}, context) {
+  // 替换别名
   let _$ = false
   if (Object.keys(alias).length == '0') {
     return false
   } else {
     for (let i in alias) {
-      const reg = new RegExp('(\"|\')' + i + '(?=\/)')
+      const reg = new RegExp(i + '(?=\/)')
       const _el = el.replace(reg, alias[i])
       if (_el !== el) {
         _$ = _el.replace(context + '/', '').replace(/(\"|\')/, '')
@@ -58,6 +40,7 @@ function aliasReplace(el, alias = {}, context) {
 }
 
 function findMatch(str, strArr, matchArray, pointDep, dir, alias, context) {
+  // 替换主函数
   const matchDep = []
   let start = 0,
     end = 0
@@ -85,11 +68,11 @@ function findMatch(str, strArr, matchArray, pointDep, dir, alias, context) {
     })
   for (let item of matchDep.reverse()) {
     if (!item.isCom) {
-      const addr = getNativeAddr(item.name)
+      const addr = getNativeAddr(item.name,item.el)
       strArr.splice(
         item.start,
         item.elLength,
-        addr ? `'${addr}'` : item.el
+        addr || item.el
       )
     }
   }
@@ -153,6 +136,7 @@ function getCommentsDepHtml(str) {
 }
 
 function isComments(start, end, pointDep) {
+  // 判断是否是注释中的
   if (pointDep.length !== 0) {
     for (let item of pointDep) {
       if (start > item.start && end < item.end) {

@@ -1,6 +1,6 @@
 # Install
 ```
-cnpm install @mipay/batch // v1.8.1
+cnpm install @mipay/batch // v1.8.3
 ```
 
 #Import
@@ -8,7 +8,7 @@ cnpm install @mipay/batch // v1.8.1
 ...
 },
   "dependencies": {
-    " @mipay/batch": "^1.8.1"
+    " @mipay/batch": "^1.8.3"
   }
 ...
 
@@ -17,14 +17,20 @@ npm install
 * 参考 {wiki}/pages/viewpage.action?pageId=66660757
 
 # Usage
-如果你正在使用vue-cli  在vue.config.js中
+如果你正在使用vue-cli  
 
 ```
+// cli 3.0
 const {Batch} = require('@mipay/batch')
 
 configureWebpack:config=>{
-  return  plugins: [new Batch()]
+  return  plugins: [new Batch(option)]
 }
+
+// 其他
+plugins: [
+  new Batch(option)
+]
 ```
 
 # Config
@@ -32,17 +38,15 @@ configureWebpack:config=>{
 * 推荐预先设置参数来告诉脚本你需要做哪些工作或需要改变哪些目录用于针对目录不相同的前端工程
 
 ```
-
-new Batch(['./public','./src']) //cli3.0
-new Batch(['./static','./src']) //cli2.0
-// 插件将默认使用deep模式进行覆盖上传
+// 推荐配置
+{
+// 'fileUpdatePath': ['./static', './src'],// 所有被依赖的图片资源路径 cli 2.0
+// 'fileUpdatePath': ['./public', './src'],// 所有被依赖的图片资源路径 cli 3.0
+'staticSrc': 'static' // 期望的静态资源路径 所有的未被正常替换的文件将从这里寻找
+}
 ```
 
 ```
-
-// start接受一个Object类型的参数，其可选的key包含
-// deep: 开启deep模式 全量上传而非增量上传，如同名文件变更文件内容则必须使用deep模式上传
-// config : 修改默认的配置参数 默认的配置参数如下
 
 /*
 {
@@ -75,26 +79,12 @@ new Batch(['./static','./src']) //cli2.0
 
 
 # Log
+### v1.8.3
+* 优化替换逻辑
+* 适配eslint
+* 增加二级匹配方式
 
 ### >=v1.8.0
 * 支持替换不同路径下的同名文件
 * 改写替换方式，支持js文件替换
 * 全文件https替换
-
-### >=v1.7.0 
-* 改写getImg方法的正则 使其可以匹配更多的非预期文件
-* 支持匹配css文件内的路径
-* 多个同名文件的地址会被覆盖(如有需求可酌情修复)
-* 可替换.vue文件中的css样式图片和js字符串图片
-* 若期望js字符串图片被替换，请使用$mi_${imgname}命名静态资源图片
-
-### v1.6.0
-
-* 重写忽略判断逻辑,提高循环效率,在大型项目中将有更优秀的性能
-* 重写注释替换逻辑,现在可以在文件的任意位置使用注释来阻止脚本替换该文件
-* 配置文件可以配置多个入口,这样做减少igonred文件的读取次数
-* 支持手动更改配置文件,只需给start方法传入相应参数
-* deep模式将支持更多覆盖功能
-* 请规范图片文件的命名格式,禁止重复命名
-* 目前支持手动和自动两种模式,不推荐在script标签下放置图片的相对路径,将有可能不会被脚本识别和替换
-* 如必须在script标签下放置图片的相对路径,请使用手动替换功能

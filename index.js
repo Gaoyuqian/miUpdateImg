@@ -6,12 +6,13 @@ function Batch(option) {
 Batch.prototype.apply = function (compiler) {
   compiler.plugin('run', (compilation, callback) =>{
     start({
-      fileUpdatePath:this.option,
+      fileUpdatePath:this.option.fileUpdatePath,
+      staticSrc:this.option.staticSrc,
       deep: true,
       context: compilation.options.context,
-      alias: compilation.options.resolve.alias
+      alias: compilation.options.resolve.alias,
+      callback:callback
     })
-    callback()
   })
 }
 module.exports = {
