@@ -1,6 +1,6 @@
 # Install
 ```
-cnpm install @mipay/batch // v1.8.4
+cnpm install @mipay/batch // v1.8.6
 ```
 
 #Import
@@ -8,7 +8,7 @@ cnpm install @mipay/batch // v1.8.4
 ...
 },
   "dependencies": {
-    "@mipay/batch": "^1.8.5"
+    "@mipay/batch": "^1.8.6"
   }
 ...
 
