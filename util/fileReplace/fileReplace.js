@@ -6,7 +6,8 @@ const {path} = require('./../../util/main')
 
 //  需要先分块获取 然后判断位置是在某个模块里
 function searchFile(addr, alias, context, model = 'find') {
-  const replaceRegPng = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}/g
+  // const replaceRegPng = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}/g
+  const replaceRegPng = /(?:['|"])[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}(?:['|"])/g
   const replaceDep = fileDisplay(addr, false, model)
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
   const dep = replaceDep.get()
@@ -41,6 +42,8 @@ function aliasReplace(el, alias = {}, context) {
 
 function findMatch(str, strArr, matchArray, pointDep, dir, alias, context,element) {
   // 替换主函数
+  const cutNameReg = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\\]*(?=\.png|\.jpg|\.jpeg){1}/g
+  const cutFormReg = /(\.png|\.jpg|\.jpeg)/g
   const matchDep = []
   let start = 0,
     end = 0
@@ -50,7 +53,7 @@ function findMatch(str, strArr, matchArray, pointDep, dir, alias, context,elemen
       const elLength = el.length
       start = str.indexOf(el)
       for (let point of matchDep) {
-        if (point.name === matchAddr) {
+        if (point.addr === matchAddr) {
           // 如果重复 则从下一个开始找
           start = str.indexOf(el, point.end)
         }
@@ -58,22 +61,26 @@ function findMatch(str, strArr, matchArray, pointDep, dir, alias, context,elemen
       end = start + elLength
       const isCom = isComments(start, end, pointDep)
       matchDep.push({
-        name: matchAddr,
+        addr: matchAddr,
         start: start,
         end: end,
         isCom: isCom,
         elLength: elLength,
         el: el,
-        file:element
-      })
+        file:element,
+        name:el.match(cutNameReg)[0],
+        form:el.match(cutFormReg)[0]
+      }) 
     })
+    console.log(matchDep)
   for (let item of matchDep.reverse()) {
+    const quota = /\'/.test(item.el)?`'`:`"`
     if (!item.isCom) {
-      const addr = getNativeAddr(item.name,item.el)
+      const addr = getNativeAddr(item.addr,item.el,item.name,item.form)
       strArr.splice(
         item.start,
         item.elLength,
-        addr || item.el
+       addr? quota + addr + quota : item.el
       )
     }
   }
