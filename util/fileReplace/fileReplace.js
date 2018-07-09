@@ -72,7 +72,6 @@ function findMatch(str, strArr, matchArray, pointDep, dir, alias, context,elemen
         form:el.match(cutFormReg)[0]
       }) 
     })
-    console.log(matchDep)
   for (let item of matchDep.reverse()) {
     const quota = /\'/.test(item.el)?`'`:`"`
     if (!item.isCom) {

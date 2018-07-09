@@ -7,7 +7,6 @@ function getNativeAddr(addr, el,name,form) {
   const isSmall = __smallFileDep.get().some((item) => {
     return item === addr
   })
-  console.log(path.join(`${__staticSrc}/images/`, `${name}${form}`))
   if (isSmall) return false
   return content[addr] ? `${detailSrc}${content[addr]}` : el ? getNativeAddr(path.join(`${__staticSrc}/images/`, `${name}${form}`)) : false
 }
