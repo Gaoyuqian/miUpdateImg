@@ -7,12 +7,14 @@ const {_config} = require('./global/global')
 const PromiseArr = new Dep();    
 
 function start(param={}){
-    const {config,deep,alias,context,fileUpdatePath,callback,staticSrc} = param 
+    const {config,deep,alias,context,fileUpdatePath,callback,staticSrc,size} = param 
 
     global.__config = config||_config
     global.__conf = new Files('./miuiFile.json') 
     global.__file = new Files(__conf.content['output'])
     global.__staticSrc = staticSrc||'static'
+    global.__size = size||10000
+    global.__smallFileDep = new Dep()
     // 定义全局变量结束 开始设置系统参数
 
     if(fileUpdatePath){
@@ -23,6 +25,7 @@ function start(param={}){
     const display = fileDisplay(__conf.content['fileUpdatePath'],deep)
     // 收集所有图片依赖结束 准备上传文件
 
+    // console.log(display.get(),__smallFileDep.get())
     display.get().forEach( el =>{
       PromiseArr.set(uploadFile(el,deep))        
     }) 

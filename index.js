@@ -7,6 +7,7 @@ Batch.prototype.apply = function (compiler) {
   compiler.plugin('run', (compilation, callback) =>{
     start({
       fileUpdatePath:this.option.fileUpdatePath,
+      size:this.option.size||null,
       staticSrc:this.option.staticSrc,
       deep: true,
       context: compilation.options.context,

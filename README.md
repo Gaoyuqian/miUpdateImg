@@ -1,6 +1,6 @@
 # Install
 ```
-cnpm install @mipay/batch // v1.8.3
+cnpm install @mipay/batch // v1.8.4
 ```
 
 #Import
@@ -8,7 +8,7 @@ cnpm install @mipay/batch // v1.8.3
 ...
 },
   "dependencies": {
-    " @mipay/batch": "^1.8.3"
+    "@mipay/batch": "^1.8.4"
   }
 ...
 
@@ -38,12 +38,13 @@ plugins: [
 * 推荐预先设置参数来告诉脚本你需要做哪些工作或需要改变哪些目录用于针对目录不相同的前端工程
 
 ```
-// 推荐配置
-{
-// 'fileUpdatePath': ['./static', './src'],// 所有被依赖的图片资源路径 cli 2.0
-// 'fileUpdatePath': ['./public', './src'],// 所有被依赖的图片资源路径 cli 3.0
-'staticSrc': 'static' // 期望的静态资源路径 所有的未被正常替换的文件将从这里寻找
-}
+/*
+  插件需要的参数：
+  
+  staticSrc // 当采用某种特殊写法时，文件路径指向打包后的静态资源目录，该属性为插件打包后的静态资源目录名称，当脚本在正常路径下找不到相应文件时，会自动从该路径获取资源。（必填）
+  fileUpdatePath // 所有待上传文件的目录集合，多个目录请使用数组。（必填）
+  size // 单位 byte  当文件大小小于size的时 将不会被替换，使用webpack自带的loader通过base64形式加载出来。默认值为10000byte（选填）
+*/
 ```
 
 ```
@@ -69,22 +70,3 @@ plugins: [
 // 禁止修改配置文件的key值以避免不必要的错误，目前只推荐修改fileUpdatePath路径
 
 ```
-
-# function 
-* 自动替换html,js,css文件中，可识别的图片资源文件路径，目前支持(png,jpg,jpeg)三种格式
-* 自动生成ignored文件 可以像使用gitignored一样忽略你不想遍历的文件夹或忽略某个特定文件来降低遍历深度提高性能
-* 使用完整路径代表一个图片，避免出现路径缺失导致的无法替换现象
-* 支持不同目录下的同名文件替换
-
-
-
-# Log
-### v1.8.3
-* 优化替换逻辑
-* 适配eslint
-* 增加二级匹配方式
-
-### >=v1.8.0
-* 支持替换不同路径下的同名文件
-* 改写替换方式，支持js文件替换
-* 全文件https替换

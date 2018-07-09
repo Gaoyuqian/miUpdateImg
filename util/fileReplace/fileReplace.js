@@ -6,7 +6,7 @@ const {path} = require('./../../util/main')
 
 //  需要先分块获取 然后判断位置是在某个模块里
 function searchFile(addr, alias, context, model = 'find') {
-  const replaceRegPng = /[a-zA-Z0-9_*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}/g
+  const replaceRegPng = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}/g
   const replaceDep = fileDisplay(addr, false, model)
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
   const dep = replaceDep.get()
@@ -17,7 +17,7 @@ function searchFile(addr, alias, context, model = 'find') {
     const isCss = cssReg.test(element)
     const pointDep = getCommentsDepHtml(fileContent, isCss)
     file.writeMyFileAll(
-      findMatch(fileContent, temp, fileContent.match(replaceRegPng), pointDep, path.parse(element).dir, alias, context)
+      findMatch(fileContent, temp, fileContent.match(replaceRegPng), pointDep, path.parse(element).dir, alias, context,element)
     )
   })
 }
@@ -39,7 +39,7 @@ function aliasReplace(el, alias = {}, context) {
   }
 }
 
-function findMatch(str, strArr, matchArray, pointDep, dir, alias, context) {
+function findMatch(str, strArr, matchArray, pointDep, dir, alias, context,element) {
   // 替换主函数
   const matchDep = []
   let start = 0,
@@ -63,7 +63,8 @@ function findMatch(str, strArr, matchArray, pointDep, dir, alias, context) {
         end: end,
         isCom: isCom,
         elLength: elLength,
-        el: el
+        el: el,
+        file:element
       })
     })
   for (let item of matchDep.reverse()) {
