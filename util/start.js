@@ -22,12 +22,14 @@ function start(param={}){
       __conf.writeMyFileAll(__conf.content)
       // 修改默认配置为用户设置的参数结束 准备开始执行脚本
     }
+
     const display = fileDisplay(__conf.content['fileUpdatePath'],deep)
     // 收集所有图片依赖结束 准备上传文件
 
-    // console.log(display.get(),__smallFileDep.get())
     display.get().forEach( el =>{
-      PromiseArr.set(uploadFile(el,deep))        
+      if(!__file.content[el]||deep){
+        PromiseArr.set(uploadFile(el,deep))        
+      }
     }) 
     // 所有图片上传结束 准备写入文件
 

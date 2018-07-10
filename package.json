@@ -1,11 +1,10 @@
 {
   "name": "@mipay/batch",
-  "version": "1.8.6",
+  "version": "1.9.0",
   "description": "batchuploadimage",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "re":"node node_modules/@mipay/batch/index.js"
   },
   "author": "gyq",
   "license": "ISC",

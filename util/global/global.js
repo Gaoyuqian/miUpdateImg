@@ -7,7 +7,7 @@ const _config = {
       "httpsOption": {
           "hostname": "file.market.miui.srv",
           "port": 8756,
-          "path": "/upload?channel=NccFgber",
+          "path": "/upload?channel=ZvsvZc",
           "method": "POST"
       },
       "fileFindPath": "./src"

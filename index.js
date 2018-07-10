@@ -16,6 +16,4 @@ Batch.prototype.apply = function (compiler) {
     })
   })
 }
-module.exports = {
-  Batch
-}
+module.exports = Batch

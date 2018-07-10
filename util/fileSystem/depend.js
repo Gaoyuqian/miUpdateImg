@@ -10,15 +10,6 @@ Dep.prototype.set = function (item) {
 Dep.prototype.equals = function (item) {
   this.Dep = item
 }
-Dep.prototype.isArray = function () {
-  return false
-}
-Dep.prototype.toString = function () {
-  return this.Dep
-}
-Dep.prototype.valueOf = function () {
-  return this.Dep
-}
 Dep.prototype.checkRepeat = function (item) {
   return !!this.Dep.find((val) => {
     return val === item
