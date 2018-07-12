@@ -3,7 +3,7 @@ const { path } = require('./../util/main')
 function getNativeAddr(addr, el,name,form) {
   if (!addr) return false
   const content = __file.readMyFile()
-  const detailSrc = 'https://ts.market.mi-img.com/thumbnail/jpeg/q80/'
+  const detailSrc = 'https://ts.market.mi-img.com/thumbnail/webp/q80/'
   const isSmall = __smallFileDep.get().some((item) => {
     return item === addr
   })
