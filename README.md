@@ -1,6 +1,6 @@
 # Install
 ```
-cnpm install @mipay/batch // v1.9.0
+cnpm install @mipay/batch // v1.9.3
 ```
 
 #Import
@@ -8,7 +8,7 @@ cnpm install @mipay/batch // v1.9.0
 ...
 },
   "dependencies": {
-    "@mipay/batch": "^1.9.0"
+    "@mipay/batch": "^1.9.3"
   }
 ...
 
@@ -17,7 +17,7 @@ npm install
 * 参考 {wiki} http://wiki.n.miui.com/pages/viewpage.action?pageId=5833076
 
 # Usage
-* 如果你正在使用vue-cli  
+*如果你正在使用vue-cli  
 
 ```
 // cli 3.0
