@@ -1,11 +1,13 @@
 const {fs,http} =  require('../main')
 const {getFileMap} = require('../fileUtil/util')
+const _globalVar = require('../global/global.js')
+
 let uploadFileObj = {}
 // 写入的时候 先读取配置文件中的对象然后
 // 对不同的地方进行修改 对新的对象进行添加 对旧属性保持不变
-async function uploadFile (filepath,deep){
+async function uploadFile (filepath){
     return new Promise((resolve,rej)=>{
-        const options =__conf.content['httpsOption']
+        const options =_globalVar.getItem('httpsOption')
         const temp = filepath.split('/')
         const filename = temp[temp.length-1].split('.')[0]
         const boundaryKey = '----' + new Date().getTime();  

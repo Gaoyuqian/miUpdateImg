@@ -1,19 +1,31 @@
 // 定义一些伪全局变量 防止循环引用
-const _config = {
-  'miuiFile.json':{
-      "fileUpdatePath": ["./publish","./src"],
-      "output": "uploadPackage.json",
-      "ignored": "./ignored",
-      "httpsOption": {
-          "hostname": "file.market.miui.srv",
-          "port": 8756,
-          "path": "/upload?channel=ZvsvZc",
-          "method": "POST"
-      },
-      "fileFindPath": "./src"
-  },
-  'uploadPackage.json':{}
+
+class GlobalVar {
+  constructor (options) {
+    this.options = options
+    this.batchObject = {}
+  }
+  isNull (item) {
+    return this.batchObject[item] === void 0 || this.batchObject[item] === null
+  }
+  setItem (name, val) {
+    if (this.isNull(name)) {
+      this.batchObject[name] = val
+      return this.batchObject
+    }
+  }
+  getItem (name) {
+    return this.batchObject[name]
+  }
+  getAll () {
+    return this.batchObject
+  }
+  deleteItem (name) {
+    delete this.batchObject[name]
+    return this.batchObject
+  }
 }
-module.exports = {
-_config
-}
+
+const _globalVar = new GlobalVar()
+
+module.exports = _globalVar

@@ -1,11 +1,44 @@
 const {fileDisplay} = require('./../fileDispose/fileDisplay.js')
-const {getNativeAddr} = require('./../../getImgAddr/getImgAddr')
+const {getNativeAddr,getNativeFile} = require('./../../getImgAddr/getImgAddr')
 const {Files} = require('./../../util/fileSystem/Files')
 const {path} = require('./../../util/main')
+const _globalVar = require('../global/global')
 
+const httpReg = /http:\/\//
+function replaceProloadStatic(addr){
+  const {fileUpdatePath} = _globalVar.getAll()
+  const file = new Files(path.join(fileUpdatePath,addr))
+  let resultHref = file.content.match(/=\/[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]*/g)
+  let content = file.content
+  resultHref&&resultHref.forEach((item)=>{
+    const len = item.split('/').length
+    const result = getNativeFile(item.split('/')[len-1])
+    content = content.replace(item,result)
+  })
+  file.writeMyFileAll(content)  
+}
+
+
+function replaceProloadChunks(addr){
+  const {fileUpdatePath,chunksPath} = _globalVar.getAll()
+  const file = new Files(path.join(fileUpdatePath,addr))
+  let resultHref = file.content.match(/=\/[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]*/g)
+  let content = file.content
+  chunksPath.forEach((item)=>{
+    const newReg = new RegExp(item)
+    resultHref&&resultHref.filter((items)=>{
+      return newReg.test(items)
+    }).forEach((info)=>{
+    const result = getNativeFile(item)      
+    content = content.replace(info,result)
+    })
+  })
+  file.writeMyFileAll(content)
+  replaceProloadStatic(addr)
+}
 
 //  需要先分块获取 然后判断位置是在某个模块里
-function searchFile(addr, alias, context, model = 'find') {
+function searchFile(addr,model = 'find') {
   // const replaceRegPng = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}/g
   const replaceRegPng = /(?:['|"])[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}(?:['|"])/g
   const replaceDep = fileDisplay(addr, false, model)
@@ -18,17 +51,16 @@ function searchFile(addr, alias, context, model = 'find') {
     const isCss = cssReg.test(element)
     const pointDep = getCommentsDepHtml(fileContent, isCss)
     file.writeMyFileAll(
-      findMatch(fileContent, temp, fileContent.match(replaceRegPng), pointDep, path.parse(element).dir, alias, context,element)
+      findMatch(fileContent, temp, fileContent.match(replaceRegPng), pointDep, path.parse(element).dir, element)
     )
   })
 }
 
-function aliasReplace(el, alias = {}, context) {
+function aliasReplace(el) {
   // 替换别名
   let _$ = false
-  if (Object.keys(alias).length == '0') {
-    return false
-  } else {
+  const { alias,context } = _globalVar.getAll()
+  if (Object.keys(alias).length !== '0') {
     for (let i in alias) {
       const reg = new RegExp(i + '(?=\/)')
       const _el = el.replace(reg, alias[i])
@@ -36,11 +68,11 @@ function aliasReplace(el, alias = {}, context) {
         _$ = _el.replace(context + '/', '').replace(/(\"|\')/, '')
       }
     }
-    return _$ || false
   }
+  return _$
 }
 
-function findMatch(str, strArr, matchArray, pointDep, dir, alias, context,element) {
+function findMatch(str, strArr, matchArray, pointDep, dir,element) {
   // 替换主函数
   const cutNameReg = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\\]*(?=\.png|\.jpg|\.jpeg){1}/g
   const cutFormReg = /(\.png|\.jpg|\.jpeg)/g
@@ -49,7 +81,7 @@ function findMatch(str, strArr, matchArray, pointDep, dir, alias, context,elemen
     end = 0
   matchArray &&
     matchArray.forEach(el => {
-      const matchAddr = aliasReplace(el, alias, context) || path.join(dir, path.normalize(el.replace(/['|"]/g, '')))
+      const matchAddr = aliasReplace(el) || path.join(dir, path.normalize(el.replace(/['|"]/g, '')))
       const elLength = el.length
       start = str.indexOf(el)
       for (let point of matchDep) {
@@ -155,5 +187,5 @@ function isComments(start, end, pointDep) {
 }
 
 module.exports = {
-  searchFile
+  searchFile,replaceProloadChunks
 }

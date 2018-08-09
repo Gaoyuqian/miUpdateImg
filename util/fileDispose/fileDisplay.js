@@ -1,24 +1,24 @@
 const {fs,path} = require('./../main')
-const {isIgnoredFile,getFileMap} = require('./../fileUtil/util')
+const {isIgnoredFile,canBeMap} = require('./../fileUtil/util')
 const {Dep} = require('./../fileSystem/depend')
+const _globalVar = require('../global/global.js')
 
 let fileResult
+const smallFileDep = new Dep()
 
 function fileDisplay(filepath, deep, model, dep) {
   // deep 模式 会覆盖之前上传的所有同名文件
   let _dep = dep ? dep : new Dep()
-  if (!fileResult) {
-    fileResult = __file.readMyFile()
-  }
   if (Array.isArray(filepath)) {
     filepath.forEach(el => {
       const files = fs.readdirSync(el)
       addDep(files, el, _dep, deep, model)
     })
-    return _dep
+  }else{
+    const files = fs.readdirSync(filepath)
+    addDep(files, filepath, _dep, deep, model)
   }
-  const files = fs.readdirSync(filepath)
-  addDep(files, filepath, _dep, deep, model)
+  // 检测收集到的依赖是否都是chunks
   return _dep
 }
 
@@ -39,11 +39,13 @@ function addDep(fileArray, filepath, Dep, deep, model) {
           Dep.set(filedir)
         }
       } else {
-        if (getFileMap(filename)) {
-          if (stats.size > __size) {
+        if (canBeMap(filename)) {
+
+          if (stats.size > _globalVar.getItem('size')) {
             Dep.set(filedir)
           } else {
-            __smallFileDep.set(filedir)
+            // 备用
+            smallFileDep.set(filedir)
           }
         } else {
           //  console.log(chalk.yellow('不支持该文件格式,如需支持,请在映射中添加该文件对应的参数值-------')+filedir)   
@@ -65,5 +67,5 @@ function isReplaceableFile(name) {
   return reg.test(name)
 }
 module.exports = {
-  fileDisplay
+  fileDisplay,smallFileDep
 }
