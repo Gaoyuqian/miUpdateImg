@@ -51,7 +51,7 @@ module.exports = {
         }
         return: 返回对应的fileMap中的映射字符串
     */
-    fileMap = {
+    const fileMap = {
       'jpg': 'image/jpeg',
       'jpeg': 'image/jpeg',
       'png': "image/png",

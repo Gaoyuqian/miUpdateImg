@@ -1,36 +1,34 @@
 const {fileDisplay} = require('./../fileDispose/fileDisplay.js')
-const {getNativeAddr,getNativeFile} = require('./../../getImgAddr/getImgAddr')
+const {getNativeAddr, getNativeFile} = require('./../../getImgAddr/getImgAddr')
 const {Files} = require('./../../util/fileSystem/Files')
 const {path} = require('./../../util/main')
 const _globalVar = require('../global/global')
 
-const httpReg = /http:\/\//
-function replaceProloadStatic(addr){
+function replaceProloadStatic (addr) {
   const {fileUpdatePath} = _globalVar.getAll()
-  const file = new Files(path.join(fileUpdatePath,addr))
-  let resultHref = file.content.match(/=\/[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]*/g)
+  const file = new Files(path.join(fileUpdatePath, addr))
+  let resultHref = file.content.match(/=[/|.][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g)
   let content = file.content
-  resultHref&&resultHref.forEach((item)=>{
+  resultHref && resultHref.forEach((item) => {
     const len = item.split('/').length
-    const result = getNativeFile(item.split('/')[len-1])
-    content = content.replace(item,result)
+    const result = getNativeFile(item.split('/')[len - 1])
+    content = content.replace(item, result)
   })
-  file.writeMyFileAll(content)  
+  file.writeMyFileAll(content)
 }
 
-
-function replaceProloadChunks(addr){
-  const {fileUpdatePath,chunksPath} = _globalVar.getAll()
-  const file = new Files(path.join(fileUpdatePath,addr))
-  let resultHref = file.content.match(/=\/[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]*/g)
+function replaceProloadChunks (addr) {
+  const {fileUpdatePath, chunksPath} = _globalVar.getAll()
+  const file = new Files(path.join(fileUpdatePath, addr))
+  let resultHref = file.content.match(/=\/[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!/\\\\.]*/g)
   let content = file.content
-  chunksPath.forEach((item)=>{
+  chunksPath.forEach((item) => {
     const newReg = new RegExp(item)
-    resultHref&&resultHref.filter((items)=>{
+    resultHref && resultHref.filter((items) => {
       return newReg.test(items)
-    }).forEach((info)=>{
-    const result = getNativeFile(item)      
-    content = content.replace(info,result)
+    }).forEach((info) => {
+      const result = getNativeFile(item)
+      content = content.replace(info, result)
     })
   })
   file.writeMyFileAll(content)
@@ -38,8 +36,7 @@ function replaceProloadChunks(addr){
 }
 
 //  需要先分块获取 然后判断位置是在某个模块里
-function searchFile(addr,model = 'find') {
-  // const replaceRegPng = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}/g
+function searchFile (addr, model = 'find') {
   const replaceRegPng = /(?:['|"])[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}(?:['|"])/g
   const replaceDep = fileDisplay(addr, false, model)
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
@@ -56,10 +53,10 @@ function searchFile(addr,model = 'find') {
   })
 }
 
-function aliasReplace(el) {
+function aliasReplace (el) {
   // 替换别名
   let _$ = false
-  const { alias,context } = _globalVar.getAll()
+  const { alias, context } = _globalVar.getAll()
   if (Object.keys(alias).length !== '0') {
     for (let i in alias) {
       const reg = new RegExp(i + '(?=\/)')
@@ -72,7 +69,7 @@ function aliasReplace(el) {
   return _$
 }
 
-function findMatch(str, strArr, matchArray, pointDep, dir,element) {
+function findMatch (str, strArr, matchArray, pointDep, dir, element) {
   // 替换主函数
   const cutNameReg = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\\]*(?=\.png|\.jpg|\.jpeg){1}/g
   const cutFormReg = /(\.png|\.jpg|\.jpeg)/g
@@ -99,26 +96,26 @@ function findMatch(str, strArr, matchArray, pointDep, dir,element) {
         isCom: isCom,
         elLength: elLength,
         el: el,
-        file:element,
-        name:el.match(cutNameReg)[0],
-        form:el.match(cutFormReg)[0]
-      }) 
+        file: element,
+        name: el.match(cutNameReg)[0],
+        form: el.match(cutFormReg)[0]
+      })
     })
   for (let item of matchDep.reverse()) {
-    const quota = /\'/.test(item.el)?`'`:`"`
+    const quota = /\'/.test(item.el) ? `'` : `"`
     if (!item.isCom) {
-      const addr = getNativeAddr(item.addr,item.el,item.name,item.form)
+      const addr = getNativeAddr(item.addr, item.el, item.name, item.form)
       strArr.splice(
         item.start,
         item.elLength,
-       addr? quota + addr + quota : item.el
+        addr ? quota + addr + quota : item.el
       )
     }
   }
   return strArr.join('')
 }
 
-function getCommentsDepHtml(str) {
+function getCommentsDepHtml (str) {
   // 返回注释的点阵区间
   const pointDep = []
   let strStart = 0,
@@ -159,10 +156,9 @@ function getCommentsDepHtml(str) {
     for (let item of matchJs) {
       const startIndex = str.substring(strEnd).indexOf('// ')
       // startIndex 是注释的开头坐标 基于上一个注释的结尾坐标获取的
-      // endIndex 是从注释开头的坐标到该注释结尾的坐标 基于注释开头坐标获取的 
+      // endIndex 是从注释开头的坐标到该注释结尾的坐标 基于注释开头坐标获取的
       // 注释结尾是相对于注释开头坐标计算长度
       const endIndex = str.substring(startIndex + strEnd).indexOf('\n')
-
       strStart = startIndex + strEnd
       strEnd = endIndex + startIndex + strEnd
       pointDep.push({
@@ -174,7 +170,7 @@ function getCommentsDepHtml(str) {
   return pointDep
 }
 
-function isComments(start, end, pointDep) {
+function isComments (start, end, pointDep) {
   // 判断是否是注释中的
   if (pointDep.length !== 0) {
     for (let item of pointDep) {
@@ -187,5 +183,5 @@ function isComments(start, end, pointDep) {
 }
 
 module.exports = {
-  searchFile,replaceProloadChunks
+  searchFile, replaceProloadChunks
 }

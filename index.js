@@ -57,7 +57,6 @@ Batch.prototype.apply = function (compiler) {
       alias: compilation.options.resolve.alias,
       callback: callback
     })
-    callback()
   })
   const needIgnored = (item) => {
     for (let reg of fileBlacklist) {

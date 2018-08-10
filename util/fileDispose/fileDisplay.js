@@ -2,27 +2,24 @@ const {fs,path} = require('./../main')
 const {isIgnoredFile,canBeMap} = require('./../fileUtil/util')
 const {Dep} = require('./../fileSystem/depend')
 const _globalVar = require('../global/global.js')
-
-let fileResult
 const smallFileDep = new Dep()
 
-function fileDisplay(filepath, deep, model, dep) {
-  // deep 模式 会覆盖之前上传的所有同名文件
+function fileDisplay(filepath, model, dep) {
   let _dep = dep ? dep : new Dep()
   if (Array.isArray(filepath)) {
     filepath.forEach(el => {
       const files = fs.readdirSync(el)
-      addDep(files, el, _dep, deep, model)
+      addDep(files, el, _dep, model)
     })
-  }else{
+  } else {
     const files = fs.readdirSync(filepath)
-    addDep(files, filepath, _dep, deep, model)
+    addDep(files, filepath, _dep, model)
   }
   // 检测收集到的依赖是否都是chunks
   return _dep
 }
 
-function addDep(fileArray, filepath, Dep, deep, model) {
+function addDep(fileArray, filepath, Dep, model) {
   fileArray.forEach(filename => {
     const filedir = path.join(filepath, filename)
     const stats = fs.statSync(filedir)
@@ -40,7 +37,6 @@ function addDep(fileArray, filepath, Dep, deep, model) {
         }
       } else {
         if (canBeMap(filename)) {
-
           if (stats.size > _globalVar.getItem('size')) {
             Dep.set(filedir)
           } else {
@@ -56,7 +52,7 @@ function addDep(fileArray, filepath, Dep, deep, model) {
         // console.log(chalk.yellow('该路径已被忽略-------')+filedir)                    
         return
       } else {
-        fileDisplay(filedir, deep, model, Dep)
+        fileDisplay(filedir, model, Dep)
       }
     }
   })
@@ -67,5 +63,6 @@ function isReplaceableFile(name) {
   return reg.test(name)
 }
 module.exports = {
-  fileDisplay,smallFileDep
+  fileDisplay,
+  smallFileDep
 }

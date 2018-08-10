@@ -1,6 +1,6 @@
 # Install
 ```
-cnpm install @mipay/batch // v1.9.4
+cnpm install @mipay/batch // v1.9.5
 ```
 
 # Import
@@ -8,7 +8,7 @@ cnpm install @mipay/batch // v1.9.4
 ...
 },
   "dependencies": {
-    "@mipay/batch": "^1.9.4"
+    "@mipay/batch": "^1.9.5"
   }
 ...
 
@@ -44,16 +44,13 @@ plugins: [
   staticSrc         当采用某种特殊写法时，文件路径指向打包后的静态资源目录，该属性为插件打包后的静态资源目录名                      称，当脚本在正常路径下找不到相应文件时，会自动从该路径获取资源。（必填）
   fileUpdatePath    所有待上传文件的目录集合，多个目录请使用数组。（必填）
   size              单位 byte  当文件大小小于size的时 将不会被替换，使用webpack自带的loader通过base64形式                     加载出来。默认值为10000byte（选填）
-  deep              是否使用deep模式  非deep模式会比对所有依赖文件是否曾经被上传成功过 减少http请求数
-                    deep模式会将所有依赖文件重新上传。 默认值为false(选填)
 */
 
 // example
   plugins: [new Batch({
     'fileUpdatePath': ['./public', './src'],
     'staticSrc': 'public',
-    'size':1,
-    'deep':false
+    'size':1
   })]
 
 ```
