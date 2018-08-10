@@ -38,7 +38,7 @@ function replaceProloadChunks (addr) {
 //  需要先分块获取 然后判断位置是在某个模块里
 function searchFile (addr, model = 'find') {
   const replaceRegPng = /(?:['|"])[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}(?:['|"])/g
-  const replaceDep = fileDisplay(addr, false, model)
+  const replaceDep = fileDisplay(addr, model)
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
   const dep = replaceDep.get()
   dep.forEach(element => {
