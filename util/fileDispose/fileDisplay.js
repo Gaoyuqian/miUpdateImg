@@ -1,11 +1,19 @@
-const {fs,path} = require('./../main')
-const {isIgnoredFile,canBeMap} = require('./../fileUtil/util')
-const {Dep} = require('./../fileSystem/depend')
+const {
+  fs,
+  path
+} = require('./../main')
+const {
+  isIgnoredFile,
+  canBeMap
+} = require('./../fileUtil/util')
+const {
+  Dep
+} = require('./../fileSystem/depend')
 const _globalVar = require('../global/global.js')
 const smallFileDep = new Dep()
 
-function fileDisplay(filepath, model, dep) {
-  let _dep = dep ? dep : new Dep()
+function fileDisplay (filepath, model, dep) {
+  let _dep = dep || new Dep()
   if (Array.isArray(filepath)) {
     filepath.forEach(el => {
       const files = fs.readdirSync(el)
@@ -19,15 +27,15 @@ function fileDisplay(filepath, model, dep) {
   return _dep
 }
 
-function addDep(fileArray, filepath, Dep, model) {
+function addDep (fileArray, filepath, Dep, model) {
   fileArray.forEach(filename => {
     const filedir = path.join(filepath, filename)
     const stats = fs.statSync(filedir)
-    const isFile = stats.isFile();
-    const isDir = stats.isDirectory();
+    const isFile = stats.isFile()
+    const isDir = stats.isDirectory()
     if (isFile) {
       if (isIgnoredFile(filedir, false) === 'single') {
-        // console.log(chalk.yellow('该文件已被忽略-------')+filedir)      
+        // console.log(chalk.yellow('该文件已被忽略-------')+filedir)
         return
       }
       if (model === 'find') {
@@ -44,13 +52,13 @@ function addDep(fileArray, filepath, Dep, model) {
             smallFileDep.set(filedir)
           }
         } else {
-          //  console.log(chalk.yellow('不支持该文件格式,如需支持,请在映射中添加该文件对应的参数值-------')+filedir)   
+          // console.log('不支持该文件格式,如需支持,请在映射中添加该文件对应的参数值-------' + filedir)
         }
       }
     } else if (isDir) {
       if (isIgnoredFile(filedir, true) === 'all') {
-        // console.log(chalk.yellow('该路径已被忽略-------')+filedir)                    
-        return
+        // console.log(chalk.yellow('该路径已被忽略-------')+filedir)
+
       } else {
         fileDisplay(filedir, model, Dep)
       }
@@ -58,11 +66,12 @@ function addDep(fileArray, filepath, Dep, model) {
   })
 }
 
-function isReplaceableFile(name) {
+function isReplaceableFile (name) {
   const reg = /(\.vue$)|(\.html$)|(\.css$)|(\.scss$)|(\.less$)/
   return reg.test(name)
 }
 module.exports = {
   fileDisplay,
-  smallFileDep
+  smallFileDep,
+  addDep
 }

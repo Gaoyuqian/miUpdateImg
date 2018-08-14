@@ -2,14 +2,14 @@ const { fs } = require('../main.js')
 const _globalVar = require('../global/global.js')
 
 module.exports = {
-  isIgnoredFile: (name, isDir) => { //判断文件是否在ignored中被忽略
+  isIgnoredFile: (name, isDir) => { // 判断文件是否在ignored中被忽略
     /*
         param:{
             name //文件路径
         }
-        
+
         return: 返回Boolean 表示该文件路径是否在配置文件中被标记为可忽略文件
-        
+
         tip: 被标记为可忽略文件的文件夹下的所有文件均不会被添加依赖
     */
     try {
@@ -23,7 +23,7 @@ module.exports = {
           if (isDir) {
             name += '/'
           }
-          if (name.indexOf(item) != '-1') {
+          if (name.indexOf(item) !== '-1') {
             if (/\/$/.test(name)) {
               return 'all'
             }
@@ -44,7 +44,7 @@ module.exports = {
       return fileList.test(name)
     }
   },
-  getFileMap: (fileName) => { // 选择请求体中的type字段 
+  getFileMap: (fileName) => { // 选择请求体中的type字段
     /*
         param :{
             fileName // 文件名或者文件路径（包含拓展名）
@@ -54,14 +54,14 @@ module.exports = {
     const fileMap = {
       'jpg': 'image/jpeg',
       'jpeg': 'image/jpeg',
-      'png': "image/png",
-      'js':'text/javascript',
-      'css':'text/css',
-      'ico':'image/vnd.microsoft.icon'
+      'png': 'image/png',
+      'js': 'text/javascript',
+      'css': 'text/css',
+      'ico': 'image/vnd.microsoft.icon'
     }
     let lastName = fileName.split('.')
     lastName = fileName.split('.')[lastName.length - 1]
-    return fileMap[`${lastName}`];
+    return fileMap[`${lastName}`]
   }
 
 }

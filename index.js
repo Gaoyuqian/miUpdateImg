@@ -1,18 +1,43 @@
-function Batch(option) {
+function Batch (option) {
   this.option = option || false
 }
 
 // 准备重构
 //  几个要点  梳理代码逻辑，去掉不必要的逻辑，去掉全局变量 改为局部对象的key值，简化参数个数 使逻辑更清晰 期望工厂函数
 // 改写函数
+// 方向1 找到原始的html？ 可行性比较低
+// 方向2 找到转换后的html 匹配所有src和icon 可行性比较高
 
 Batch.prototype.apply = function (compiler) {
   let filepath = ''
   let chunksPath = ''
-  let html = ''
   let fileBlacklist = [/\.map/]
   let outputName = ''
-  compiler.plugin('compilation', function (compilation, options) {
+  let tempChunks = []
+  let staticChunks = []
+  compiler.plugin('compilation', (compilation, options) => {
+    compilation.plugin('html-webpack-plugin-before-html-processing', (compil) => {
+      // indexHtml = compil.html
+      const html = compil.html
+      const staticReg = /src=['|"][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g // 添加静态src资源
+      // 添加icon资源
+      const iconReg = /href=[./a-z'"]*(.ico)/g
+      let staticRes = html.match(staticReg)
+      let iconRes = html.match(iconReg)
+      if (Array.isArray(staticRes)) {
+        staticRes = staticRes.map(item => {
+          return item.replace(/src=['|"]/, '')
+        }).filter(item => {
+          return !/^http/.test(item)
+        })
+      }
+      if (Array.isArray(iconRes)) {
+        iconRes = iconRes.map(item => {
+          return item.replace(/href=['|"]/, '')
+        })
+      }
+      staticChunks = staticChunks.concat(iconRes).concat(staticRes)
+    })
     compilation.plugin('html-webpack-plugin-after-html-processing', (htmlPluginData) => {
       filepath = compilation.options.output.path
       outputName = htmlPluginData.outputName
@@ -22,7 +47,7 @@ Batch.prototype.apply = function (compiler) {
       }) => {
         return initialChunks.concat(chunks)
       }, [])
-      const tempChunks = initialChunks.map((chunks) => chunks.files).reduce((prev, curr) => prev.concat(curr), []).filter((item) => !needIgnored(item))
+      tempChunks = initialChunks.map((chunks) => chunks.files).reduce((prev, curr) => prev.concat(curr), []).filter((item) => !needIgnored(item))
       let extractedChunks = compilation.chunks.filter(chunk => {
         return initialChunks.indexOf(chunk) < 0
       })
@@ -44,7 +69,12 @@ Batch.prototype.apply = function (compiler) {
         }, false)
       })
       chunksPath = extractedChunks = extractedChunks.map((chunks) => chunks.files).reduce((prev, curr) => prev.concat(curr), []).filter((item) => !needIgnored(item))
-      chunksPath = chunksPath.concat(tempChunks)
+      tempChunks = tempChunks.concat(staticChunks)
+      if (this.option.preload) {
+        // 默认不替换
+        // tempChunks 是默认的app文件 不含preload文件
+        tempChunks = tempChunks.concat(chunksPath)
+      }
     })
   })
   compiler.plugin('run', (compilation, callback) => {
@@ -87,14 +117,17 @@ Batch.prototype.apply = function (compiler) {
     return false
   }
 
-  compiler.plugin('done', function (comp, callback) {
+  compiler.plugin('done', (comp, callback) => {
+    // chunks去重
+    tempChunks = Array.from(new Set(tempChunks))
     beginBatchProcess({
-      chunksPath: chunksPath,
+      chunksPath: tempChunks,
       fileUpdatePath: filepath,
       callback: callback,
       outputName: outputName,
       batchType: 'file',
       fileList: [/\.js$/, /\.css/, /\.ico/],
+      preload: this.option.preload
     })
   })
 }

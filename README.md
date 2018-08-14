@@ -1,6 +1,6 @@
 # Install
 ```
-cnpm install @mipay/batch // v1.9.5
+cnpm install @mipay/batch // v1.9.6
 ```
 
 # Import
@@ -8,7 +8,7 @@ cnpm install @mipay/batch // v1.9.5
 ...
 },
   "dependencies": {
-    "@mipay/batch": "^1.9.5"
+    "@mipay/batch": "^1.9.6"
   }
 ...
 
@@ -41,16 +41,20 @@ plugins: [
 /*
   插件需要的参数：
   
-  staticSrc         当采用某种特殊写法时，文件路径指向打包后的静态资源目录，该属性为插件打包后的静态资源目录名                      称，当脚本在正常路径下找不到相应文件时，会自动从该路径获取资源。（必填）
+  staticSrc         当采用某种特殊写法时，文件路径指向打包后的静态资源目录，该属性为插件打包后的静态资源目录名
+                    称，当脚本在正常路径下找不到相应文件时，会自动从该路径获取资源。（必填）
   fileUpdatePath    所有待上传文件的目录集合，多个目录请使用数组。（必填）
-  size              单位 byte  当文件大小小于size的时 将不会被替换，使用webpack自带的loader通过base64形式                     加载出来。默认值为10000byte（选填）
+  size              单位 byte  当文件大小小于size的时 将不会被替换，使用webpack自带的loader通过base64形式
+                    加载出来。默认值为10000byte（选填）
+  preload           type: Boolean  是否添加preload插件 若添加 则会替换preload，prefetch文件 默认为true
 */
 
 // example
   plugins: [new Batch({
     'fileUpdatePath': ['./public', './src'],
     'staticSrc': 'public',
-    'size':1
+    'size':1,
+    'preload':true
   })]
 
 ```

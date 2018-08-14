@@ -9,5 +9,6 @@ const qs = require('querystring')
 const path = require('path')
 // const chalk = require('chalk')
 module.exports = {
-    fs,http,qs,path,/*chalk*/
+  fs, http, qs, path
+  /* chalk */
 }

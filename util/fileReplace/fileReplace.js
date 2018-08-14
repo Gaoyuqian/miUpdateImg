@@ -4,23 +4,10 @@ const {Files} = require('./../../util/fileSystem/Files')
 const {path} = require('./../../util/main')
 const _globalVar = require('../global/global')
 
-function replaceProloadStatic (addr) {
-  const {fileUpdatePath} = _globalVar.getAll()
-  const file = new Files(path.join(fileUpdatePath, addr))
-  let resultHref = file.content.match(/=[/|.][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g)
-  let content = file.content
-  resultHref && resultHref.forEach((item) => {
-    const len = item.split('/').length
-    const result = getNativeFile(item.split('/')[len - 1])
-    content = content.replace(item, result)
-  })
-  file.writeMyFileAll(content)
-}
-
 function replaceProloadChunks (addr) {
   const {fileUpdatePath, chunksPath} = _globalVar.getAll()
   const file = new Files(path.join(fileUpdatePath, addr))
-  let resultHref = file.content.match(/=\/[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!/\\\\.]*/g)
+  let resultHref = file.content.match(/=[/|.][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g)
   let content = file.content
   chunksPath.forEach((item) => {
     const newReg = new RegExp(item)
@@ -32,7 +19,6 @@ function replaceProloadChunks (addr) {
     })
   })
   file.writeMyFileAll(content)
-  replaceProloadStatic(addr)
 }
 
 //  需要先分块获取 然后判断位置是在某个模块里
