@@ -14,7 +14,7 @@ function replaceProloadChunks (addr) {
     resultHref && resultHref.filter((items) => {
       return newReg.test(items)
     }).forEach((info) => {
-      const result = getNativeFile(item)
+      const result = getNativeFile(item,info)
       content = content.replace(info, result)
     })
   })
