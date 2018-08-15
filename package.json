@@ -1,6 +1,6 @@
 {
   "name": "@mipay/batch",
-  "version": "1.9.6",
+  "version": "1.9.8",
   "description": "batchuploadimage",
   "main": "index.js",
   "scripts": {

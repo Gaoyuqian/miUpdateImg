@@ -21,9 +21,10 @@ Batch.prototype.apply = function (compiler) {
       const html = compil.html
       const staticReg = /src=['|"][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g // 添加静态src资源
       // 添加icon资源
-      const iconReg = /href=[./a-z'"]*(.ico)/g
+      const iconReg = /href=[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~'"]*(.ico)/g
       let staticRes = html.match(staticReg)
       let iconRes = html.match(iconReg)
+      console.log(iconRes,html)
       if (Array.isArray(staticRes)) {
         staticRes = staticRes.map(item => {
           return item.replace(/src=['|"]/, '')
@@ -120,6 +121,7 @@ Batch.prototype.apply = function (compiler) {
   compiler.plugin('done', (comp, callback) => {
     // chunks去重
     tempChunks = Array.from(new Set(tempChunks))
+    console.log(tempChunks)
     beginBatchProcess({
       chunksPath: tempChunks,
       fileUpdatePath: filepath,
