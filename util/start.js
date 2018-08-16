@@ -1,7 +1,8 @@
 const {uploadFile, uploadFileObj} = require('./fileDispose/fileUpload')
 const {fileDisplay} = require('./fileDispose/fileDisplay')
-const {searchFile, replaceProloadChunks} = require('./fileReplace/fileReplace')
+const {searchFile, replaceProloadChunks, chunkVendorResourcePath} = require('./fileReplace/fileReplace')
 const _globalVar = require('./global/global')
+// const {File} = require('./fileSystem/File')
 
 const config = {
   'size': 1,
@@ -23,18 +24,18 @@ const config = {
 function beginBatchProcess (param = {}) {
   let _dep = ''
   Object.assign(_globalVar.getAll(), config, param)
-  const {fileUpdatePath} = _globalVar.getAll()
+  const {fileUpdatePath, fileFindPath, outputName, assetsDir, batchType} = _globalVar.getAll()
   // 先组装默认配置再加上用户配置
   _dep = fileDisplay(fileUpdatePath)
   Promise.all(_dep.get().map(el => uploadFile(el))).then(() => {
     _globalVar.setItem('result', uploadFileObj)
-    if (
-      _globalVar.getItem('batchType') === 'img'
-    ) {
-      searchFile(_globalVar.getItem('fileFindPath'))
+    if (batchType === 'img') {
+      searchFile(fileFindPath)
     } else {
-      replaceProloadChunks(_globalVar.getItem('outputName'))
+      replaceProloadChunks(outputName)
     }
+  }).then(() => {
+    chunkVendorResourcePath(assetsDir)
   }).then(() => {
     _globalVar.getItem('callback') && _globalVar.getItem('callback')()
   })

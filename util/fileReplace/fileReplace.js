@@ -4,6 +4,17 @@ const {Files} = require('./../../util/fileSystem/Files')
 const {path} = require('./../../util/main')
 const _globalVar = require('../global/global')
 
+function chunkVendorResourcePath (assetsDir) {
+  if (!assetsDir) { return }
+  Object.keys(_globalVar.getItem('result'))
+    .filter(item => new RegExp('chunk-vendor').test(item))
+    .forEach(item => {
+      const file = new Files(item)
+      assetsDir = `/${assetsDir}`
+      file.writeMyFileAll(file.content.replace(new RegExp(assetsDir, 'g'), `.${assetsDir}`))
+    })
+}
+
 function replaceProloadChunks (addr) {
   const {fileUpdatePath, chunksPath} = _globalVar.getAll()
   const file = new Files(path.join(fileUpdatePath, addr))
@@ -14,7 +25,7 @@ function replaceProloadChunks (addr) {
     resultHref && resultHref.filter((items) => {
       return newReg.test(items)
     }).forEach((info) => {
-      const result = getNativeFile(item,info)
+      const result = getNativeFile(item, info)
       content = content.replace(info, result)
     })
   })
@@ -169,5 +180,5 @@ function isComments (start, end, pointDep) {
 }
 
 module.exports = {
-  searchFile, replaceProloadChunks
+  searchFile, replaceProloadChunks, chunkVendorResourcePath
 }
