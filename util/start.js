@@ -27,6 +27,8 @@ function beginBatchProcess (param = {}) {
   const {fileUpdatePath, fileFindPath, outputName, assetsDir, batchType} = _globalVar.getAll()
   // 先组装默认配置再加上用户配置
   _dep = fileDisplay(fileUpdatePath)
+  chunkVendorResourcePath(assetsDir)
+  // dep的时候进行替换 然后上传
   Promise.all(_dep.get().map(el => uploadFile(el))).then(() => {
     _globalVar.setItem('result', uploadFileObj)
     if (batchType === 'img') {
@@ -35,7 +37,6 @@ function beginBatchProcess (param = {}) {
       replaceProloadChunks(outputName)
     }
   }).then(() => {
-    chunkVendorResourcePath(assetsDir)
   }).then(() => {
     _globalVar.getItem('callback') && _globalVar.getItem('callback')()
   })

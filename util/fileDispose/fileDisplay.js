@@ -12,6 +12,16 @@ const {
 const _globalVar = require('../global/global.js')
 const smallFileDep = new Dep()
 
+function chunkVendorResourcePath (assetsDir) {
+  if (!assetsDir) { return }
+  Object.keys(_globalVar.getItem('result'))
+    .filter(item => new RegExp('chunk-vendor').test(item))
+    .forEach(item => {
+      const file = new Files(item)
+      assetsDir = `/${assetsDir}`
+      file.writeMyFileAll(file.content.replace(new RegExp(assetsDir, 'g'), `.${assetsDir}`))
+    })
+}
 function fileDisplay (filepath, model, dep) {
   let _dep = dep || new Dep()
   if (Array.isArray(filepath)) {
@@ -73,5 +83,6 @@ function isReplaceableFile (name) {
 module.exports = {
   fileDisplay,
   smallFileDep,
-  addDep
+  addDep,
+  chunkVendorResourcePath
 }
