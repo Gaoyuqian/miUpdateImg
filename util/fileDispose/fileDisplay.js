@@ -1,20 +1,13 @@
-const {
-  fs,
-  path
-} = require('./../main')
-const {
-  isIgnoredFile,
-  canBeMap
-} = require('./../fileUtil/util')
-const {
-  Dep
-} = require('./../fileSystem/depend')
+const {fs, path} = require('./../main')
+const {isIgnoredFile, canBeMap} = require('./../fileUtil/util')
+const {Dep} = require('./../fileSystem/depend')
 const _globalVar = require('../global/global.js')
 const smallFileDep = new Dep()
+const {Files} = require('./../../util/fileSystem/Files')
 
-function chunkVendorResourcePath (assetsDir) {
+function chunkVendorResourcePath (assetsDir, result) {
   if (!assetsDir) { return }
-  Object.keys(_globalVar.getItem('result'))
+  result
     .filter(item => new RegExp('chunk-vendor').test(item))
     .forEach(item => {
       const file = new Files(item)

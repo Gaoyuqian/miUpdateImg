@@ -169,5 +169,5 @@ function isComments (start, end, pointDep) {
 }
 
 module.exports = {
-  searchFile, replaceProloadChunks, chunkVendorResourcePath
+  searchFile, replaceProloadChunks
 }

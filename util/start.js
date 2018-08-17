@@ -1,6 +1,6 @@
 const {uploadFile, uploadFileObj} = require('./fileDispose/fileUpload')
-const {fileDisplay} = require('./fileDispose/fileDisplay')
-const {searchFile, replaceProloadChunks, chunkVendorResourcePath} = require('./fileReplace/fileReplace')
+const {fileDisplay, chunkVendorResourcePath} = require('./fileDispose/fileDisplay')
+const {searchFile, replaceProloadChunks} = require('./fileReplace/fileReplace')
 const _globalVar = require('./global/global')
 // const {File} = require('./fileSystem/File')
 
@@ -27,7 +27,7 @@ function beginBatchProcess (param = {}) {
   const {fileUpdatePath, fileFindPath, outputName, assetsDir, batchType} = _globalVar.getAll()
   // 先组装默认配置再加上用户配置
   _dep = fileDisplay(fileUpdatePath)
-  chunkVendorResourcePath(assetsDir)
+  chunkVendorResourcePath(assetsDir, _dep.get())
   // dep的时候进行替换 然后上传
   Promise.all(_dep.get().map(el => uploadFile(el))).then(() => {
     _globalVar.setItem('result', uploadFileObj)
