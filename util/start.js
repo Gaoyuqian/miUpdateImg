@@ -37,6 +37,7 @@ function beginBatchProcess (param = {}) {
       replaceProloadChunks(outputName)
     }
   }).then(() => {
+    console.log(result,'gyq')
   }).then(() => {
     _globalVar.getItem('callback') && _globalVar.getItem('callback')()
   })

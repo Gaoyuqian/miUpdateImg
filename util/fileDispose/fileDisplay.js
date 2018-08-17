@@ -13,6 +13,7 @@ function chunkVendorResourcePath (assetsDir, result) {
       const file = new Files(item)
       assetsDir = `/${assetsDir}`
       file.writeMyFileAll(file.content.replace(new RegExp(assetsDir, 'g'), `.${assetsDir}`))
+      console.log(file.content,"gyq")
     })
 }
 function fileDisplay (filepath, model, dep) {
