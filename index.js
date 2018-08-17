@@ -7,7 +7,7 @@ function Batch (option) {
 // 方向1 找到原始的html？ 可行性比较低
 // 方向2 找到转换后的html 匹配所有src和icon 可行性比较高
 Batch.prototype.apply = function (compiler) {
-  const verson = 'v1.9.18'
+  const verson = 'v1.9.19'
   let filepath = ''
   let chunksPath = ''
   let fileBlacklist = [/\.map/]
