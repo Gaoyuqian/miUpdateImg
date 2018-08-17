@@ -6,8 +6,8 @@ function Batch (option) {
 // 改写函数
 // 方向1 找到原始的html？ 可行性比较低
 // 方向2 找到转换后的html 匹配所有src和icon 可行性比较高
+
 Batch.prototype.apply = function (compiler) {
-  const verson = 'v1.9.19'
   let filepath = ''
   let chunksPath = ''
   let fileBlacklist = [/\.map/]
@@ -17,6 +17,7 @@ Batch.prototype.apply = function (compiler) {
   compiler.plugin('compilation', (compilation, callback) => {
     compilation.plugin('html-webpack-plugin-before-html-processing', (compil, call) => {
       // indexHtml = compil.html
+      console.log(compilation.options.assetsDir)
       const html = compil.html
       const staticReg = /src=['|"][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g // 添加静态src资源
       // 添加icon资源
@@ -138,7 +139,7 @@ Batch.prototype.apply = function (compiler) {
       callback: callback,
       outputName: outputName,
       batchType: 'file',
-      fileList: [/\.js$/, /\.css/, /\.ico/],
+      fileList: [/\.js$/, /\.css/, /\.ico/, /\.(woff2?|eot|ttf|otf)(\?.*)?$/i],
       preload: this.option.preload,
       assetsDir: this.option.assetsDir
     })
