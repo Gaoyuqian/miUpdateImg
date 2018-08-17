@@ -14,7 +14,7 @@ function getNativeAddr (addr, el, name, form) {
   return content[addr] ? `${detailSrc}${content[addr]}` : el ? getNativeAddr(path.join(`${staticSrc}/images/`, `${name}${form}`)) : false
 }
 
-function getNativeFile (el,info) {
+function getNativeFile (el, info, equals) {
   const {result} = _globalVar.getAll()
   let resultText = ''
   const typeTemp = el.split('.')
@@ -32,7 +32,7 @@ function getNativeFile (el,info) {
       }
     }
   })
-  return resultText?`=https://ts.market.mi-img.com/download/${resultText}/a.${type}`:info
+  return resultText ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/a.${type}` : info
 }
 // 在依赖则添加到chunks里
 // 模糊查询写成一个单独的函数吧  每次查询不到的时候 执行模糊查询函数 获取返回值

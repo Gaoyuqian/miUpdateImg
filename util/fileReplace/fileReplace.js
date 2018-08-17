@@ -4,6 +4,22 @@ const {Files} = require('./../../util/fileSystem/Files')
 const {path} = require('./../../util/main')
 const _globalVar = require('../global/global')
 
+function chunkVendorResourcePath (assetsDir, result) {
+  if (!assetsDir) { return [] }
+  const replaceChunks = result.filter(item => new RegExp('chunk-vendor').test(item))
+  const fontReg = /(\/static\/web\/fonts\/)[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*(\.(woff2?|eot|ttf|otf))/gi
+  replaceChunks.forEach(item => {
+    const file = new Files(item)
+    let content = file.content
+    content.match(fontReg) && content.match(fontReg).forEach((items) => {
+      const result = getNativeFile(items)
+      console.log([items, result])
+      content = content.replace(items, result)
+    })
+    file.writeMyFileAll(content)
+  })
+  return replaceChunks || []
+}
 function replaceProloadChunks (addr) {
   const {fileUpdatePath, chunksPath} = _globalVar.getAll()
   const file = new Files(path.join(fileUpdatePath, addr))
@@ -14,7 +30,7 @@ function replaceProloadChunks (addr) {
     resultHref && resultHref.filter((items) => {
       return newReg.test(items)
     }).forEach((info) => {
-      const result = getNativeFile(item, info)
+      const result = getNativeFile(item, info, true)
       content = content.replace(info, result)
     })
   })
@@ -169,5 +185,5 @@ function isComments (start, end, pointDep) {
 }
 
 module.exports = {
-  searchFile, replaceProloadChunks
+  searchFile, replaceProloadChunks, chunkVendorResourcePath
 }
