@@ -24,7 +24,7 @@ const config = {
 function beginBatchProcess (param = {}) {
   let _dep = ''
   Object.assign(_globalVar.getAll(), config, param)
-  const {fileUpdatePath, fileFindPath, outputName, assetsDir, batchType} = _globalVar.getAll()
+  const {fileUpdatePath, fileFindPath, outputName, assetsDir, batchType,result} = _globalVar.getAll()
   // 先组装默认配置再加上用户配置
   _dep = fileDisplay(fileUpdatePath)
   chunkVendorResourcePath(assetsDir, _dep.get())
