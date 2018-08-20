@@ -1,10 +1,10 @@
 const { path } = require('./../util/main')
 const { smallFileDep } = require('../util/fileDispose/fileDisplay.js')
 const _globalVar = require('../util/global/global.js')
-
+const {result, base64List, staticSrc} = _globalVar.getAll()
+const {getFileMap} = require('../util/fileUtil/util')
 function getNativeAddr (addr, el, name, form) {
   if (!addr) return false
-  const {result, staticSrc} = _globalVar.getAll()
   const content = result
   const detailSrc = 'https://ts.market.mi-img.com/thumbnail/png/q80/'
   const isSmall = smallFileDep.get().some((item) => {
@@ -15,11 +15,10 @@ function getNativeAddr (addr, el, name, form) {
 }
 
 function getNativeFile (el, info, equals) {
-  const {result} = _globalVar.getAll()
   let resultText = ''
   const typeTemp = el.split('.')
   const type = typeTemp[typeTemp.length - 1]
-  Object.keys(result).forEach((items, index) => {
+  Object.keys(result).forEach(items => {
     let newReg = new RegExp(el)
     if (newReg.test(items)) {
       resultText = result[items]
@@ -32,6 +31,9 @@ function getNativeFile (el, info, equals) {
       }
     }
   })
+  if (base64List&&base64List.some(item => type.test(new RegExp(item)))) {
+    return `${JSON.stringify(`data:${getFileMap(type) || ''};base64,${resultText.toString('base64')}`)}`
+  }
   return resultText ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/a.${type}` : info
 }
 // 在依赖则添加到chunks里
