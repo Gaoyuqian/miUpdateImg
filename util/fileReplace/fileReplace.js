@@ -13,7 +13,6 @@ function chunkVendorResourcePath (assetsDir, result) {
     let content = file.content
     content.match(fontReg) && content.match(fontReg).forEach((items) => {
       const result = getNativeFile(items)
-      console.log([items, result])
       content = content.replace(items, result)
     })
     file.writeMyFileAll(content)

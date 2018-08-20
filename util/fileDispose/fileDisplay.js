@@ -1,9 +1,8 @@
 const {fs, path} = require('./../main')
-const {isIgnoredFile, canBeMap} = require('./../fileUtil/util')
-const {Dep} = require('./../fileSystem/depend')
+const {isIgnoredFile, canBeMap,isReplaceableFile} = require('./../fileUtil/util')
+const Dep = require('./../fileSystem/depend')
 const _globalVar = require('../global/global.js')
 const smallFileDep = new Dep()
-const {Files} = require('./../../util/fileSystem/Files')
 
 function fileDisplay (filepath, model, dep) {
   let _dep = dep || new Dep()
@@ -51,7 +50,6 @@ function addDep (fileArray, filepath, Dep, model) {
     } else if (isDir) {
       if (isIgnoredFile(filedir, true) === 'all') {
         // console.log(chalk.yellow('该路径已被忽略-------')+filedir)
-
       } else {
         fileDisplay(filedir, model, Dep)
       }
@@ -59,10 +57,6 @@ function addDep (fileArray, filepath, Dep, model) {
   })
 }
 
-function isReplaceableFile (name) {
-  const reg = /(\.vue$)|(\.html$)|(\.css$)|(\.scss$)|(\.less$)/
-  return reg.test(name)
-}
 module.exports = {
   fileDisplay,
   smallFileDep,

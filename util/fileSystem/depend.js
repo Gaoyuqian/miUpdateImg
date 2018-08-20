@@ -16,7 +16,5 @@ Dep.prototype.checkRepeat = function (item) {
   })
 }
 
-module.exports = {
-  Dep
-}
+module.exports = Dep
 //  理论上应该为所有依赖的父类

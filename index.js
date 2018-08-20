@@ -1,11 +1,6 @@
 function Batch (option) {
   this.option = option || false
 }
-// 准备重构
-//  几个要点  梳理代码逻辑，去掉不必要的逻辑，去掉全局变量 改为局部对象的key值，简化参数个数 使逻辑更清晰 期望工厂函数
-// 改写函数
-// 方向1 找到原始的html？ 可行性比较低
-// 方向2 找到转换后的html 匹配所有src和icon 可行性比较高
 
 Batch.prototype.apply = function (compiler) {
   let filepath = ''
@@ -129,7 +124,6 @@ Batch.prototype.apply = function (compiler) {
 
     return false
   }
-
   compiler.plugin('done', (comp, callback) => {
     // chunks去重
     tempChunks = Array.from(new Set(tempChunks))

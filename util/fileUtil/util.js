@@ -1,4 +1,4 @@
-const { fs } = require('../main.js')
+const {fs} = require('../main.js')
 const _globalVar = require('../global/global.js')
 
 module.exports = {
@@ -33,7 +33,7 @@ module.exports = {
       }
       return 'none'
     } catch (e) {
-      fs.writeFileSync(_globalVar.getItem('ignored'), '')
+      // fs.writeFileSync(_globalVar.getItem('ignored'), '')
     }
   },
   canBeMap: (name) => {
@@ -62,6 +62,10 @@ module.exports = {
     let lastName = fileName.split('.')
     lastName = fileName.split('.')[lastName.length - 1]
     return fileMap[`${lastName}`]
+  },
+  isReplaceableFile: (name) => {
+    const reg = /(\.vue$)|(\.html$)|(\.css$)|(\.scss$)|(\.less$)|(\.js$)/
+    return reg.test(name)
   }
 
 }
