@@ -1,9 +1,9 @@
-const { path } = require('./../util/main')
+const { path,chalk } = require('./../util/main')
 const { smallFileDep } = require('../util/fileDispose/fileDisplay.js')
 const _globalVar = require('../util/global/global.js')
-const {result, base64List, staticSrc} = _globalVar.getAll()
 const {getFileMap} = require('../util/fileUtil/util')
 function getNativeAddr (addr, el, name, form) {
+const {result, staticSrc} = _globalVar.getAll()
   if (!addr) return false
   const content = result
   const detailSrc = 'https://ts.market.mi-img.com/thumbnail/png/q80/'
@@ -15,6 +15,8 @@ function getNativeAddr (addr, el, name, form) {
 }
 
 function getNativeFile (el, info, equals) {
+  const {result,base64List} = _globalVar.getAll()
+  
   let resultText = ''
   const typeTemp = el.split('.')
   const type = typeTemp[typeTemp.length - 1]
@@ -31,8 +33,8 @@ function getNativeFile (el, info, equals) {
       }
     }
   })
-  if (base64List&&base64List.some(item => type.test(new RegExp(item)))) {
-    return `${JSON.stringify(`data:${getFileMap(type) || ''};base64,${resultText.toString('base64')}`)}`
+  if (base64List&&base64List.some(item => new RegExp(item).test(type))) {
+    return `${JSON.stringify(`data:${getFileMap(type) || ''};base64,${`https://ts.market.mi-img.com/download/${resultText}/a.${type}`.toString('base64')}`)}`
   }
   return resultText ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/a.${type}` : info
 }

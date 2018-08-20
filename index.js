@@ -12,7 +12,6 @@ Batch.prototype.apply = function (compiler) {
   compiler.plugin('compilation', (compilation, callback) => {
     compilation.plugin('html-webpack-plugin-before-html-processing', (compil, call) => {
       // indexHtml = compil.html
-      console.log(compilation.options.assetsDir)
       const html = compil.html
       const staticReg = /src=['|"][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g // 添加静态src资源
       // 添加icon资源

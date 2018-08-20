@@ -1,4 +1,4 @@
-const {fs} = require('../main.js')
+const {fs,_mime} = require('../main.js')
 const _globalVar = require('../global/global.js')
 
 module.exports = {
@@ -51,17 +51,7 @@ module.exports = {
         }
         return: 返回对应的fileMap中的映射字符串
     */
-    const fileMap = {
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'png': 'image/png',
-      'js': 'text/javascript',
-      'css': 'text/css',
-      'ico': 'image/vnd.microsoft.icon'
-    }
-    let lastName = fileName.split('.')
-    lastName = fileName.split('.')[lastName.length - 1]
-    return fileMap[`${lastName}`]
+   return  _mime.getType(fileName)
   },
   isReplaceableFile: (name) => {
     const reg = /(\.vue$)|(\.html$)|(\.css$)|(\.scss$)|(\.less$)|(\.js$)/
