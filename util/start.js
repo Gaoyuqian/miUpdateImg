@@ -2,7 +2,6 @@ const {uploadFile, uploadFileObj} = require('./fileDispose/fileUpload')
 const {fileDisplay} = require('./fileDispose/fileDisplay')
 const {searchFile, replaceProloadChunks, chunkVendorResourcePath} = require('./fileReplace/fileReplace')
 const _globalVar = require('./global/global')
-
 const config = {
   'size': 1,
   'staticSrc': 'static',

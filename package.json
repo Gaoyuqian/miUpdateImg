@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/Gaoyuqian/miUpdateImg/issues"
   },
-  "homepage": "https://github.com/Gaoyuqian/miUpdateImg#readme"
+  "homepage": "https://github.com/Gaoyuqian/miUpdateImg#readme",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "mime": "^2.3.1"
+  }
 }
