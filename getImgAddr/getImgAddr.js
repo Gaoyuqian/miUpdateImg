@@ -39,7 +39,7 @@ function getNativeFile (el, info, equals) {
   return resultText ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/a.${type}` : info
 }
 // 在依赖则添加到chunks里
-// 模糊查询写成一个单独的函数吧  每次查询不到的时候 执行模糊查询函数 获取返回值
+// 模糊查询写成一个单独的函数  每次查询不到的时候 执行模糊查询函数 获取返回值
 module.exports = {
   getNativeAddr, getNativeFile
 }
