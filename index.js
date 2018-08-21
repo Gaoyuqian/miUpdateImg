@@ -135,7 +135,8 @@ Batch.prototype.apply = function (compiler) {
       fileList: [/\.js$/, /\.css/, /\.ico/, /(woff2?|eot|ttf|otf)/i],
       base64List: [/(woff2?|eot|ttf|otf)/i],
       preload: this.option.preload,
-      assetsDir: this.option.assetsDir
+      assetsDir: this.option.assetsDir,
+      host: this.option.host
     })
   })
 }

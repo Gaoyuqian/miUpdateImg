@@ -15,7 +15,7 @@ function getNativeAddr (addr, el, name, form) {
 }
 
 function getNativeFile (el, info, equals) {
-  const {result, base64List} = _globalVar.getAll()
+  const {result, base64List, host} = _globalVar.getAll()
   let resultText = ''
   const typeTemp = el.split('.')
   const type = typeTemp[typeTemp.length - 1]
@@ -33,8 +33,9 @@ function getNativeFile (el, info, equals) {
     }
   })
   if (base64List && base64List.some(item => new RegExp(item).test(type))) {
-    const src = `https://ts.market.mi-img.com/download/${resultText}/a.${type}`
-    return `${JSON.stringify(`data:${getFileMap(type) || ''};base64,${Buffer.from(src).toString('base64')}`)}`
+    // const src = `https://ts.market.mi-img.com/download/${resultText}/a.${type}`
+    // return `${JSON.stringify(`data:${getFileMap(type) || ''};base64,${Buffer.from(src).toString('base64')}`)}`
+    return `${host}${el}`
   }
   return resultText ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/a.${type}` : info
 }
