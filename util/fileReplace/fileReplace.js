@@ -1,13 +1,13 @@
 const {fileDisplay} = require('./../fileDispose/fileDisplay.js')
 const {getNativeAddr, getNativeFile} = require('./../../getImgAddr/getImgAddr')
 const {Files} = require('./../../util/fileSystem/Files')
-const {path} = require('./../../util/main')
+const {path, chalk} = require('./../../util/main')
 const _globalVar = require('../global/global')
 
 function chunkVendorResourcePath (assetsDir, result) {
   if (!assetsDir) { return [] }
   const replaceChunks = result.filter(item => new RegExp('chunk-vendor').test(item))
-  const fontReg = /(\/static\/web\/fonts\/)[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*(\.(woff2?|eot|ttf|otf))/gi
+  const fontReg = /(\/static\/web\/fonts\/)[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*(\.(woff2?|eot|ttf|otf)(\?#iefix)?)/gi
   replaceChunks.forEach(item => {
     const file = new Files(item)
     let content = file.content

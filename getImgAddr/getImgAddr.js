@@ -33,11 +33,11 @@ function getNativeFile (el, info, equals) {
     }
   })
   if (base64List && base64List.some(item => new RegExp(item).test(type))) {
-    if (!/\?#iefix/.test(el)) {
-      return `${host}${el}`
-    } else {
-      return el
-    }
+    // if (!/\?#iefix/.test(el)) {
+    return `${host}${el}`
+    // } else {
+    //   return el
+    // }
     // let src = srcTemp.length ? srcTemp[0] : ''
     // console.log(getFileMap(type), src)
     // src = fs.readFileSync(src)
