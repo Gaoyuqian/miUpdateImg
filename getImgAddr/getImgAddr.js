@@ -33,12 +33,15 @@ function getNativeFile (el, info, equals) {
     }
   })
   if (base64List && base64List.some(item => new RegExp(item).test(type))) {
-    const srcTemp = Object.keys(result).filter((items) => {
-      return new RegExp(el).test(items)
-    })
-    let src = srcTemp.length ? srcTemp[0] : ''
-    src = fs.readFileSync(src)
-    return `${JSON.stringify(`data:${getFileMap(type) || ''};base64,${Buffer.from(src).toString('base64')}`)}`
+    if (!/\?#iefix/.test(el)) {
+      return `${host}${el}`
+    } else {
+      return el
+    }
+    // let src = srcTemp.length ? srcTemp[0] : ''
+    // console.log(getFileMap(type), src)
+    // src = fs.readFileSync(src)
+    // return `${JSON.stringify(`data:${getFileMap(type) || ''};base64,${Buffer.from(src).toString('base64')}`)}`
   }
   return resultText ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/a.${type}` : info
 }
