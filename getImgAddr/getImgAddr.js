@@ -34,7 +34,7 @@ function getNativeFile (el, info, equals) {
   })
   if (base64List && base64List.some(item => new RegExp(item).test(type))) {
     // if (!/\?#iefix/.test(el)) {
-    return `${host}${el}`
+    return `http://${host}${el}`
     // } else {
     //   return el
     // }
