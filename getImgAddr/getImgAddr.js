@@ -1,4 +1,4 @@
-const { path, chalk } = require('./../util/main')
+const { path, fs, chalk } = require('./../util/main')
 const { smallFileDep } = require('../util/fileDispose/fileDisplay.js')
 const _globalVar = require('../util/global/global.js')
 const {getFileMap} = require('../util/fileUtil/util')
@@ -33,9 +33,12 @@ function getNativeFile (el, info, equals) {
     }
   })
   if (base64List && base64List.some(item => new RegExp(item).test(type))) {
-    // const src = `https://ts.market.mi-img.com/download/${resultText}/a.${type}`
-    // return `${JSON.stringify(`data:${getFileMap(type) || ''};base64,${Buffer.from(src).toString('base64')}`)}`
-    return `${host}${el}`
+    const srcTemp = Object.keys(result).filter((items) => {
+      return new RegExp(el).test(items)
+    })
+    let src = srcTemp.length ? srcTemp[0] : ''
+    src = fs.readFileSync(src)
+    return `${JSON.stringify(`data:${getFileMap(type) || ''};base64,${Buffer.from(src).toString('base64')}`)}`
   }
   return resultText ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/a.${type}` : info
 }
