@@ -90,8 +90,8 @@ function findMatch(str, strArr, matchArray, pointDep, dir, element) {
   const cutNameReg = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\\]*(?=\.png|\.jpg|\.jpeg){1}/g
   const cutFormReg = /(\.png|\.jpg|\.jpeg)/g
   const matchDep = []
-  let start = 0,
-    end = 0
+  let start = 0
+  let end = 0
   matchArray &&
     matchArray.forEach(el => {
       const matchAddr = aliasReplace(el) || path.join(dir, path.normalize(el.replace(/['|"]/g, '')))
@@ -130,13 +130,13 @@ function findMatch(str, strArr, matchArray, pointDep, dir, element) {
 function getCommentsDepHtml(str) {
   // 返回注释的点阵区间
   const pointDep = []
-  let strStart = 0,
-    strEnd = 0
+  let strStart = 0
+  let strEnd = 0
   const matchHtml = str.match(/<!--/gm)
   const matchCss = str.match(/\/\*/gm)
   const matchJs = str.match(/\/\/\s{1}/gm)
-  const endLenHtml = 3,
-    endLenCss = 2
+  const endLenHtml = 3
+  const endLenCss = 2
   if (matchHtml) {
     for (let item of matchHtml) {
       const startIndex = str.substring(strEnd).indexOf('<!--')
