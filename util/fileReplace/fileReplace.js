@@ -1,43 +1,51 @@
-const {fileDisplay} = require('./../fileDispose/fileDisplay.js')
-const {getNativeAddr, getNativeFile} = require('./../../getImgAddr/getImgAddr')
-const {Files} = require('./../../util/fileSystem/Files')
-const {path, chalk} = require('./../../util/main')
+const { fileDisplay } = require('./../fileDispose/fileDisplay.js')
+const { getNativeAddr, getNativeFile } = require('./../../getImgAddr/getImgAddr')
+const { Files } = require('./../../util/fileSystem/Files')
+const { path, chalk } = require('./../../util/main')
 const _globalVar = require('../global/global')
 
-function chunkVendorResourcePath (assetsDir, result) {
-  if (!assetsDir) { return [] }
+function chunkVendorResourcePath(assetsDir, result) {
+  if (!assetsDir) {
+    return []
+  }
   const replaceChunks = result.filter(item => new RegExp('chunk-vendor').test(item))
   const fontReg = /(\/static\/web\/fonts\/)[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*(\.(woff2?|eot|ttf|otf)(\?#iefix)?)/gi
   replaceChunks.forEach(item => {
     const file = new Files(item)
     let content = file.content
-    content.match(fontReg) && content.match(fontReg).forEach((items) => {
-      const result = getNativeFile(items)
-      content = content.replace(items, result)
-    })
-    file.writeMyFileAll(content)
+    if (typeof content === 'string') {
+      content.match(fontReg) &&
+        content.match(fontReg).forEach(items => {
+          const result = getNativeFile(items)
+          content = content.replace(items, result)
+        })
+      file.writeMyFileAll(content)
+    }
   })
   return replaceChunks || []
 }
-function replaceProloadChunks (addr) {
-  const {fileUpdatePath, chunksPath} = _globalVar.getAll()
+function replaceProloadChunks(addr) {
+  const { fileUpdatePath, chunksPath } = _globalVar.getAll()
   const file = new Files(path.join(fileUpdatePath, addr))
   let resultHref = file.content.match(/=[/|.][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g)
   let content = file.content
-  chunksPath.forEach((item) => {
+  chunksPath.forEach(item => {
     const newReg = new RegExp(item)
-    resultHref && resultHref.filter((items) => {
-      return newReg.test(items)
-    }).forEach((info) => {
-      const result = getNativeFile(item, info, true)
-      content = content.replace(info, result)
-    })
+    resultHref &&
+      resultHref
+        .filter(items => {
+          return newReg.test(items)
+        })
+        .forEach(info => {
+          const result = getNativeFile(item, info, true)
+          content = content.replace(info, result)
+        })
   })
   file.writeMyFileAll(content)
 }
 
 //  需要先分块获取 然后判断位置是在某个模块里
-function searchFile (addr, model = 'find') {
+function searchFile(addr, model = 'find') {
   const replaceRegPng = /(?:['|"])[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}(?:['|"])/g
   const replaceDep = fileDisplay(addr, model)
   const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
@@ -49,18 +57,25 @@ function searchFile (addr, model = 'find') {
     const isCss = cssReg.test(element)
     const pointDep = getCommentsDepHtml(fileContent, isCss)
     file.writeMyFileAll(
-      findMatch(fileContent, temp, fileContent.match(replaceRegPng), pointDep, path.parse(element).dir, element)
+      findMatch(
+        fileContent,
+        temp,
+        fileContent.match(replaceRegPng),
+        pointDep,
+        path.parse(element).dir,
+        element
+      )
     )
   })
 }
 
-function aliasReplace (el) {
+function aliasReplace(el) {
   // 替换别名
   let _$ = false
   const { alias, context } = _globalVar.getAll()
   if (Object.keys(alias).length !== '0') {
     for (let i in alias) {
-      const reg = new RegExp(i + '(?=\/)')
+      const reg = new RegExp(i + '(?=/)')
       const _el = el.replace(reg, alias[i])
       if (_el !== el) {
         _$ = _el.replace(context + '/', '').replace(/(\"|\')/, '')
@@ -70,7 +85,7 @@ function aliasReplace (el) {
   return _$
 }
 
-function findMatch (str, strArr, matchArray, pointDep, dir, element) {
+function findMatch(str, strArr, matchArray, pointDep, dir, element) {
   // 替换主函数
   const cutNameReg = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\\]*(?=\.png|\.jpg|\.jpeg){1}/g
   const cutFormReg = /(\.png|\.jpg|\.jpeg)/g
@@ -106,17 +121,13 @@ function findMatch (str, strArr, matchArray, pointDep, dir, element) {
     const quota = /\'/.test(item.el) ? `'` : `"`
     if (!item.isCom) {
       const addr = getNativeAddr(item.addr, item.el, item.name, item.form)
-      strArr.splice(
-        item.start,
-        item.elLength,
-        addr ? quota + addr + quota : item.el
-      )
+      strArr.splice(item.start, item.elLength, addr ? quota + addr + quota : item.el)
     }
   }
   return strArr.join('')
 }
 
-function getCommentsDepHtml (str) {
+function getCommentsDepHtml(str) {
   // 返回注释的点阵区间
   const pointDep = []
   let strStart = 0,
@@ -139,7 +150,7 @@ function getCommentsDepHtml (str) {
     }
   }
   if (matchCss) {
-    strStart = 0, strEnd = 0
+    ;(strStart = 0), (strEnd = 0)
     for (let item of matchCss) {
       const startIndex = str.substring(strEnd).indexOf('/*')
       const endIndex = str.substring(strEnd).indexOf('*/')
@@ -153,7 +164,7 @@ function getCommentsDepHtml (str) {
   }
   //  由于/n 并不是紧跟着 // 一起出现 所以造成差异
   if (matchJs) {
-    strStart = 0, strEnd = 0
+    ;(strStart = 0), (strEnd = 0)
     for (let item of matchJs) {
       const startIndex = str.substring(strEnd).indexOf('// ')
       // startIndex 是注释的开头坐标 基于上一个注释的结尾坐标获取的
@@ -171,7 +182,7 @@ function getCommentsDepHtml (str) {
   return pointDep
 }
 
-function isComments (start, end, pointDep) {
+function isComments(start, end, pointDep) {
   // 判断是否是注释中的
   if (pointDep.length !== 0) {
     for (let item of pointDep) {
@@ -184,5 +195,7 @@ function isComments (start, end, pointDep) {
 }
 
 module.exports = {
-  searchFile, replaceProloadChunks, chunkVendorResourcePath
+  searchFile,
+  replaceProloadChunks,
+  chunkVendorResourcePath
 }

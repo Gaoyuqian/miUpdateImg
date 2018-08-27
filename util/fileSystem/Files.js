@@ -4,37 +4,37 @@
 
 */
 
-const {fs} = require('../main')
+const { fs } = require('../main')
 const config = require('../global/global')
 
 class Files {
-  constructor (path) {
+  constructor(path) {
     this.file = path
     this.isExists = this.isExists()
     if (!this.isExists) {
       this.createFile()
     }
     this.content = this.readMyFile()
-  };
+  }
 
-  isExists () {
+  isExists() {
     return fs.existsSync(this.file)
   }
-  createFile (content) {
+  createFile(content) {
     if (this.file) {
       const temp = this.file.split('/')
       const name = temp[temp.length - 1]
       fs.writeFileSync(this.file, JSON.stringify(global.__config[name] || config.__config[name]))
     }
   }
-  readMyFile () {
+  readMyFile() {
     try {
       return JSON.parse(fs.readFileSync(this.file, 'utf-8'))
     } catch (e) {
       return fs.readFileSync(this.file, 'utf-8')
     }
   }
-  writeMyFileAll (content) {
+  writeMyFileAll(content) {
     /*
 
             预期为覆盖写入
@@ -45,7 +45,7 @@ class Files {
     fs.writeFileSync(this.file, typeof content === 'object' ? JSON.stringify(content) : content)
   }
 
-  writeMyFile (obj, sourceName) {
+  writeMyFile(obj, sourceName) {
     this.content = this.readMyFile()
     /*
 

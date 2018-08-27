@@ -1,10 +1,10 @@
-const {fs, path} = require('./../main')
-const {isIgnoredFile, canBeMap,isReplaceableFile} = require('./../fileUtil/util')
+const { fs, path } = require('./../main')
+const { isIgnoredFile, canBeMap, isReplaceableFile } = require('./../fileUtil/util')
 const Dep = require('./../fileSystem/depend')
 const _globalVar = require('../global/global.js')
 const smallFileDep = new Dep()
 
-function fileDisplay (filepath, model, dep) {
+function fileDisplay(filepath, model, dep) {
   let _dep = dep || new Dep()
   if (Array.isArray(filepath)) {
     filepath.forEach(el => {
@@ -19,7 +19,7 @@ function fileDisplay (filepath, model, dep) {
   return _dep
 }
 
-function addDep (fileArray, filepath, Dep, model) {
+function addDep(fileArray, filepath, Dep, model) {
   fileArray.forEach(filename => {
     const filedir = path.join(filepath, filename)
     const stats = fs.statSync(filedir)

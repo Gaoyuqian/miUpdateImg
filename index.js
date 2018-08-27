@@ -1,8 +1,8 @@
-function Batch (option) {
+function Batch(option) {
   this.option = option || false
 }
 
-Batch.prototype.apply = function (compiler) {
+Batch.prototype.apply = function(compiler) {
   let filepath = ''
   let chunksPath = ''
   let fileBlacklist = [/\.map/]
@@ -23,59 +23,70 @@ Batch.prototype.apply = function (compiler) {
       let iconRes = html.match(iconReg)
       let cssRes = html.match(cssReg)
       if (Array.isArray(cssRes)) {
-        cssRes = cssRes.map(item => {
-          return item.replace(/href=['|"]/, '')
-        }).filter(item => {
-          return !/^http/.test(item)
-        })
+        cssRes = cssRes
+          .map(item => {
+            return item.replace(/href=['|"]/, '')
+          })
+          .filter(item => {
+            return !/^http/.test(item)
+          })
       }
       if (Array.isArray(staticRes)) {
-        staticRes = staticRes.map(item => {
-          return item.replace(/src=['|"]/, '')
-        }).filter(item => {
-          return !/^http/.test(item)
-        })
+        staticRes = staticRes
+          .map(item => {
+            return item.replace(/src=['|"]/, '')
+          })
+          .filter(item => {
+            return !/^http/.test(item)
+          })
       }
       if (Array.isArray(iconRes)) {
         iconRes = iconRes.map(item => {
           return item.replace(/href=['|"]/, '')
         })
       }
-      staticChunks = staticChunks.concat(iconRes).concat(staticRes).concat(cssRes)
+      staticChunks = staticChunks
+        .concat(iconRes)
+        .concat(staticRes)
+        .concat(cssRes)
       call && call()
     })
     compilation.plugin('html-webpack-plugin-after-html-processing', (htmlPluginData, callback) => {
       filepath = compilation.options.output.path
       outputName = htmlPluginData.outputName
       if (this.option.preload) {
-        const initialChunkGroups = compilation.chunkGroups.filter(chunkGroup => chunkGroup.isInitial())
-        const initialChunks = initialChunkGroups.reduce((initialChunks, {
-          chunks
-        }) => {
+        const initialChunkGroups = compilation.chunkGroups.filter(chunkGroup =>
+          chunkGroup.isInitial()
+        )
+        const initialChunks = initialChunkGroups.reduce((initialChunks, { chunks }) => {
           return initialChunks.concat(chunks)
         }, [])
-        tempChunks = initialChunks.map((chunks) => chunks.files).reduce((prev, curr) => prev.concat(curr), []).filter((item) => !needIgnored(item))
+        tempChunks = initialChunks
+          .map(chunks => chunks.files)
+          .reduce((prev, curr) => prev.concat(curr), [])
+          .filter(item => !needIgnored(item))
         let extractedChunks = compilation.chunks.filter(chunk => {
           return initialChunks.indexOf(chunk) < 0
         })
         extractedChunks = extractedChunks.filter(chunk => {
-          const rootChunksHashs = Object.values(htmlPluginData.assets.chunks).map(({
-            hash
-          }) => hash)
+          const rootChunksHashs = Object.values(htmlPluginData.assets.chunks).map(
+            ({ hash }) => hash
+          )
           const rootChunkGroups = compilation.chunkGroups.reduce((groups, chunkGroup) => {
             const isRootChunkGroup = chunkGroup.chunks.reduce((flag, chunk) => {
-              return flag ||
-                rootChunksHashs.indexOf(chunk.renderedHash) > -1
+              return flag || rootChunksHashs.indexOf(chunk.renderedHash) > -1
             }, false)
             if (isRootChunkGroup) groups.push(chunkGroup)
             return groups
           }, [])
           return Array.from(chunk.groupsIterable).reduce((flag, chunkGroup) => {
-            return flag ||
-              doesChunkGroupBelongToHTML(chunkGroup, rootChunkGroups, {})
+            return flag || doesChunkGroupBelongToHTML(chunkGroup, rootChunkGroups, {})
           }, false)
         })
-        chunksPath = extractedChunks = extractedChunks.map((chunks) => chunks.files).reduce((prev, curr) => prev.concat(curr), []).filter((item) => !needIgnored(item))
+        chunksPath = extractedChunks = extractedChunks
+          .map(chunks => chunks.files)
+          .reduce((prev, curr) => prev.concat(curr), [])
+          .filter(item => !needIgnored(item))
         tempChunks = tempChunks.concat(chunksPath)
       } else {
         tempChunks = htmlPluginData.assets.js.concat(htmlPluginData.assets.css)
@@ -95,7 +106,7 @@ Batch.prototype.apply = function (compiler) {
       callback: callback
     })
   })
-  const needIgnored = (item) => {
+  const needIgnored = item => {
     for (let reg of fileBlacklist) {
       if (reg.test(item)) {
         return true
@@ -143,6 +154,4 @@ Batch.prototype.apply = function (compiler) {
 
 module.exports = Batch
 
-const {
-  beginBatchProcess
-} = require('./util/start')
+const { beginBatchProcess } = require('./util/start')
