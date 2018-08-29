@@ -25,12 +25,12 @@ function getNativeFile(el, info, equals) {
   const type = typeTemp[typeTemp.length - 1]
   Object.keys(result).forEach(items => {
     let newReg = new RegExp(el)
-    if (newReg.test(items)) {
+    if (newReg.test(`${el}$`)) {
       resultText = result[items]
     } else {
       const temp = el.split('/')
       const tempName = temp[temp.length - 1]
-      newReg = new RegExp(tempName)
+      newReg = new RegExp(`${tempName}$`)
       if (newReg.test(items)) {
         resultText = result[items]
       }
