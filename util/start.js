@@ -3,7 +3,8 @@ const { fileDisplay } = require('./fileDispose/fileDisplay')
 const {
   searchFile,
   replaceProloadChunks,
-  chunkVendorResourcePath
+  chunkVendorResourcePath,
+  replaceMapSource
 } = require('./fileReplace/fileReplace')
 const _globalVar = require('./global/global')
 const config = {
@@ -34,15 +35,18 @@ function beginBatchProcess(param = {}) {
     .then(() => {
       Promise.all(chunkVendorResourcePath(assetsDir, _dep.get()).map(el => uploadFile(el))).then(
         () => {
-          if (batchType === 'img') {
-            searchFile(fileFindPath)
-          } else {
-            replaceProloadChunks(outputName)
-          }
+          Promise.all(replaceMapSource(_dep.get()).map(el => uploadFile(el))).then(() => {
+            if (batchType === 'img') {
+              searchFile(fileFindPath)
+            } else {
+              replaceProloadChunks(outputName)
+            }
+          })
         }
       )
     })
     .then(() => {
+      // console.log(_globalVar.getItem('result', uploadFileObj))
       _globalVar.getItem('callback') && _globalVar.getItem('callback')()
     })
 }

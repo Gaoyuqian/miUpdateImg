@@ -37,6 +37,7 @@ module.exports = {
       // fs.writeFileSync(_globalVar.getItem('ignored'), '')
     }
   },
+
   canBeMap: name => {
     const fileList = _globalVar.getItem('fileList')
     if (Array.isArray(fileList)) {
@@ -45,6 +46,7 @@ module.exports = {
       return fileList.test(name)
     }
   },
+
   getFileMap: fileName => {
     // 选择请求体中的type字段
     /*

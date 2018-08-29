@@ -10,6 +10,7 @@ function replaceMapSource(result) {
   replaceChunks.forEach(item => {
     const file = new Files(item)
     let content = file.content
+    console.log(result)
     if (typeof content === 'string') {
       content.match(mapReg) &&
         content.match(mapReg).forEach(items => {
@@ -20,6 +21,7 @@ function replaceMapSource(result) {
       file.writeMyFileAll(content)
     }
   })
+  return replaceChunks || []
 }
 
 function chunkVendorResourcePath(assetsDir, result) {

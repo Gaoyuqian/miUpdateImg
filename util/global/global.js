@@ -1,26 +1,31 @@
 // 定义一些伪全局变量 防止循环引用
 
 class GlobalVar {
-  constructor (options) {
+  constructor(options) {
     this.options = options
     this.batchObject = {}
   }
-  isNull (item) {
+
+  isNull(item) {
     return this.batchObject[item] === void 0 || this.batchObject[item] === null
   }
-  setItem (name, val) {
+
+  setItem(name, val) {
     if (this.isNull(name)) {
       this.batchObject[name] = val
       return this.batchObject
     }
   }
-  getItem (name) {
+
+  getItem(name) {
     return this.batchObject[name]
   }
-  getAll () {
+
+  getAll() {
     return this.batchObject
   }
-  deleteItem (name) {
+
+  deleteItem(name) {
     delete this.batchObject[name]
     return this.batchObject
   }

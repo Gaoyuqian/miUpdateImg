@@ -20,6 +20,7 @@ class Files {
   isExists() {
     return fs.existsSync(this.file)
   }
+
   createFile(content) {
     if (this.file) {
       const temp = this.file.split('/')
@@ -27,6 +28,7 @@ class Files {
       fs.writeFileSync(this.file, JSON.stringify(global.__config[name] || config.__config[name]))
     }
   }
+
   readMyFile() {
     try {
       return JSON.parse(fs.readFileSync(this.file, 'utf-8'))
@@ -34,6 +36,7 @@ class Files {
       return fs.readFileSync(this.file, 'utf-8')
     }
   }
+
   writeMyFileAll(content) {
     /*
 
@@ -66,6 +69,7 @@ class Files {
     fs.writeFileSync(this.file, JSON.stringify(this.content))
   }
 }
+
 module.exports = {
   Files
 }
