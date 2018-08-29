@@ -46,7 +46,7 @@ function beginBatchProcess(param = {}) {
       )
     })
     .then(() => {
-      // console.log(_globalVar.getItem('result', uploadFileObj))
+      console.log(_globalVar.getItem('result', uploadFileObj))
       _globalVar.getItem('callback') && _globalVar.getItem('callback')()
     })
 }
