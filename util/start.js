@@ -19,8 +19,7 @@ const config = {
     path: '/upload?channel=ZvsvZc',
     method: 'POST'
   },
-  fileFindPath: './src',
-  preload: true
+  fileFindPath: './src'
 }
 
 function beginBatchProcess(param = {}) {

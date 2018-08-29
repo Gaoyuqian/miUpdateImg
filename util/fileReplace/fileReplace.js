@@ -4,6 +4,24 @@ const { Files } = require('./../../util/fileSystem/Files')
 const { path, chalk } = require('./../../util/main')
 const _globalVar = require('../global/global')
 
+function replaceMapSource(result) {
+  const replaceChunks = result.filter(item => new RegExp(/\.js$/).test(item))
+  const mapReg = /(sourceMappingURL=)[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*(\.map$)/g
+  replaceChunks.forEach(item => {
+    const file = new Files(item)
+    let content = file.content
+    if (typeof content === 'string') {
+      content.match(mapReg) &&
+        content.match(mapReg).forEach(items => {
+          let replaceItem = items.replace('sourceMappingURL=', '')
+          const result = getNativeFile(replaceItem)
+          content = content.replace(items, `sourceMappingURL=${result}`)
+        })
+      file.writeMyFileAll(content)
+    }
+  })
+}
+
 function chunkVendorResourcePath(assetsDir, result) {
   if (!assetsDir) {
     return []
@@ -197,5 +215,6 @@ function isComments(start, end, pointDep) {
 module.exports = {
   searchFile,
   replaceProloadChunks,
-  chunkVendorResourcePath
+  chunkVendorResourcePath,
+  replaceMapSource
 }
