@@ -24,8 +24,8 @@ function getNativeFile(el, info, equals) {
   const typeTemp = el.split('.')
   const type = typeTemp[typeTemp.length - 1]
   Object.keys(result).forEach(items => {
-    let newReg = new RegExp(el)
-    if (newReg.test(`${el}$`)) {
+    let newReg = new RegExp(`${el}$`)
+    if (newReg.test(newReg)) {
       resultText = result[items]
     } else {
       const temp = el.split('/')
@@ -35,6 +35,7 @@ function getNativeFile(el, info, equals) {
         resultText = result[items]
       }
     }
+    // console.log(el, resultText, newReg)
   })
   if (base64List && base64List.some(item => new RegExp(item).test(type))) {
     return `http://${host}${el}`
