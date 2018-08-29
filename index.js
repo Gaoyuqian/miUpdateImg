@@ -143,7 +143,7 @@ Batch.prototype.apply = function(compiler) {
       callback: callback,
       outputName: outputName,
       batchType: 'file',
-      fileList: [/\.js$/, /\.css/, /\.ico/, /(woff2?|eot|ttf|otf)/i],
+      fileList: [/\.js$/, /\.css/, /\.ico/, /\.map$/, /(woff2?|eot|ttf|otf)/i],
       base64List: [/(woff2?|eot|ttf|otf)/i],
       preload: this.option.preload,
       assetsDir: this.option.assetsDir,

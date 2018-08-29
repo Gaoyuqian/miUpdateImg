@@ -1,7 +1,7 @@
 const { fileDisplay } = require('./../fileDispose/fileDisplay.js')
 const { getNativeAddr, getNativeFile } = require('./../../getImgAddr/getImgAddr')
 const { Files } = require('./../../util/fileSystem/Files')
-const { path, chalk } = require('./../../util/main')
+const { path } = require('./../../util/main')
 const _globalVar = require('../global/global')
 
 function replaceMapSource(result) {
