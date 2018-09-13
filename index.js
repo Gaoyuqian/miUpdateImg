@@ -18,7 +18,6 @@ Batch.prototype.apply = function(compiler) {
       const iconReg = /href=[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~'"]*(.ico)/g
       // 添加静态css资源
       const cssReg = /href=['|"][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g
-      // const cssReg = /(rel=stylesheet)?[\s]?(href=['|"]?[a-zA-Z0-9\u4e00-\u9fa5_.\/\-*&%$#@!~\s]*)(rel=stylesheet)/g
       let staticRes = html.match(staticReg)
       let iconRes = html.match(iconReg)
       let cssRes = html.match(cssReg)

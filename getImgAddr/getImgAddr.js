@@ -23,27 +23,24 @@ function getNativeFile(el, info, equals) {
   let resultText = ''
   const typeTemp = el.split('.')
   const type = typeTemp[typeTemp.length - 1]
+  const temp = el.split('/')
+  const tempName = temp[temp.length - 1]
   Object.keys(result).forEach(items => {
     let newReg = new RegExp(`${el}$`)
     if (newReg.test(newReg)) {
       resultText = result[items]
     } else {
-      const temp = el.split('/')
-      const tempName = temp[temp.length - 1]
       newReg = new RegExp(`${tempName}$`)
       if (newReg.test(items)) {
         resultText = result[items]
       }
     }
-    // console.log(el, resultText, newReg)
   })
   if (base64List && base64List.some(item => new RegExp(item).test(type))) {
     return `http://${host}${el}`
   }
   return resultText
-    ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/a.${
-        type === 'map' ? 'js.map' : type
-      }`
+    ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/${tempName}`
     : info
 }
 

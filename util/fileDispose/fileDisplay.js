@@ -27,7 +27,6 @@ function addDep(fileArray, filepath, Dep, model) {
     const isDir = stats.isDirectory()
     if (isFile) {
       if (isIgnoredFile(filedir, false) === 'single') {
-        // console.log(chalk.yellow('该文件已被忽略-------')+filedir)
         return
       }
       if (model === 'find') {
@@ -43,14 +42,10 @@ function addDep(fileArray, filepath, Dep, model) {
             // 备用
             smallFileDep.set(filedir)
           }
-        } else {
-          // console.log('不支持该文件格式,如需支持,请在映射中添加该文件对应的参数值-------' + filedir)
         }
       }
     } else if (isDir) {
-      if (isIgnoredFile(filedir, true) === 'all') {
-        // console.log(chalk.yellow('该路径已被忽略-------')+filedir)
-      } else {
+      if (isIgnoredFile(filedir, true) !== 'all') {
         fileDisplay(filedir, model, Dep)
       }
     }

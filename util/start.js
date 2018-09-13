@@ -3,8 +3,7 @@ const { fileDisplay } = require('./fileDispose/fileDisplay')
 const {
   searchFile,
   replaceProloadChunks,
-  chunkVendorResourcePath,
-  replaceMapSource
+  chunkVendorResourcePath
 } = require('./fileReplace/fileReplace')
 const _globalVar = require('./global/global')
 const config = {
@@ -35,13 +34,13 @@ function beginBatchProcess(param = {}) {
     .then(() => {
       Promise.all(chunkVendorResourcePath(assetsDir, _dep.get()).map(el => uploadFile(el))).then(
         () => {
-          Promise.all(replaceMapSource(_dep.get()).map(el => uploadFile(el))).then(() => {
-            if (batchType === 'img') {
-              searchFile(fileFindPath)
-            } else {
-              replaceProloadChunks(outputName)
-            }
-          })
+          // Promise.all(replaceMapSource(_dep.get()).map(el => uploadFile(el))).then(() => {
+          if (batchType === 'img') {
+            searchFile(fileFindPath)
+          } else {
+            replaceProloadChunks(outputName)
+          }
+          // })
         }
       )
     })

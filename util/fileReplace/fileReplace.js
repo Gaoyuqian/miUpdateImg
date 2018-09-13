@@ -5,6 +5,7 @@ const { path } = require('./../../util/main')
 const _globalVar = require('../global/global')
 
 function replaceMapSource(result) {
+  // 替换 打包后的 mapsource文件
   const replaceChunks = result.filter(item => new RegExp(/\.js$/).test(item))
   const mapReg = /(sourceMappingURL=)[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*(\.map$)/g
   replaceChunks.forEach(item => {
@@ -107,7 +108,7 @@ function aliasReplace(el) {
 function findMatch(str, strArr, matchArray, pointDep, dir, element) {
   // 替换主函数
   const cutNameReg = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\\]*(?=\.png|\.jpg|\.jpeg){1}/g
-  const cutFormReg = /(\.png|\.jpg|\.jpeg)/g
+  const cutFormReg = /(\.png$|\.jpe?g$)/g
   const matchDep = []
   let start = 0
   let end = 0
