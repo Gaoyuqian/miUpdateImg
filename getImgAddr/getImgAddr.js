@@ -19,29 +19,34 @@ function getNativeAddr(addr, el, name, form) {
 }
 
 function getNativeFile(el, info, equals) {
-  const { result, base64List, host } = _globalVar.getAll()
-  let resultText = ''
-  const typeTemp = el.split('.')
-  const type = typeTemp[typeTemp.length - 1]
-  const temp = el.split('/')
-  const tempName = temp[temp.length - 1]
-  Object.keys(result).forEach(items => {
-    let newReg = new RegExp(`${el}$`)
-    if (newReg.test(newReg)) {
-      resultText = result[items]
-    } else {
-      newReg = new RegExp(`${tempName}$`)
-      if (newReg.test(items)) {
+  try {
+    const { result, base64List, host } = _globalVar.getAll()
+    let resultText = ''
+    const typeTemp = el.split('.')
+    const type = typeTemp[typeTemp.length - 1]
+    const temp = el.split('/')
+    const tempName = temp[temp.length - 1]
+    Object.keys(result).forEach(items => {
+      let newReg = new RegExp(`${el}$`)
+      if (newReg.test(newReg)) {
         resultText = result[items]
+      } else {
+        newReg = new RegExp(`${tempName}$`)
+        if (newReg.test(items)) {
+          resultText = result[items]
+        }
       }
+    })
+    if (base64List && base64List.some(item => new RegExp(item).test(type))) {
+      const _el = /^\./.test(el) ? `/${el}` : el
+      return `http://${host}${_el}`
     }
-  })
-  if (base64List && base64List.some(item => new RegExp(item).test(type))) {
-    return `http://${host}${el}`
+    return resultText
+      ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/${tempName}`
+      : info
+  } catch (e) {
+    console.log(e, 3123123)
   }
-  return resultText
-    ? `${equals ? '=' : ''}https://ts.market.mi-img.com/download/${resultText}/${tempName}`
-    : info
 }
 
 module.exports = {
