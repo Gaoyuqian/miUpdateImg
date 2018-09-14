@@ -1,0 +1,131 @@
+.main {
+  background-color: #01C3F8;
+  /*height: 100%;*/
+}
+
+.header {
+  width: 100%;
+  height: 471px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('http://t1.market.xiaomi.com/download/AppStore/09ea641ef590e9559bc865a0122ad25b31141b80c/a.jpg');
+}
+
+.content {
+  padding: 0 72px;
+}
+
+.label-item {
+  margin-top: 20px;
+  color: #fff;
+  .label {
+    font-size: 39px;
+    font-weight: 800;
+  }
+
+  .label-text {
+    font-size: 36px;
+  }
+}
+
+.time-tags {
+  padding: 35px 0;
+  display: flex;
+
+  .time-item {
+    color: #fff;
+    font-size: 36px;
+    background-color: #F4C146;
+    border-radius: 10px;
+    width: 300px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: 18px;
+    }
+  }
+}
+
+.prize-tags {
+  display: flex;
+  align-items: flex-start;
+  /*flex-wrap: wrap;*/
+}
+
+.prize-item {
+  /*width: 170px;*/
+  margin: 30px 45px 30px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.prize-icon {
+  width: 150px;
+  height: 150px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  &.ai {
+    background-image: url('http://t3.market.mi-img.com/download/AppStore/0738d47b85acbc89dd23f4dd29d0b49a6f2418d5c/a.jpg');
+  }
+  &.shubiao {
+    background-image: url('http://t3.market.xiaomi.com/download/AppStore/00ea6c4ef195e45591c86ba0181ad05e310962bb9/a.jpg');
+  }
+  &.zhediesan {
+    background-image: url('http://t5.market.xiaomi.com/download/AppStore/00f9d491c7b910b2f55d57aae7fe154894d4067c1/a.jpg');
+  }
+  &.eh {
+    background-image: url('http://t1.market.mi-img.com/download/AppStore/0295e0423e2694bf80717f699cb7c9488985c49e1/a.jpg');
+  }
+  &.qianzibi {
+    background-image: url('http://t2.market.xiaomi.com/download/AppStore/00f9d491c7b910b2f55d55aaecfe1e4896d4067c1/a.jpg');
+  }
+  &.shoudiantong {
+    background-image: url('http://t3.market.mi-img.com/download/AppStore/0e29b47d56b78889dd622e58ebd6b30ece540954e/a.jpg');
+  }
+  &.taiyangjing {
+    background-image: url('http://t1.market.xiaomi.com/download/AppStore/07c75485062248282f7e71f8c3560fa981d41a903/a.jpg');
+  }
+  &.dianshuihu {
+    background-image: url('http://t1.market.xiaomi.com/download/AppStore/0c6eed4787c644b583875f59e3777d433dd27ce57/a.jpg');
+  }
+  &.nine-fen {
+    background-image: url('http://t2.market.mi-img.com/download/AppStore/0195e492362898bf5f717a699547cd4984e40ec90/a.jpg');
+  }
+  &.lanyaerji {
+    background-image: url('http://t2.market.xiaomi.com/download/AppStore/0177043446b8f9a12cebceb659db7c0c17142fce3/a.jpg');
+    background-image: url('http://t1.market.mi-img.com/download/AppStore/0177043446b8f9a12cebceb659db7c0c17142fce3/a.jpg');
+
+  }
+}
+
+.prize-title {
+  font-size: 30px;
+  /*width: 220px;*/
+  text-align: center;
+  color: #fff;
+  margin-top: 20px;
+}
+
+.miaosha-tags {
+  padding: 30px 0 60px;
+}
+
+.miaosha-item {
+  width: 100%;
+  height: 280px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('http://t4.market.mi-img.com/download/AppStore/08f6741f76d798b96ca8f4b4a9a08ceb3df41157b/a.jpg');
+}

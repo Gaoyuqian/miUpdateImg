@@ -1,0 +1,137 @@
+@import "../../../styles/mixins/border.css";
+.seckill-main {
+  background-color: #FF5C49;
+  background-image: url(./images/dianzhui.png);
+  padding-bottom: 60px;
+  /*height: 100%;*/
+}
+.main {
+  height: 480px;
+  margin-bottom: -80px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url('./images/bg.png');
+}
+
+.seckill-wrapper {
+  margin: 0 30px;
+  background-color: #FDFAF5;
+  border-radius: 16px;
+}
+.cicle-item {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  &:before {
+    content: "";
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: -25px;
+    border-radius: 50%;
+    background-color: #FF5C49;
+  }
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    right: -25px;
+    border-radius: 50%;
+    background-color: #FF5C49;
+  }
+  .line {
+    width: 100%;
+    border-top: 1px solid #FF5C49;
+  }
+}
+.seckill-item {
+  padding: 60px;
+  position: relative;
+
+  .icon {
+    position: absolute;
+    top: 60px;
+    left: 60px;
+    background-position: center;
+    width: 80px;
+    height: 80px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    &.one {
+      background-image: url('./images/one.png');
+    }
+    &.two {
+      background-image: url('./images/two.png');
+    }
+    &.three {
+      background-image: url(./images/three.png);
+    }
+  }
+  .header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 60px;
+    @mixin border-bottom dashed, #ccc;
+
+    .header-icon {
+      background-position: center;
+      width: 240px;
+      height: 240px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      &.one {
+        background-image: url('./images/welfare1.png');
+      }
+      &.two {
+        background-image: url('./images/welfare2.png');
+      }
+      &.three {
+        background-image: url('./images/welfare3.png');
+      }
+    }
+
+    .header-title {
+      margin-top: 60px;
+      font-size: 49px;
+      color: #FF4733;
+    }
+    .header-subTitle {
+      font-size: 36px;
+      color: #FF4733;
+      line-height: 36px;
+      margin-top: 24px;
+    }
+  }
+
+  .seckill-content {
+
+  }
+  .label {
+    margin-top: 60px;
+    font-size: 39px;
+    font-weight: 800;
+  }
+  .label-v {
+    margin-top: 24px;
+    font-size: 36px;
+    span {
+      color: #FF4733;
+    }
+  }
+
+  .label-text {
+    color: #FF4733;
+    margin-top: 10px;
+  }
+}

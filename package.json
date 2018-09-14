@@ -1,0 +1,23 @@
+{
+  "name": "@mipay/batch",
+  "version": "2.0.1",
+  "description": "batchuploadimage",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gyq",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gaoyuqian/miUpdateImg.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gaoyuqian/miUpdateImg/issues"
+  },
+  "homepage": "https://github.com/Gaoyuqian/miUpdateImg#readme",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "mime": "^2.3.1"
+  }
+}
