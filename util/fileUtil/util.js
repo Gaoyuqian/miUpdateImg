@@ -2,6 +2,11 @@ const { fs, _mime } = require('../main.js')
 const _globalVar = require('../global/global.js')
 
 module.exports = {
+  debuggerConsole(...arg) {
+    if (_globalVar.getItem('debugger')) {
+      console.log.apply(this, arg)
+    }
+  },
   isIgnoredFile: (name, isDir) => {
     // 判断文件是否在ignored中被忽略
     /*

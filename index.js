@@ -146,7 +146,8 @@ Batch.prototype.apply = function(compiler) {
       base64List: [/(woff2?|eot|ttf|otf)/i],
       preload: this.option.preload,
       assetsDir: this.option.assetsDir,
-      host: this.option.host
+      host: this.option.host,
+      debugger: this.option.debugger || false
     })
   })
 }

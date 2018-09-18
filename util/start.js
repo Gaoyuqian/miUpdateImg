@@ -19,6 +19,7 @@ const config = {
     path: '/upload?channel=ZvsvZc',
     method: 'POST'
   },
+  debugger: false,
   fileFindPath: './src'
 }
 
