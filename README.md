@@ -1,7 +1,7 @@
 # Install
 
 ```
-cnpm install @mipay/batch // v2.0.0
+cnpm install @mipay/batch // v2.0.2
 ```
 
 # Import
@@ -10,7 +10,7 @@ cnpm install @mipay/batch // v2.0.0
 ...
 },
   "dependencies": {
-    "@mipay/batch": "^2.0.0"
+    "@mipay/batch": "^2.0.2"
   }
 ...
 
@@ -53,6 +53,7 @@ plugins: [
   preload           type: Boolean  是否添加preload插件 若添加 则会替换preload，prefetch文件 默认为true
   host              静态资源替换路径前缀 一般为服务器地址
   assetsDir         静态资源存放地址 插件会将该路径的文件上传至cdn 用于替换
+  ignoredImg,ignoredFile 分别负责过滤不同格式的文件，在图片替换时请使用img，在文件替换时请使用file
 */
 
 // example
@@ -60,6 +61,8 @@ plugins: [
     'fileUpdatePath': ['./public', './src'],
     'staticSrc': 'public',
     'size':1,
+    'ignoredImg':[],
+    'ignoredFile':[]
   })]
 //
 ```

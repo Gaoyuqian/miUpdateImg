@@ -2,6 +2,11 @@ const { fs, _mime } = require('../main.js')
 const _globalVar = require('../global/global.js')
 
 module.exports = {
+  debuggerConsole(...arg) {
+    if (_globalVar.getItem('debugger')) {
+      console.log.apply(this, arg)
+    }
+  },
   isIgnoredFile: (name, isDir) => {
     // 判断文件是否在ignored中被忽略
     /*
@@ -14,17 +19,16 @@ module.exports = {
         tip: 被标记为可忽略文件的文件夹下的所有文件均不会被添加依赖
     */
     try {
-      const res = fs.readFileSync(_globalVar.getItem('ignored'), 'utf-8')
-      if (res !== 'undefined' && res !== '') {
-        const resource = res.split('\n')
-        const willIgnoreArray = resource.map(el => {
+      const res = _globalVar.getItem('ignoredArray')
+      if (res.length) {
+        const willIgnoreArray = res.map(el => {
           return el.replace(/\*/, '')
         })
         for (let item of willIgnoreArray) {
           if (isDir) {
             name += '/'
           }
-          if (name.indexOf(item) !== '-1') {
+          if (~name.indexOf(item)) {
             if (/\/$/.test(name)) {
               return 'all'
             }
