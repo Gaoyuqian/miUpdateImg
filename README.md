@@ -18,6 +18,7 @@ npm install
 ```
 
 - 参考 {wiki} http://wiki.n.miui.com/pages/viewpage.action?pageId=5833076
+- git 地址 http://v9.git.n.xiaomi.com/mifi-fe/mifi-mp-batch.git
 
 # Usage
 
