@@ -102,7 +102,8 @@ Batch.prototype.apply = function(compiler) {
       batchType: 'img',
       context: compilation.options.context,
       alias: compilation.options.resolve.alias,
-      callback: callback
+      callback: callback,
+      ignoredArray: this.option.ignoredImg
     })
   })
   const needIgnored = item => {
@@ -136,6 +137,7 @@ Batch.prototype.apply = function(compiler) {
   compiler.plugin('done', (comp, callback) => {
     // chunks去重
     tempChunks = Array.from(new Set(tempChunks))
+    console.log(this.option, 123)
     beginBatchProcess({
       chunksPath: tempChunks,
       fileUpdatePath: filepath,
@@ -148,7 +150,7 @@ Batch.prototype.apply = function(compiler) {
       assetsDir: this.option.assetsDir,
       host: this.option.host,
       debugger: this.option.debugger || false,
-      ignoredArray: this.option.ignored || []
+      ignoredArray: this.option.ignoredFile
     })
   })
 }

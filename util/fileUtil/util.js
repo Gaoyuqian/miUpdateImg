@@ -19,13 +19,9 @@ module.exports = {
         tip: 被标记为可忽略文件的文件夹下的所有文件均不会被添加依赖
     */
     try {
-      const res = fs
-        .readFileSync(_globalVar.getItem('ignored'), 'utf-8')
-        .split('/n')
-        .concat(_globalVar.getItem('ignoredArray'))
+      const res = _globalVar.getItem('ignoredArray')
       if (res.length) {
-        const resource = res.split('\n')
-        const willIgnoreArray = resource.map(el => {
+        const willIgnoreArray = res.map(el => {
           return el.replace(/\*/, '')
         })
         for (let item of willIgnoreArray) {

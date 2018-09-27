@@ -12,7 +12,6 @@ const config = {
   fileList: [/\.png$/, /\.jpg$/, /\.gif$/, /\.ico$/],
   fileUpdatePath: ['./static', './src'],
   output: 'uploadPackage.json',
-  ignored: './ignored',
   httpsOption: {
     hostname: 'file.market.miui.srv',
     port: 8756,
