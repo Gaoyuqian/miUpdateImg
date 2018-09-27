@@ -29,7 +29,7 @@ module.exports = {
           if (isDir) {
             name += '/'
           }
-          if (name.indexOf(item) !== '-1') {
+          if (~name.indexOf(item)) {
             if (/\/$/.test(name)) {
               return 'all'
             }

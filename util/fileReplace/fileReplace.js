@@ -58,6 +58,7 @@ function replaceProloadChunks(addr) {
         })
         .forEach(info => {
           const result = getNativeFile(item, info, true)
+          // debuggerConsole(result, info)
           content = content.replace(info, result)
         })
   })
