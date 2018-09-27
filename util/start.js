@@ -20,7 +20,8 @@ const config = {
     method: 'POST'
   },
   debugger: false,
-  fileFindPath: './src'
+  fileFindPath: './src',
+  ignoredArray: []
 }
 
 function beginBatchProcess(param = {}) {
@@ -35,13 +36,11 @@ function beginBatchProcess(param = {}) {
     .then(() => {
       Promise.all(chunkVendorResourcePath(assetsDir, _dep.get()).map(el => uploadFile(el))).then(
         () => {
-          // Promise.all(replaceMapSource(_dep.get()).map(el => uploadFile(el))).then(() => {
           if (batchType === 'img') {
             searchFile(fileFindPath)
           } else {
             replaceProloadChunks(outputName)
           }
-          // })
         }
       )
     })

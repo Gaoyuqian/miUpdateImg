@@ -147,7 +147,8 @@ Batch.prototype.apply = function(compiler) {
       preload: this.option.preload,
       assetsDir: this.option.assetsDir,
       host: this.option.host,
-      debugger: this.option.debugger || false
+      debugger: this.option.debugger || false,
+      ignoredArray: this.option.ignored || []
     })
   })
 }
