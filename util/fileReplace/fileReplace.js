@@ -1,86 +1,223 @@
-const {fileDisplay} =require('./../fileDispose/fileDisplay.js')
-const {getNativeAddr,getThumbnailAddr} = require('./../../getImgAddr/getImgAddr')
-const {Files} = require('./../../util/fileSystem/Files')
-const {Dep} = require('./../fileSystem/depend')
-var arr = []
-function searchFile(addr,model='find'){
-    const replaceDep = new Dep();
-    /*
-    
-        fn:读取将被替换的文件文件 获取src的位置 进行替换
+const { fileDisplay } = require('./../fileDispose/fileDisplay.js')
+const { getNativeAddr, getNativeFile } = require('./../../getImgAddr/getImgAddr')
+const { Files } = require('./../../util/fileSystem/Files')
+const { path } = require('./../../util/main')
+const _globalVar = require('../global/global')
 
-        return undef
-    */   
-    // const replaceREG = /src=(['|"](.*)['|"])\s/g    
-    const replaceREG = /[^\:]src=(['|"](.*)['|"])\s/g    
-
-    const http = /http|https/
-    fileDisplay(addr,replaceDep,false,model)
-    const dep = replaceDep.get();
-    dep.forEach(element => {
-        let file = new Files(element) 
-        let fileContent = file.content
-        let temp = fileContent.split('')
-        let matchArray = fileContent.match(replaceREG)
-        const commentsDep = new Dep();
-        console.log(matchArray)
-        matchArray&&matchArray.reverse().forEach(el=>{
-            let startTem = temp.join('').indexOf(el)
-            let endTem = el.length
-            if(!http.test(el)){
-                if(!isComments(temp.join(''),startTem,startTem+endTem,commentsDep)){
-                    var addr = getNativeAddr(el)
-                    temp.splice(startTem,endTem,addr?' src="'+addr+'" ':el)   
-                    // 由于splice所填充进数组的值 只在数组中占一个地址 所以需要重新转化
-                    temp = temp.join('').split('') 
-                }
-            }
+function replaceMapSource(result) {
+  // 替换 打包后的 mapsource文件
+  const replaceChunks = result.filter(item => new RegExp(/\.js$/).test(item))
+  const mapReg = /(sourceMappingURL=)[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*(\.map$)/g
+  replaceChunks.forEach(item => {
+    const file = new Files(item)
+    let content = file.content
+    if (typeof content === 'string') {
+      content.match(mapReg) &&
+        content.match(mapReg).forEach(items => {
+          let replaceItem = items.replace('sourceMappingURL=', '')
+          const result = getNativeFile(replaceItem)
+          content = content.replace(items, `sourceMappingURL=${result}`)
         })
-        file.writeMyFileAll(temp.join(''))         
-    });
-    
+      file.writeMyFileAll(content)
+    }
+  })
+  return replaceChunks || []
 }
 
-function isComments(str,start,end,dep){
-    /*
-
-        str:文件内容
-        以文件为基准
-        start:截取起始点
-        end:截取结束点
-        
-        fn:判断所截取的长度是否为注释内容
-
-        return true OR false
-
-    */
-
-    // 目前只支持 <!-- * -->格式 后续会支持//*格式
-    let pointDep = [];
-    let strStart = 0,strEnd = 0,i=0;
-    let endLen = 3,startLen = 4;
-    
-    if(dep.get()&&dep.get().length===0){
-        dep.equals(str.match(/<!--/mg))
+function chunkVendorResourcePath(assetsDir, result) {
+  if (!assetsDir) {
+    return []
+  }
+  const replaceChunks = result.filter(item => new RegExp('chunk-vendor').test(item))
+  const fontReg = /([/|.]*\/static\/web\/fonts\/)[a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*(\.(woff2?|eot|ttf|otf)(\?#iefix)?)/gi
+  replaceChunks.forEach(item => {
+    const file = new Files(item)
+    let content = file.content
+    if (typeof content === 'string') {
+      content.match(fontReg) &&
+        content.match(fontReg).forEach(items => {
+          const result = getNativeFile(items)
+          content = content.replace(items, result)
+        })
+      file.writeMyFileAll(content)
     }
-    if(dep.get()){
-        for(let item of dep.get()){
-            let startIndex = str.substring(strEnd).indexOf('<!--')
-            let endIndex = str.substring(strEnd).indexOf('-->');
-            strStart = startIndex+strEnd
-            strEnd += endIndex+endLen
-            pointDep.push({'start':strStart,'end':strEnd})
-        }
-        for(let item of pointDep){
-            if(start>item.start&&end<item.end){
-                console.log(start,end,str.substring(start,end),'被忽略')
-                arr.push(str.substring(start,end))
-                return true
-            }
-        }
-    }
-    return false
+  })
+  return replaceChunks || []
 }
+function replaceProloadChunks(addr) {
+  const { fileUpdatePath, chunksPath } = _globalVar.getAll()
+  const file = new Files(path.join(fileUpdatePath, addr))
+  let resultHref = file.content.match(/=[/|.][a-zA-Z0-9\u4e00-\u9fa5_./\-*&%$#@!~]*/g)
+  let content = file.content
+  chunksPath.forEach(item => {
+    const newReg = new RegExp(item)
+    resultHref &&
+      resultHref
+        .filter(items => {
+          return newReg.test(items)
+        })
+        .forEach(info => {
+          const result = getNativeFile(item, info, true)
+          // debuggerConsole(result, info)
+          content = content.replace(info, result)
+        })
+  })
+  file.writeMyFileAll(content)
+}
+
+//  需要先分块获取 然后判断位置是在某个模块里
+function searchFile(addr, model = 'find') {
+  const replaceRegPng = /(?:['|"])[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\/\\\\.]+(\.png|\.jpg|\.jpeg){1}(?:['|"])/g
+  const replaceDep = fileDisplay(addr, model)
+  const cssReg = /(\.css$)|(\.scss$)|(\.less$)/
+  const dep = replaceDep.get()
+  dep.forEach(element => {
+    const file = new Files(element)
+    const fileContent = file.readMyFile()
+    const temp = fileContent.split('')
+    const isCss = cssReg.test(element)
+    const pointDep = getCommentsDepHtml(fileContent, isCss)
+    file.writeMyFileAll(
+      findMatch(
+        fileContent,
+        temp,
+        fileContent.match(replaceRegPng),
+        pointDep,
+        path.parse(element).dir,
+        element
+      )
+    )
+  })
+}
+
+function aliasReplace(el) {
+  // 替换别名
+  let _$ = false
+  const { alias, context } = _globalVar.getAll()
+  if (Object.keys(alias).length !== '0') {
+    for (let i in alias) {
+      const reg = new RegExp(i + '(?=/)')
+      const _el = el.replace(reg, alias[i])
+      if (_el !== el) {
+        _$ = _el.replace(context + '/', '').replace(/(\"|\')/, '')
+      }
+    }
+  }
+  return _$
+}
+
+function findMatch(str, strArr, matchArray, pointDep, dir, element) {
+  // 替换主函数
+  const cutNameReg = /[a-zA-Z0-9\u4e00-\u9fa5_\-*&%$#@!\\]*(?=\.png|\.jpg|\.jpeg){1}/g
+  const cutFormReg = /(\.png|\.jpg)/g
+  const matchDep = []
+  let start = 0
+  let end = 0
+  matchArray &&
+    matchArray.forEach(el => {
+      const matchAddr = aliasReplace(el) || path.join(dir, path.normalize(el.replace(/['|"]/g, '')))
+      const elLength = el.length
+      start = str.indexOf(el)
+      for (let point of matchDep) {
+        if (point.addr === matchAddr) {
+          // 如果重复 则从下一个开始找
+          start = str.indexOf(el, point.end)
+        }
+      }
+      end = start + elLength
+      const isCom = isComments(start, end, pointDep)
+      matchDep.push({
+        addr: matchAddr,
+        start: start,
+        end: end,
+        isCom: isCom,
+        elLength: elLength,
+        el: el,
+        file: element,
+        name: el.match(cutNameReg)[0],
+        form: el.match(cutFormReg)[0]
+      })
+    })
+  for (let item of matchDep.reverse()) {
+    const quota = /\'/.test(item.el) ? `'` : `"`
+    if (!item.isCom) {
+      const addr = getNativeAddr(item.addr, item.el, item.name, item.form)
+      strArr.splice(item.start, item.elLength, addr ? quota + addr + quota : item.el)
+    }
+  }
+  return strArr.join('')
+}
+
+function getCommentsDepHtml(str) {
+  // 返回注释的点阵区间
+  const pointDep = []
+  let strStart = 0
+  let strEnd = 0
+  const matchHtml = str.match(/<!--/gm)
+  const matchCss = str.match(/\/\*/gm)
+  const matchJs = str.match(/\/\/\s{1}/gm)
+  const endLenHtml = 3
+  const endLenCss = 2
+  if (matchHtml) {
+    for (let item of matchHtml) {
+      const startIndex = str.substring(strEnd).indexOf('<!--')
+      const endIndex = str.substring(strEnd).indexOf('-->')
+      strStart = startIndex + strEnd
+      strEnd += endIndex + endLenHtml
+      pointDep.push({
+        start: strStart,
+        end: strEnd
+      })
+    }
+  }
+  if (matchCss) {
+    ;(strStart = 0), (strEnd = 0)
+    for (let item of matchCss) {
+      const startIndex = str.substring(strEnd).indexOf('/*')
+      const endIndex = str.substring(strEnd).indexOf('*/')
+      strStart = startIndex + strEnd
+      strEnd += endIndex + endLenCss
+      pointDep.push({
+        start: strStart,
+        end: strEnd
+      })
+    }
+  }
+  //  由于/n 并不是紧跟着 // 一起出现 所以造成差异
+  if (matchJs) {
+    ;(strStart = 0), (strEnd = 0)
+    for (let item of matchJs) {
+      const startIndex = str.substring(strEnd).indexOf('// ')
+      // startIndex 是注释的开头坐标 基于上一个注释的结尾坐标获取的
+      // endIndex 是从注释开头的坐标到该注释结尾的坐标 基于注释开头坐标获取的
+      // 注释结尾是相对于注释开头坐标计算长度
+      const endIndex = str.substring(startIndex + strEnd).indexOf('\n')
+      strStart = startIndex + strEnd
+      strEnd = endIndex + startIndex + strEnd
+      pointDep.push({
+        start: strStart,
+        end: strEnd
+      })
+    }
+  }
+  return pointDep
+}
+
+function isComments(start, end, pointDep) {
+  // 判断是否是注释中的
+  if (pointDep.length !== 0) {
+    for (let item of pointDep) {
+      if (start > item.start && end < item.end) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 module.exports = {
-    isComments,searchFile
+  searchFile,
+  replaceProloadChunks,
+  chunkVendorResourcePath,
+  replaceMapSource
 }

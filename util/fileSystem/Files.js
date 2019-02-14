@@ -1,63 +1,56 @@
-const {fs,chalk,path} = require('../main')
+/*
 
-const __default = {
-        'miuiFile.json':{
-            "fileUpdatePath": "./static",
-            "output": "uploadPackage.json",
-            "ignored": "./ignored",
-            "httpsOption": {
-                "hostname": "file.market.miui.srv",
-                "port": 8756,
-                "path": "/upload?channel=NccFgber",
-                "method": "POST"
-            },
-            "fileFindPath": "./src"
-        },
-        'uploadPackage.json':{}
-    }
+  所有文件的父类 包含读写等功能
+
+*/
+
+const { fs } = require('../main')
+const config = require('../global/global')
+
 class Files {
-    constructor(path){
-        this.file = path
-        this.content = this.readMyFile(path)                
-    };
-    isExists(){
-        return fs.existsSync(this.file)
+  constructor(path) {
+    this.file = path
+    this.isExists = this.isExists()
+    if (!this.isExists) {
+      this.createFile()
     }
-    createFile(content){
-        if(this.file){
-            const temp = this.file.split('/')
-            const name = temp[temp.length-1]
-            fs.writeFileSync(this.file,JSON.stringify(__default[name]));            
-        }
+    this.content = this.readMyFile()
+  }
+
+  isExists() {
+    return fs.existsSync(this.file)
+  }
+
+  createFile(content) {
+    if (this.file) {
+      const temp = this.file.split('/')
+      const name = temp[temp.length - 1]
+      fs.writeFileSync(this.file, JSON.stringify(global.__config[name] || config.__config[name]))
     }
-    readMyFile(){
-        if(!this.isExists()){
-            this.createFile()
-        }
-        try{
-            return JSON.parse(fs.readFileSync(this.file,'utf-8'))            
-        }catch(e){
-            return fs.readFileSync(this.file,'utf-8')
-        }
+  }
+
+  readMyFile() {
+    try {
+      return JSON.parse(fs.readFileSync(this.file, 'utf-8'))
+    } catch (e) {
+      return fs.readFileSync(this.file, 'utf-8')
     }
-    writeMyFileAll(content){
-        /*
-        
+  }
+
+  writeMyFileAll(content) {
+    /*
+
             预期为覆盖写入
             整个文件重新覆盖
             适合读取文件之后再写入
 
         */
-        if(typeof content === 'object'){
-            fs.writeFileSync(this.file,JSON.stringify(content))   
-        }else{
-            fs.writeFileSync(this.file,content)  
-        }
-        this.content = this.readMyFile()
-    }
+    fs.writeFileSync(this.file, typeof content === 'object' ? JSON.stringify(content) : content)
+  }
 
-    writeMyFile(obj,sourceName){
-        /*
+  writeMyFile(obj, sourceName) {
+    this.content = this.readMyFile()
+    /*
 
             替换写入
             只支持json文件格式的对象key替换
@@ -65,18 +58,18 @@ class Files {
 
             流程： 读取源文件内容，查找与源文件不同的内容 写入
             （不过如果有相同的文件期望写入 ，应该在display的时候就已经过滤掉了）
-        
+
         */
-        obj = typeof obj ==='object'?obj:JSON.parse(obj)
-        for(let item in obj){
-            if(!this.content[item]){
-                this.content[item] = obj[item]
-            }
-        }
-        fs.writeFileSync(this.file,JSON.stringify(this.content))
-        this.content = this.readMyFile()        
+    obj = typeof obj === 'object' ? obj : JSON.parse(obj)
+    for (let item in obj) {
+      if (!this.content[item]) {
+        this.content[item] = obj[item]
+      }
     }
+    fs.writeFileSync(this.file, JSON.stringify(this.content))
+  }
 }
+
 module.exports = {
-    Files
+  Files
 }

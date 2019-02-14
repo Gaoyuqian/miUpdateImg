@@ -1,122 +1,73 @@
 # Install
+
 ```
-npm install miuibatchupload // 1.5.0
-OR
-cnpm install @mipay/batch 
+cnpm install @mipay/batch // v2.0.2
 ```
 
-# AddDependencies 
+# Import
 
 ```
 ...
 },
   "dependencies": {
-    "@mipay/batch": "^1.5.3"
+    "@mipay/batch": "^2.0.2"
   }
 ...
 
 npm install
 ```
 
-# APi
+- 参考 {wiki} http://wiki.n.miui.com/pages/viewpage.action?pageId=5833076
+- git 地址 http://v9.git.n.xiaomi.com/mifi-fe/mifi-mp-batch.git
+
+# Usage
+
+- 如果你正在使用 vue-cli
+
 ```
+// cli 3.0
+const Batch = require('@mipay/batch')
 
-getThumbnailAddr(filename,/*l,s,w,h,q*/option,https=false) //获取按尺寸裁切图片
-
-option={
-    type:{type:String,default:'jpeg'}
-    param:{type:String,default:'null'}
+configureWebpack:config=>{
+  return  plugins: [new Batch(option)]
 }
-//el
-getThumbnailAddr('logo.png',{type:'png',param:'h120'}
 
-------------------------------------
-
-getNativeAddr(filename) //获取原图
-
+// 其他
+plugins: [
+  new Batch(option)
+]
 ```
 
-# Use
+# Config
 
-## node
-
-在需要时调用start方法即可执行批量上传和指定文件的替换功能
-
-所有配置文件会自动创建为默认配置，可自行修改。
-
-
-## web
-
--------当前版本暂不支持web端获取图片地址-------
-
-项目根目录下创建uploadPackage.json文件 内容为{}
-tips:目前版本由于运行在前端工程中,所有都需要手动创建该文件,若之后需要运行于node环境下 则需要更改配置文件中output的路径信息，并同步到index.js文件中,改写getImgAdd文件中的方法使其路径一致
-
-在dev-server下 引入此包
-```
-
-const miui = require('PACKNAME')  
-miui.start()
-npm run dev
+- 推荐预先设置参数来告诉脚本你需要做哪些工作或需要改变哪些目录用于针对目录不相同的前端工程
 
 ```
-如果想覆盖原有文件重新上传 请使用deep模式重新上传所有待上传文件(推荐始终使用deep模式)
+/*
+  插件需要的参数：
+
+  staticSrc         当采用某种特殊写法时，文件路径指向打包后的静态资源目录，该属性为插件打包后的静态资源目录名
+                    称，当脚本在正常路径下找不到相应文件时，会自动从该路径获取资源。（必填）
+  fileUpdatePath    所有待上传文件的目录集合，多个目录请使用数组。（必填）
+  size              单位 byte  当文件大小小于size的时 将不会被替换，使用webpack自带的loader通过base64形式
+                    加载出来。默认值为10000byte（选填）
+  preload           type: Boolean  是否添加preload插件 若添加 则会替换preload，prefetch文件 默认为true
+  host              静态资源替换路径前缀 一般为服务器地址
+  assetsDir         静态资源存放地址 插件会将该路径的文件上传至cdn 用于替换
+  ignoredImg,ignoredFile 分别负责过滤不同格式的文件，在图片替换时请使用img，在文件替换时请使用file
+*/
+
+// example
+  plugins: [new Batch({
+    'fileUpdatePath': ['./public', './src'],
+    'staticSrc': 'public',
+    'size':1,
+    'ignoredImg':[],
+    'ignoredFile':[]
+  })]
+//
 ```
 
-miui.start(deep)
-
 ```
-注册全局方法
+// 禁止修改配置文件的key值以避免不必要的错误，目前只推荐修改fileUpdatePath路径
 ```
-
-import { getThumbnailAddr,getNativeAddr } from 'miuibatchupload'
-Vue.prototype.$getThumbnailAddr = getThumbnailAddr;
-Vue.prototype.$getNativeAddr = getNativeAddr
-
-```
-
-#### 裁剪功能具体参数请参照MIUI文件服务使用指南
-#### addr : {wiki}/pages/viewpage.action?pageId=5833076
-
-# Log
-
-
-### v1.2.0
-
-#### 支持批量上传小图片
-#### 获取文件路径,同时支持裁切和缩略图模式
-
-### v1.3.0
-#### 优化文件忽略逻辑，重写正则表达式
-若一个文件夹被忽略，则不会递归遍历该文件夹下的所有文件了。
-#### 更好的支持裁切系统，降低裁切参数的复杂度
-现在有更多的默认裁剪系数被提供,并且支持了更好的错误反馈机制
-#### 更改暴露出的方法名，使语义更明显
-#### 增加删除文件功能(Node)
-
-### v1.3.5
-#### miuiFile.json 暴露在项目根目录下 通过fs读取内容 如果不存在 自动创建默认的文件
-#### 支持视频流文件上传(Node)
-#### 支持图片和文字结合，并获取合成后的图片(Node)
-#### 支持自定义文件名上传 (Node)
-
-### v1.4.0
-
-#### 继续优化忽略逻辑
-#### 支持纯node环境的路径替换功能（原有手动获取路径功能依然可用）
-#### 支持被替换文件后缀名的配置项
-
-### v1.4.5
-
-#### 优化忽略逻辑 将不会替换http或https开头的路径
-#### 支持同一页面下多个相同的路径替换
-#### 不会替换任何位于注释中的图片资源（目前仅支持template中的注释）
-
-### v1.5.0
-#### 改写http请求为同步请求 所有资源上传结束之后才开始替换
-#### 目前支持自动和手动两种替换方式
-
-### TODO
-#### 将配置检测和start方法分开，方便修改配置文件
-#### 注释问题需要解决（将每个匹配到的字符块均需要一个自己在文档中的位置）
-#### 完善非deep模式的功能

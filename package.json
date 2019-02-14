@@ -1,6 +1,6 @@
 {
   "name": "@mipay/batch",
-  "version": "1.5.3",
+  "version": "2.1.2",
   "description": "batchuploadimage",
   "main": "index.js",
   "scripts": {
@@ -10,10 +10,14 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gaoyuqian/miUpdateImg.git"
+    "url": "git+http://v9.git.n.xiaomi.com/mifi-fe/mifi-mp-batch.git"
   },
   "bugs": {
-    "url": "https://github.com/Gaoyuqian/miUpdateImg/issues"
+    "url": "http://v9.git.n.xiaomi.com/mifi-fe/mifi-mp-batch.git/issues"
   },
-  "homepage": "https://github.com/Gaoyuqian/miUpdateImg#readme"
+  "homepage": "http://v9.git.n.xiaomi.com/mifi-fe/mifi-mp-batch.git#readme",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "mime": "^2.3.1"
+  }
 }
