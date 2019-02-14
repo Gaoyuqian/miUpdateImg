@@ -1,5 +1,7 @@
 const { uploadFile, uploadFileObj } = require('./fileDispose/fileUpload')
 const { fileDisplay } = require('./fileDispose/fileDisplay')
+const { preload } = require('./preloadImg/preloadImg')
+
 const {
   searchFile,
   replaceProloadChunks,
@@ -30,11 +32,13 @@ function beginBatchProcess(param = {}) {
   _dep = fileDisplay(fileUpdatePath)
   Promise.all(_dep.get().map(el => uploadFile(el)))
     .then(() => {
+      // 获取结果集合
       _globalVar.setItem('result', uploadFileObj)
     })
     .then(() => {
       Promise.all(chunkVendorResourcePath(assetsDir, _dep.get()).map(el => uploadFile(el))).then(
         () => {
+          // 开始替换对应chunks中的对应文件路径
           if (batchType === 'img') {
             searchFile(fileFindPath)
           } else {
@@ -44,6 +48,11 @@ function beginBatchProcess(param = {}) {
       )
     })
     .then(() => {
+      // img preload 相关工作 默认preload所有可收集图片 暴露出一个对应方法
+      preloadImg()
+    })
+    .then(() => {
+      // 结束
       _globalVar.getItem('callback') && _globalVar.getItem('callback')()
     })
 }

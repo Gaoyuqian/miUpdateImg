@@ -100,6 +100,7 @@ Batch.prototype.apply = function(compiler) {
       size: this.option.size || null,
       staticSrc: this.option.staticSrc,
       batchType: 'img',
+      preload: this.option.imgPreload,
       context: compilation.options.context,
       alias: compilation.options.resolve.alias,
       callback: callback,
@@ -137,7 +138,6 @@ Batch.prototype.apply = function(compiler) {
   compiler.plugin('done', (comp, callback) => {
     // chunks去重
     tempChunks = Array.from(new Set(tempChunks))
-    console.log(this.option, 123)
     beginBatchProcess({
       chunksPath: tempChunks,
       fileUpdatePath: filepath,
